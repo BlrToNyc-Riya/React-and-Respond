@@ -1,0 +1,36 @@
+{
+  "name": "hashbing-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "startServer": "node app.js",
+    "startDevServer": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Leo",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.7.2",
+    "btoa": "^1.2.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^6.0.1",
+    "express-jwt": "^6.1.0",
+    "express-pjax": "^0.0.1",
+    "express-session": "^1.17.2",
+    "express-validator": "^6.13.0",
+    "flat": "^5.0.2",
+    "formidable": "^2.0.1",
+    "mongodb": "^4.1.4",
+    "multer": "^1.4.3",
+    "nodemon": "^2.0.15",
+    "redis": "^3.0.2",
+    "xss": "^1.0.10"
+  }
+}
