@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # cors:
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile
+  #   container_name: cors
+  #   ports:
+  #     - "4545:80"
+  #   restart: always
+  #   depends_on:
+  #     - dev
+  #     - backend
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - mongo-compose-network
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+    networks:
+        - mongo-compose-network
+    
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'
+    restart: always
+    depends_on:
+      - mongodb
+  backend:
+    build:
+      context: ./hashbing-server
+      dockerfile: Dockerfile
+    volumes:
+      - ./hashbing-server:/app
+      - /app/node_modules
+    ports:
+      - '4000:4000'
+    depends_on:
+      - mongodb
+    networks:
+      - mongo-compose-network
+  dev:
+    build: 
+      context: ./hashbing
+      dockerfile: Dockerfile
+    volumes:
+      - ./hashbing:/app
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongodb
+    networks:
+      - mongo-compose-network
+
+
+networks: 
+    mongo-compose-network:
+      driver: bridge

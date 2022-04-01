@@ -1,0 +1,5 @@
+data/db
+
+hashbing-server/node_modules
+hashbing/node_modules
+hashbing-server/.DS_Store
