@@ -10,7 +10,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 function App () {
   const [count, setCount] = useState(0)
-  const [data, setData] = useState<string | AxiosResponse<string, any>>('')
+  const [data, setData] = useState({})
 
   return (
     <BrowserRouter>

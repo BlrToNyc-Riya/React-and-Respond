@@ -50,7 +50,7 @@ services:
     ports:
       - '4000:4000'
     depends_on:
-      - mongodb
+      - mongo
     networks:
       - mongo-compose-network
   dev:
@@ -63,7 +63,7 @@ services:
     ports:
       - '3000:3000'
     depends_on:
-      - mongodb
+      - mongo
     networks:
       - mongo-compose-network
 
