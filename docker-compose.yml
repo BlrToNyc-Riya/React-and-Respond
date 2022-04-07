@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # cors:
@@ -31,12 +31,12 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
     networks:
-        - mongo-compose-network
-    
+      - mongo-compose-network
+
   redis:
     image: redis
     ports:
-      - '6379:6379'
+      - "6379:6379"
     restart: always
     depends_on:
       - mongodb
@@ -48,26 +48,25 @@ services:
       - ./hashbing-server:/app
       - /app/node_modules
     ports:
-      - '4000:4000'
+      - "4000:4000"
     depends_on:
       - mongodb
     networks:
       - mongo-compose-network
   dev:
-    build: 
+    build:
       context: ./hashbing
       dockerfile: Dockerfile
     volumes:
       - ./hashbing:/app
       - /app/node_modules
     ports:
-      - '3000:3000'
+      - "3000:3000"
     depends_on:
       - mongodb
     networks:
       - mongo-compose-network
 
-
-networks: 
-    mongo-compose-network:
-      driver: bridge
+networks:
+  mongo-compose-network:
+    driver: bridge
