@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 interface items {
   section: string;
 }
@@ -14,15 +15,19 @@ function Header() {
     <div className="flex w-full shadow-2xl">
       <div className="flex w-1/2 justify-start"></div>
       <div className="flex w-1/2 justify-end">
-        <div
-          id="courses"
-          className="text-md font-bold p-5 text-blue-400 cursor-pointer"
-        >
-          Courses
-        </div>
-        <div id="enrolled" className="text-md font-bold p-5 cursor-pointer">
-          Enrolled
-        </div>
+        <Link to="/">
+          <div
+            id="courses"
+            className="text-md font-bold p-5 text-blue-400 cursor-pointer"
+          >
+            Courses
+          </div>
+        </Link>
+        <Link to="/enrolled">
+          <div id="enrolled" className="text-md font-bold p-5 cursor-pointer">
+            Enrolled
+          </div>
+        </Link>
         <div id="user" className="text-md font-bold p-5 cursor-pointer">
           User
         </div>

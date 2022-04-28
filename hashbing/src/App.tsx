@@ -9,6 +9,7 @@ import Courses from "./Components/Courses";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CourseDetails from "./Components/CourseDetails";
 import Enrolled from "./Components/Enrolled";
+import Header from "./Components/Header";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -21,10 +22,19 @@ function App() {
           <Route path="/login" element={<Login />}></Route>
           <Route path="/tutorlogin" element={<LoginTutor />}></Route>
           <Route path="/signup" element={<Signup />}></Route>
-          <Route path="/" element={<Courses />}></Route>
-          <Route path="/courses/:id" element={<CourseDetails />}></Route>
-          <Route path="/enrolled" element={<Enrolled />}></Route>
         </Routes>
+        <div className="flex min-h-screen min-w-screen bg-sky-400">
+          <div className="flex bg-white m-20 w-screen rounded-2xl">
+            <div className="flex flex-col w-full h-full rounded-2xl">
+              <Header />
+              <Routes>
+                <Route path="/" element={<Courses />}></Route>
+                <Route path="/courses/:id" element={<CourseDetails />}></Route>
+                <Route path="/enrolled" element={<Enrolled />}></Route>
+              </Routes>
+            </div>
+          </div>
+        </div>
       </div>
     </BrowserRouter>
   );
