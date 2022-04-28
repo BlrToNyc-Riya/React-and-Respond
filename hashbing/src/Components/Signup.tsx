@@ -24,27 +24,110 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
+  const [error, setError] = useState("");
   const [role, setRole] = useState("student");
   const provider = new firebase.auth.GoogleAuthProvider();
 
   const register = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((auth) => {
-        auth.user?.updateProfile({ displayName: name });
-        console.log(name);
-        if (auth) {
-          if (role === "student") navigate("/studentlogin");
-          if (role === "tutor") navigate("/tutorlogin");
-          if (role === "both") navigate("/studentlogin");
-        }
-      })
-      .catch((error) => alert(error.message));
+    let email_err = document.getElementById("email__err");
+    let name_err = document.getElementById("name__err");
+    let password_err = document.getElementById("password__err");
+    let password_err1 = document.getElementById("password__err1");
+    let password_err2 = document.getElementById("password__err2");
+    let validEmail = true;
+    let validPassword = true;
+    let validReenterPassword = true;
+    let validCredentials = true;
+    if (email !== undefined && email_err !== null) {
+      if (email === "") {
+        email_err.innerText = "Email cannot be null!";
+        email_err.style.display = "flex";
+        validEmail = false;
+      } else if (!validateEmail(email)) {
+        email_err.innerText = "Email is of incorrect format!";
+        email_err.style.display = "flex";
+        validEmail = false;
+      } else {
+        email_err.style.display = "none";
+        validEmail = true;
+      }
+    }
+
+    if (password !== undefined && password_err !== null) {
+      if (password.length < 8) {
+        password_err.style.display = "flex";
+        validPassword = false;
+      } else {
+        password_err.style.display = "none";
+        validPassword = true;
+      }
+    }
+
+    if (
+      password !== undefined &&
+      repassword !== undefined &&
+      password_err1 !== null
+    ) {
+      if (password !== repassword) {
+        password_err1.innerText = "Passwords do not match!";
+        password_err1.style.display = "flex";
+        validReenterPassword = false;
+      } else {
+        password_err1.style.display = "none";
+        validReenterPassword = true;
+      }
+    }
+
+    if (name_err !== null) {
+      if (name === "") {
+        name_err.style.display = "flex";
+        validCredentials = false;
+      } else {
+        name_err.style.display = "none";
+        validCredentials = true;
+      }
+    }
+    if (password_err2 !== null) {
+      password_err2.style.display = "none";
+    }
+    if (
+      validEmail &&
+      validPassword &&
+      validReenterPassword &&
+      validCredentials
+    ) {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then((auth) => {
+          auth.user?.updateProfile({ displayName: name });
+          console.log(name);
+          if (auth) {
+            if (role === "student") navigate("/studentlogin");
+            if (role === "tutor") navigate("/tutorlogin");
+            if (role === "both") navigate("/studentlogin");
+          }
+        })
+        .catch((error) => {
+          if (password_err2 !== null) {
+            password_err2.style.display = "flex";
+          }
+          setError(error.message);
+        });
+    }
   };
 
+  const validateEmail = (email: string) => {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  };
   const signInWithGoogle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    let password_err2 = document.getElementById("password__err2");
+    if (password_err2 !== null) {
+      password_err2.style.display = "none";
+    }
     e.preventDefault();
     firebase
       .auth()
@@ -52,7 +135,12 @@ function Signup() {
       .then((result) => {
         navigate("/");
       })
-      .catch((error) => alert(error));
+      .catch((error) => {
+        if (password_err2 !== null) {
+          password_err2.style.display = "flex";
+        }
+        setError(error.message);
+      });
   };
   return (
     <div className="flex flex-col bg-green-300 min-h-screen">
@@ -66,6 +154,9 @@ function Signup() {
               Sign Up
             </p>
             <div className="flex-col justify-center ml-20 mr-20 mb-6">
+              <div id="name__err" className="text-red-600 hidden">
+                Name Field cannot be null!
+              </div>
               <div className="flex justify-center rounded-md border-2 mb-8">
                 <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
                   <FontAwesomeIcon
@@ -78,10 +169,13 @@ function Signup() {
                   type="text"
                   placeholder="Name"
                   className="w-full bg-green-200 placeholder-black"
+                  id="register_name"
+                  required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
+              <div id="email__err" className="text-red-600 hidden"></div>
               <div className="flex justify-center rounded-md border-2 mb-8">
                 <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
                   <FontAwesomeIcon
@@ -95,8 +189,12 @@ function Signup() {
                   placeholder="Email ID"
                   className="w-full bg-green-200 placeholder-black"
                   value={email}
+                  id="register_email"
                   onChange={(e) => setEmail(e.target.value)}
                 />
+              </div>
+              <div id="password__err" className="text-red-600 hidden">
+                Password must be atleast 6 characters!
               </div>
               <div className="flex justify-center rounded-md border-2 mb-8">
                 <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
@@ -106,10 +204,12 @@ function Signup() {
                   type="password"
                   placeholder="Password"
                   className="w-full bg-green-200 placeholder-black"
+                  id="register_password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+
               <div className="flex justify-center rounded-md border-2 mb-8">
                 <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
                   <FontAwesomeIcon
@@ -123,10 +223,13 @@ function Signup() {
                   placeholder="Re-Enter Password"
                   className="w-full bg-green-200 placeholder-black"
                   value={repassword}
+                  id="register_re_password"
                   onChange={(e) => setRepassword(e.target.value)}
                 />
               </div>
-
+              <div id="password__err1" className="text-red-600 hidden">
+                Passwords do not match!
+              </div>
               <FormControl>
                 <FormLabel id="demo-radio-buttons-group-label">
                   <span className="text-green-500">Role</span>
@@ -156,6 +259,12 @@ function Signup() {
                   />
                 </RadioGroup>
               </FormControl>
+            </div>
+            <div
+              id="password__err2"
+              className="text-red-600 hidden justify-center"
+            >
+              <p>{error}</p>
             </div>
             <div className="flex justify-center mb-6">
               <button
