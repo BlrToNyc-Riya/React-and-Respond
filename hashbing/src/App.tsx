@@ -10,6 +10,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CourseDetails from "./Components/CourseDetails";
 import Enrolled from "./Components/Enrolled";
 import Header from "./Components/Header";
+import Users from "./Components/Users";
+import Authored from "./Components/Authored";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -31,6 +33,8 @@ function App() {
                 <Route path="/" element={<Courses />}></Route>
                 <Route path="/courses/:id" element={<CourseDetails />}></Route>
                 <Route path="/enrolled" element={<Enrolled />}></Route>
+                <Route path="/authored" element={<Authored />}></Route>
+                <Route path="/users" element={<Users />}></Route>
               </Routes>
             </div>
           </div>

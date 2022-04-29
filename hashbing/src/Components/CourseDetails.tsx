@@ -34,6 +34,15 @@ function CourseDetails() {
                   15/05/2021
                 </span>
               </p>
+              {/* Score */}
+              <div className="flex-col m-6">
+                <p className="text-xs font-sans font-semibold pl-2">
+                  Chapter Progress : 0/30 completed(25%)
+                </p>
+                <div className="bg-gray-300 h-2 rounded-3xl m-2">
+                  <div className="bg-blue-600 w-1/4 h-2 rounded-3xl"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
