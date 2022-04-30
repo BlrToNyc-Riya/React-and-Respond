@@ -11,18 +11,15 @@ const {
 const saltRounds = 10;
 
 module.exports = {
-	async createUser({ email, userName, password, firstName, lastName  }) {
-		console.log('data', email, userName, password);
+	async createUser({ email, password, firstName, lastName  }) {
+		console.log('data', email, password);
 		isValidString(email, 'name');
-		isValidString(userName, 'username');
 		isValidString(password, 'password');
 		email = email.toLowerCase().trim();
-		userName = userName.toLowerCase().trim();
 		password = password.trim();
-		isValidUsername(userName);
 		// isValidPassword(password);
 		const userCollection = await users();
-		const userData = await userCollection.findOne({ userName });
+		const userData = await userCollection.findOne({ email });
 		if (userData) {
 			throw { message: 'User already exists', code: 403 };
 		}
@@ -30,7 +27,6 @@ module.exports = {
 
 		const user = {
 			email,
-			userName,
 			password: hash,
 			DOB:"",
 			bio:"",

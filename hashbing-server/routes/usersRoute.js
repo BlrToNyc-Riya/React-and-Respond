@@ -10,12 +10,11 @@ router.get('/test', async (req, res) => {
 
 router.post('/signup', async (req, res) => {
 	try {
-		let { userName, password, email,firstName, lastName } = req.body;
-		if (!userName || !password || !email || !firstName || !lastName) {
+		let { password, email,firstName, lastName } = req.body;
+		if (!password || !email || !firstName || !lastName) {
 			return res.sendStatus(400).send('Missing required fields');
 		} else {
 			let user = {
-				userName: userName,
 				password: password,
 				email: email,
 				firstName: firstName,
