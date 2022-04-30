@@ -64,7 +64,7 @@ const Login: React.FunctionComponent = () => {
           if (password_err2 !== null) {
             password_err2.style.display = "flex";
           }
-          setError(error.message);
+          setError("Email / Password is incorrect!");
         });
     }
   };
