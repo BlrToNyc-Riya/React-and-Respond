@@ -9,11 +9,11 @@ import Courses from './Components/Courses'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import CourseDetails from './Components/CourseDetails'
 import Enrolled from './Components/Enrolled'
-import NewCourseContainer from './courseCreation/NewCourseContainer'
-import NewCourseWizard from './courseCreation/NewCourseWizard'
 import Header from './Components/Header'
 import Users from './Components/Users'
 import Authored from './Components/Authored'
+import NewCourseContainer from './courseCreation/NewCourseContainer'
+import NewCourseWizard from './courseCreation/NewCourseWizard'
 
 function App () {
   const [count, setCount] = useState(0)
