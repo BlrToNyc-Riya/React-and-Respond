@@ -2,10 +2,12 @@ const express = require('express');
 const cors = require('cors');
 // const constructorMethod = require('./routeConstructor');
 const configRoutes = require('./routes');
+const session = require('express-session');
 
 const app = express();
 app.use(express.json());
 app.use(cors({ origin: '*' }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/', (req, res, next) => {
 	console.log(
@@ -21,6 +23,15 @@ app.use('/', (req, res, next) => {
 	req.url = req.url.trim();
 	next();
 });
+
+app.use(
+	session({
+		name: 'AuthCookie',
+		secret: 'some secret string!',
+		resave: false,
+		saveUninitialized: false
+	})
+);
 // constructorMethod(app);
 configRoutes(app);
 

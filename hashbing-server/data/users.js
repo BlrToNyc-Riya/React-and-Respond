@@ -63,4 +63,25 @@ module.exports = {
 		if (user === null) throw 'No user with that id';
 		return user;
 	},
+	async authenticateUser(email, password) {
+		if (!email || !password) throw 'You must supply both username and password';
+		if (typeof email !== 'string') throw 'Email is invalid';
+		// else if (email.trim() === '') throw 'Email is empty spaces';
+		// if (typeof password !== 'string') throw 'Password is invalid';
+		// else if (password.trim() === '') throw 'Password is empty spaces';
+	
+		// if (email.search(/[a-z][a-z0-9]+@stevens\.edu/i) === -1) throw 'You must supply valid username or password';
+		// if (password.length < 8 || password.length > 15) throw 'Password must be between 8 and 15 characters';
+		email = email.toLowerCase();
+	
+		const userCollection = await users();
+		const user = await userCollection.findOne({ email });
+		if (user) {
+			let match = await bcrypt.compare(password, user.password);
+			if (match) {
+				return { authenticated: true, user };
+			}
+		}
+		throw 'Invalid username or password';
+	}
 };

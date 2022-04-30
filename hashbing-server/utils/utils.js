@@ -132,5 +132,11 @@ exports.isValidObjectId = (objectId, paramName) => {
 		};
 	}
 };
-
+exports.handleUserInfo = userInfo => {
+	const props = ['firstname', 'lastname', 'userName', 'profilePic', 'bio', 'role', 'coursesEnrolled', 'courseAuthored', 'phoneNumber'];
+	return props.reduce((pre, cur) => {
+		pre[cur] = userInfo[cur];
+		return pre;
+	}, {});
+};
 exports.saltRounds = 12;
