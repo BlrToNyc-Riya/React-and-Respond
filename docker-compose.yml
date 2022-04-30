@@ -39,7 +39,7 @@ services:
       - '6379:6379'
     restart: always
     depends_on:
-      - mongodb
+      - mongo
   backend:
     build:
       context: ./hashbing-server
@@ -59,7 +59,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./hashbing:/app
-      - /app/node_modules
+    #   - /app/node_modules
     ports:
       - '3000:3000'
     depends_on:
