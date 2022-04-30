@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 // import "./App.css";
 import axios, { AxiosResponse } from 'axios'
 import Login from './Components/Login'
@@ -15,13 +15,14 @@ import Authored from './Components/Authored'
 import NewCourseContainer from './courseCreation/NewCourseContainer'
 import NewCourseWizard from './courseCreation/NewCourseWizard'
 
-function App () {
-  const [count, setCount] = useState(0)
-  const [data, setData] = useState({})
+
+function App() {
+  const [count, setCount] = useState(0);
+  const [data, setData] = useState({});
 
   return (
     <BrowserRouter>
-      <div className='App'>
+      <div className="App">
         <Routes>
           <Route path='/login' element={<Login />}></Route>
           <Route path='/tutorlogin' element={<LoginTutor />}></Route>
@@ -51,7 +52,7 @@ function App () {
         </div>
       </div>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
