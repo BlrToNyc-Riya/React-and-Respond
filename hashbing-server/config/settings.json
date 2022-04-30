@@ -1,6 +1,6 @@
 {
   "mongoConfig": {
-    "serverUrl": "mongodb://root:example@mongo:27017/",
-    "dbName": "hashbing"
+    "serverUrl": "mongodb://localhost:27017/",
+    "dbName": "React-and-respond"
   }
 }

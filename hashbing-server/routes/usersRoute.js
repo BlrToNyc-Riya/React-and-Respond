@@ -9,14 +9,16 @@ router.get('/test', async (req, res) => {
 
 router.post('/signup', async (req, res) => {
 	try {
-		let { username, password, email } = req.body;
-		if (!username || !password || !email) {
+		let { userName, password, email,firstName, lastName } = req.body;
+		if (!userName || !password || !email || !firstName || !lastName) {
 			return res.sendStatus(400).send('Missing required fields');
 		} else {
 			let user = {
-				username: username,
+				userName: userName,
 				password: password,
 				email: email,
+				firstName: firstName,
+				lastName: lastName
 			};
 			console.log('here');
 			// return res.sendStatus(200).json({ data: 1 });
@@ -30,5 +32,6 @@ router.post('/signup', async (req, res) => {
 		return res.json({ error: err });
 	}
 });
+
 
 module.exports = router;

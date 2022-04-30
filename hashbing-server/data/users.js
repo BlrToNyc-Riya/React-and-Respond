@@ -11,18 +11,18 @@ const {
 const saltRounds = 10;
 
 module.exports = {
-	async createUser({ email, username, password }) {
-		console.log('data', email, username, password);
+	async createUser({ email, userName, password, firstName, lastName  }) {
+		console.log('data', email, userName, password);
 		isValidString(email, 'name');
-		isValidString(username, 'username');
+		isValidString(userName, 'username');
 		isValidString(password, 'password');
 		email = email.toLowerCase().trim();
-		username = username.toLowerCase().trim();
+		userName = userName.toLowerCase().trim();
 		password = password.trim();
-		isValidUsername(username);
+		isValidUsername(userName);
 		// isValidPassword(password);
 		const userCollection = await users();
-		const userData = await userCollection.findOne({ username });
+		const userData = await userCollection.findOne({ userName });
 		if (userData) {
 			throw { message: 'User already exists', code: 403 };
 		}
@@ -30,8 +30,17 @@ module.exports = {
 
 		const user = {
 			email,
-			username,
+			userName,
 			password: hash,
+			DOB:"",
+			bio:"",
+			profilePic:"",
+			role: "Learner",
+			coursesEnrolled:[],
+			courseAuthored: [],
+			firstName:firstName,
+			lastName:lastName,
+			phoneNumber:""
 		};
 		const insertInfo = await userCollection.insertOne(user);
 		if (insertInfo.insertedCount === 0)

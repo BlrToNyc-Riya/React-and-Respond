@@ -1,10 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const constructorMethod = require('./routeConstructor');
+// const constructorMethod = require('./routeConstructor');
+const configRoutes = require('./routes');
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:4000/' }));
+app.use(cors({ origin: '*' }));
 
 app.use('/', (req, res, next) => {
 	console.log(
@@ -20,7 +21,8 @@ app.use('/', (req, res, next) => {
 	req.url = req.url.trim();
 	next();
 });
-constructorMethod(app);
+// constructorMethod(app);
+configRoutes(app);
 
 app.listen(4000, () => {
 	console.log('Server is running on port 4000');
