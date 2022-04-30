@@ -10,39 +10,102 @@ function LoginTutor() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const provider = new firebase.auth.GoogleAuthProvider();
 
+  const validateEmail = (email: string) => {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  };
   const signIn = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        navigate("/");
-      })
-      .catch((error) => alert(error));
+    let email_err = document.getElementById("email__err");
+    let password_err = document.getElementById("password__err");
+    let password_err2 = document.getElementById("password__err2");
+    let validEmail = true;
+    let validPassword = true;
+    if (email !== undefined && email_err !== null) {
+      if (email === "") {
+        email_err.innerText = "Email cannot be null!";
+        email_err.style.display = "flex";
+        validEmail = false;
+      } else if (!validateEmail(email)) {
+        email_err.innerText = "Email is of incorrect format!";
+        email_err.style.display = "flex";
+        validEmail = false;
+      } else {
+        email_err.style.display = "none";
+        validEmail = true;
+      }
+    }
+
+    if (password !== undefined && password_err !== null) {
+      if (password.length < 8) {
+        password_err.style.display = "flex";
+        validPassword = false;
+      } else {
+        password_err.style.display = "none";
+        validPassword = true;
+      }
+    }
+    if (password_err2 !== null) {
+      password_err2.style.display = "none";
+    }
+    if (validEmail && validPassword) {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(() => {
+          navigate("/");
+        })
+        .catch((error) => {
+          if (password_err2 !== null) {
+            password_err2.style.display = "flex";
+          }
+          setError(error.message);
+        });
+    }
   };
 
   const resetPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    let password_err2 = document.getElementById("password__err2");
+    if (password_err2 !== null) {
+      password_err2.style.display = "none";
+    }
     firebase
       .auth()
       .sendPasswordResetEmail(email)
       .then(() => {
         alert("Password Reset Link has been sent to the corresponding Email!");
       })
-      .catch((error) => alert(error));
+      .catch((error) => {
+        if (password_err2 !== null) {
+          password_err2.style.display = "flex";
+        }
+        setError(error.message);
+      });
   };
 
   const signInWithGoogle = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    let password_err2 = document.getElementById("password__err2");
+    if (password_err2 !== null) {
+      password_err2.style.display = "none";
+    }
     firebase
       .auth()
       .signInWithPopup(provider)
       .then((result) => {
         navigate("/");
       })
-      .catch((error) => alert(error));
+      .catch((error) => {
+        if (password_err2 !== null) {
+          password_err2.style.display = "flex";
+        }
+        setError(error.message);
+      });
   };
   return (
     <div className="flex flex-col bg-yellow-300 min-h-screen">
@@ -53,6 +116,7 @@ function LoginTutor() {
               Tutor Sign In
             </p>
             <div className="flex-col justify-center ml-20 mr-20 mb-16">
+              <div id="email__err" className="text-red-600 hidden"></div>
               <div className="flex justify-center rounded-md border-2 border-black mb-10">
                 <div className="flex justify-center items-center w-10 border-r-2 border-black bg-yellow-500">
                   <FontAwesomeIcon icon={faUserAlt} size={"1x"} />
@@ -64,6 +128,9 @@ function LoginTutor() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+              </div>
+              <div id="password__err" className="text-red-600 hidden">
+                Password must be atleast 6 characters!
               </div>
               <div className="flex justify-center rounded-md border-black border-2">
                 <div className="flex justify-center items-center w-10 border-r-2 border-black bg-yellow-500">
@@ -77,6 +144,12 @@ function LoginTutor() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+            </div>
+            <div
+              id="password__err2"
+              className="text-red-600 hidden justify-center"
+            >
+              <p>{error}</p>
             </div>
             <div className="flex justify-center mb-10">
               <button

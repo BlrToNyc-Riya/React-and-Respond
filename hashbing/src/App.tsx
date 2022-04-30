@@ -1,26 +1,54 @@
 import { useState, useEffect } from 'react'
+// import "./App.css";
+import axios, { AxiosResponse } from 'axios'
 import Login from './Components/Login'
 import LoginTutor from './Components/LoginTutor'
 import Signup from './Components/Signup'
 import './App.css'
 import Courses from './Components/Courses'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import CourseDetails from './Components/CourseDetails'
+import Enrolled from './Components/Enrolled'
 import NewCourseContainer from './courseCreation/NewCourseContainer'
 import NewCourseWizard from './courseCreation/NewCourseWizard'
+import Header from './Components/Header'
+import Users from './Components/Users'
+import Authored from './Components/Authored'
 
 function App () {
+  const [count, setCount] = useState(0)
+  const [data, setData] = useState({})
+
   return (
     <BrowserRouter>
       <div className='App'>
         <Routes>
-          <Route path='/' element={<NewCourseContainer />}></Route>
-          <Route path='/studentlogin' element={<Login />}></Route>
+          <Route path='/login' element={<Login />}></Route>
           <Route path='/tutorlogin' element={<LoginTutor />}></Route>
           <Route path='/signup' element={<Signup />}></Route>
-          <Route path='/courses/new' element={<NewCourseContainer />}></Route>
-          <Route path='/course/new/:id' element={<NewCourseWizard />}></Route>
-          <Route path='/course' element={<Courses />}></Route>
         </Routes>
+        <div className='flex min-h-screen min-w-screen bg-sky-400'>
+          <div className='flex bg-white m-20 w-screen rounded-2xl'>
+            <div className='flex flex-col w-full h-full rounded-2xl'>
+              <Header />
+              <Routes>
+                <Route path='/' element={<Courses />}></Route>
+                <Route path='/courses/:id' element={<CourseDetails />}></Route>
+                <Route path='/enrolled' element={<Enrolled />}></Route>
+                <Route path='/authored' element={<Authored />}></Route>
+                <Route path='/users' element={<Users />}></Route>
+                <Route
+                  path='/courses/new'
+                  element={<NewCourseContainer />}
+                ></Route>
+                <Route
+                  path='/course/new/:id'
+                  element={<NewCourseWizard />}
+                ></Route>
+              </Routes>
+            </div>
+          </div>
+        </div>
       </div>
     </BrowserRouter>
   )
