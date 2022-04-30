@@ -139,4 +139,14 @@ exports.handleUserInfo = userInfo => {
 		return pre;
 	}, {});
 };
+
+exports.objectIdToString = id => {
+	if (Array.isArray(id)) {
+		return id.map(item => {
+			item._id = item?._id.toString();
+			return item;
+		});
+	}
+	return id.toString();
+}
 exports.saltRounds = 12;

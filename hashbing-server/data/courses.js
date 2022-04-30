@@ -2,6 +2,8 @@ const { ObjectID } = require('bson');
 const mongoCollections = require('../config/mongoCollection');
 const courses = mongoCollections.courses;
 const userData = require("./users")
+const { objectIdToString } = require('../utils/utils');
+const  users  = mongoCollections.users;
 module.exports = {
     async createCourse(title,body,author,topicsTagged){
         // errorCheckingCourse(title,body,author);
@@ -22,9 +24,14 @@ module.exports = {
 
         const newCourseInfo = await courseCollection.insertOne(course);
 	    if (newCourseInfo.insertedCount === 0) throw 'Insert failed!';
-        console.log(newCourseInfo);
+        console.log(newCourseInfo.insertedId);
+        user.courseAuthored.push(objectIdToString(newCourseInfo.insertedId));   
+        const userCollection = await users();
+	    const updateInfo = await userCollection.updateOne({ _id: user._id }, { $set: user });
+        if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw 'Update failed';
+        console.log(user);
 	    return "Insertion successful";
-	    // user.courseAuthored.push(postId);
+	  
     },
      async getCourseById(id){
          if(!id || typeof id != 'string')

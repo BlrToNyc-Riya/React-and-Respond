@@ -2,6 +2,7 @@ const express = require('express');
 const { ObjectID } = require('mongodb');
 const router = express.Router();
 const courses = require('../data/courses');
+const users = require('../data/users')
 const { isValidObjectId } = require('../utils/utils');
 
 router.get('/test', async (req, res) => {
@@ -18,6 +19,8 @@ router.post('/newcourse', async (req, res) => {
 			// return res.sendStatus(200).json({ data: 1 });
 			const data = await courses.createCourse(title,body,author,topicsTagged);
 			console.log('here after', data);
+            if(!data)
+                throw "Error in creating the new course";
 			return res.status(200).json({ data: data });
 
 		}

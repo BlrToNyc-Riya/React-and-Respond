@@ -48,14 +48,14 @@ module.exports = {
 		return { userInserted: true, user: user };
 	},
 
-	async loginUser(userName, password) {
-		const usersCollection = await users();
-		const user = await usersCollection.findOne({ userName: userName });
-		if (!user) throw 'User not found';
-		// const isPasswordValid = await bcrypt.compare(password, user.password);
-		if (!isPasswordValid) throw 'Invalid password';
-		return user;
-	},
+	// async loginUser(userName, password) {
+	// 	const usersCollection = await users();
+	// 	const user = await usersCollection.findOne({ userName: userName });
+	// 	if (!user) throw 'User not found';
+	// 	// const isPasswordValid = await bcrypt.compare(password, user.password);
+	// 	if (!isPasswordValid) throw 'Invalid password';
+	// 	return user;
+	// },
 
 	async getUserById(id) {
 		const usersCollection = await users();
@@ -66,9 +66,9 @@ module.exports = {
 	async authenticateUser(email, password) {
 		if (!email || !password) throw 'You must supply both username and password';
 		if (typeof email !== 'string') throw 'Email is invalid';
-		// else if (email.trim() === '') throw 'Email is empty spaces';
-		// if (typeof password !== 'string') throw 'Password is invalid';
-		// else if (password.trim() === '') throw 'Password is empty spaces';
+		else if (email.trim() === '') throw 'Email is empty spaces';
+		if (typeof password !== 'string') throw 'Password is invalid';
+		else if (password.trim() === '') throw 'Password is empty spaces';
 	
 		// if (email.search(/[a-z][a-z0-9]+@stevens\.edu/i) === -1) throw 'You must supply valid username or password';
 		// if (password.length < 8 || password.length > 15) throw 'Password must be between 8 and 15 characters';

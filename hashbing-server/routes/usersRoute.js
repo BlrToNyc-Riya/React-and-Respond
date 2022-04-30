@@ -2,7 +2,7 @@ const express = require('express');
 const { ObjectID } = require('mongodb');
 const router = express.Router();
 const users = require('../data/users');
-const { handleUserInfo } = require('../utils/utils');
+const { handleUserInfo, objectIdToString } = require('../utils/utils');
 
 router.get('/test', async (req, res) => {
 	return res.json({ test: 'test' });
@@ -46,9 +46,10 @@ router.post('/signin',async(req,res)=>{
 
 		const { authenticated, user } = await users.authenticateUser(email, password);
 		if (authenticated) {
-			req.session.userid = this.toString(user._id);
+			req.session.userid = objectIdToString(user._id);
 
 			const userInfo = handleUserInfo(user);
+			console.log(req.session);
 			res.json(userInfo);
 		}
 	} catch (error) {
