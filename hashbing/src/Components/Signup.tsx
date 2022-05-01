@@ -20,7 +20,8 @@ import firebase from "firebase";
 
 function Signup() {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
@@ -28,10 +29,12 @@ function Signup() {
   const [role, setRole] = useState("student");
   const provider = new firebase.auth.GoogleAuthProvider();
 
-  const register = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const register = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("Entered inside");
     let email_err = document.getElementById("email__err");
-    let name_err = document.getElementById("name__err");
+    let first_name_err = document.getElementById("first__name__err");
+    let last_name_err = document.getElementById("last__name__err");
     let password_err = document.getElementById("password__err");
     let password_err1 = document.getElementById("password__err1");
     let password_err2 = document.getElementById("password__err2");
@@ -79,12 +82,22 @@ function Signup() {
       }
     }
 
-    if (name_err !== null) {
-      if (name === "") {
-        name_err.style.display = "flex";
+    if (first_name_err !== null) {
+      if (firstName === "") {
+        first_name_err.style.display = "flex";
         validCredentials = false;
       } else {
-        name_err.style.display = "none";
+        first_name_err.style.display = "none";
+        validCredentials = true;
+      }
+    }
+
+    if (last_name_err !== null) {
+      if (lastName === "") {
+        last_name_err.style.display = "flex";
+        validCredentials = false;
+      } else {
+        last_name_err.style.display = "none";
         validCredentials = true;
       }
     }
@@ -101,12 +114,18 @@ function Signup() {
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then((auth) => {
-          auth.user?.updateProfile({ displayName: name });
-          console.log(name);
+          auth.user?.updateProfile({ displayName: firstName });
+          console.log(firstName);
           if (auth) {
-            if (role === "student") navigate("/studentlogin");
-            if (role === "tutor") navigate("/tutorlogin");
-            if (role === "both") navigate("/studentlogin");
+            const url = "http://localhost:4000/users/signup";
+            const requestOptions = {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ firstName, lastName, email, password }),
+            };
+            fetch(url, requestOptions)
+              .then((response) => navigate("/login"))
+              .catch((error) => setError(error.message));
           }
         })
         .catch((error) => {
@@ -153,128 +172,155 @@ function Signup() {
             <p className="flex font-bold justify-center text-2xl pb-10 pt-5 text-green-500">
               Sign Up
             </p>
-            <div className="flex-col justify-center ml-20 mr-20 mb-6">
-              <div id="name__err" className="text-red-600 hidden">
-                Name Field cannot be null!
-              </div>
-              <div className="flex justify-center rounded-md border-2 mb-8">
-                <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
-                  <FontAwesomeIcon
-                    icon={faUserAlt}
-                    size={"1x"}
-                    color={"grey"}
-                  />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Name"
-                  className="w-full bg-green-200 placeholder-black"
-                  id="register_name"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div id="email__err" className="text-red-600 hidden"></div>
-              <div className="flex justify-center rounded-md border-2 mb-8">
-                <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
-                  <FontAwesomeIcon
-                    icon={faEnvelope}
-                    size={"1x"}
-                    color={"grey"}
-                  />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Email ID"
-                  className="w-full bg-green-200 placeholder-black"
-                  value={email}
-                  id="register_email"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div id="password__err" className="text-red-600 hidden">
-                Password must be atleast 6 characters!
-              </div>
-              <div className="flex justify-center rounded-md border-2 mb-8">
-                <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
-                  <FontAwesomeIcon icon={faLock} size={"1x"} color={"grey"} />
-                </div>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="w-full bg-green-200 placeholder-black"
-                  id="register_password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-
-              <div className="flex justify-center rounded-md border-2 mb-8">
-                <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
-                  <FontAwesomeIcon
-                    icon={faLockOpen}
-                    size={"1x"}
-                    color={"grey"}
-                  />
-                </div>
-                <input
-                  type="password"
-                  placeholder="Re-Enter Password"
-                  className="w-full bg-green-200 placeholder-black"
-                  value={repassword}
-                  id="register_re_password"
-                  onChange={(e) => setRepassword(e.target.value)}
-                />
-              </div>
-              <div id="password__err1" className="text-red-600 hidden">
-                Passwords do not match!
-              </div>
-              <FormControl>
-                <FormLabel id="demo-radio-buttons-group-label">
-                  <span className="text-green-500">Role</span>
-                </FormLabel>
-                <RadioGroup
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="student"
-                  name="radio-buttons-group"
-                  row={true}
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                >
-                  <FormControlLabel
-                    value="student"
-                    control={<Radio color="success" />}
-                    label="Student"
-                  />
-                  <FormControlLabel
-                    value="tutor"
-                    control={<Radio color="success" />}
-                    label="Tutor"
-                  />
-                  <FormControlLabel
-                    value="both"
-                    control={<Radio color="success" />}
-                    label="Both"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </div>
-            <div
-              id="password__err2"
-              className="text-red-600 hidden justify-center"
+            <form
+              action="http://localhost:4000/users/signup"
+              id="myForm"
+              method="post"
+              onSubmit={register}
             >
-              <p>{error}</p>
-            </div>
-            <div className="flex justify-center mb-6">
-              <button
-                type="submit"
-                className="w-2/5 rounded-full h-10 text-lg shadow-slate-400 font-bold shadow-2xl bg-green-500 cursor-pointer"
-                onClick={register}
+              <div className="flex-col justify-center ml-20 mr-20 mb-6">
+                <div id="first__name__err" className="text-red-600 hidden">
+                  First Name Field cannot be null!
+                </div>
+                <div className="flex justify-center rounded-md border-2 mb-8">
+                  <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
+                    <FontAwesomeIcon
+                      icon={faUserAlt}
+                      size={"1x"}
+                      color={"grey"}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="First Name"
+                    className="w-full bg-green-200 placeholder-black"
+                    id="register_first_name"
+                    required
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </div>
+                <div id="last__name__err" className="text-red-600 hidden">
+                  Last Name Field cannot be null!
+                </div>
+                <div className="flex justify-center rounded-md border-2 mb-8">
+                  <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
+                    <FontAwesomeIcon
+                      icon={faUserAlt}
+                      size={"1x"}
+                      color={"grey"}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Last Name"
+                    className="w-full bg-green-200 placeholder-black"
+                    id="register_last_name"
+                    required
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </div>
+                <div id="email__err" className="text-red-600 hidden"></div>
+                <div className="flex justify-center rounded-md border-2 mb-8">
+                  <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
+                    <FontAwesomeIcon
+                      icon={faEnvelope}
+                      size={"1x"}
+                      color={"grey"}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Email ID"
+                    className="w-full bg-green-200 placeholder-black"
+                    value={email}
+                    id="register_email"
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div id="password__err" className="text-red-600 hidden">
+                  Password must be atleast 6 characters!
+                </div>
+                <div className="flex justify-center rounded-md border-2 mb-8">
+                  <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
+                    <FontAwesomeIcon icon={faLock} size={"1x"} color={"grey"} />
+                  </div>
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    className="w-full bg-green-200 placeholder-black"
+                    id="register_password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex justify-center rounded-md border-2 mb-8">
+                  <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
+                    <FontAwesomeIcon
+                      icon={faLockOpen}
+                      size={"1x"}
+                      color={"grey"}
+                    />
+                  </div>
+                  <input
+                    type="password"
+                    placeholder="Re-Enter Password"
+                    className="w-full bg-green-200 placeholder-black"
+                    value={repassword}
+                    id="register_re_password"
+                    onChange={(e) => setRepassword(e.target.value)}
+                  />
+                </div>
+                <div id="password__err1" className="text-red-600 hidden">
+                  Passwords do not match!
+                </div>
+                <FormControl>
+                  <FormLabel id="demo-radio-buttons-group-label">
+                    <span className="text-green-500">Role</span>
+                  </FormLabel>
+                  <RadioGroup
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    defaultValue="student"
+                    name="radio-buttons-group"
+                    row={true}
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  >
+                    <FormControlLabel
+                      value="student"
+                      control={<Radio color="success" />}
+                      label="Student"
+                    />
+                    <FormControlLabel
+                      value="tutor"
+                      control={<Radio color="success" />}
+                      label="Tutor"
+                    />
+                    <FormControlLabel
+                      value="both"
+                      control={<Radio color="success" />}
+                      label="Both"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </div>
+              <div
+                id="password__err2"
+                className="text-red-600 hidden justify-center"
               >
-                Sign Up
-              </button>
-            </div>
+                <p>{error}</p>
+              </div>
+              <div className="flex justify-center mb-6">
+                <button
+                  type="submit"
+                  className="w-2/5 rounded-full h-10 text-lg shadow-slate-400 font-bold shadow-2xl bg-green-500 cursor-pointer"
+                >
+                  Sign Up
+                </button>
+              </div>
+            </form>
             <div className="flex justify-center pb-5">
               <div className="flex-col">
                 <p className="flex justify-center text-sm font-semibold">OR</p>

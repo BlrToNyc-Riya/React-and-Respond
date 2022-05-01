@@ -26,27 +26,14 @@ function App() {
           <Route path="/login" element={<Login />}></Route>
           <Route path="/tutorlogin" element={<LoginTutor />}></Route>
           <Route path="/signup" element={<Signup />}></Route>
+          <Route path="/" element={<Courses />}></Route>
+          <Route path="/courses/:id" element={<CourseDetails />}></Route>
+          <Route path="/enrolled" element={<Enrolled />}></Route>
+          <Route path="/authored" element={<Authored />}></Route>
+          <Route path="/users" element={<Users />}></Route>
+          <Route path="/courses/new" element={<NewCourseContainer />}></Route>
+          <Route path="/course/new/:id" element={<NewCourseWizard />}></Route>
         </Routes>
-        <div className="flex bg-white w-screen rounded-2xl">
-          <div className="flex flex-col w-full h-full rounded-2xl">
-            <Header />
-            <Routes>
-              <Route path="/" element={<Courses />}></Route>
-              <Route path="/courses/:id" element={<CourseDetails />}></Route>
-              <Route path="/enrolled" element={<Enrolled />}></Route>
-              <Route path="/authored" element={<Authored />}></Route>
-              <Route path="/users" element={<Users />}></Route>
-              <Route
-                path="/courses/new"
-                element={<NewCourseContainer />}
-              ></Route>
-              <Route
-                path="/course/new/:id"
-                element={<NewCourseWizard />}
-              ></Route>
-            </Routes>
-          </div>
-        </div>
       </div>
     </BrowserRouter>
   );
