@@ -2,7 +2,7 @@ import { faLock, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../Images/flame.gif";
 import logo1 from "../Images/google-logo.png";
-import React, { useState } from "react";
+import React, { EventHandler, useReducer, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import firebase from "firebase";
 import { auth } from "../firebase";
@@ -20,11 +20,13 @@ const Login: React.FunctionComponent = () => {
       /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
   };
-  const signIn = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const signIn = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let email_err = document.getElementById("email__err");
     let password_err = document.getElementById("password__err");
     let password_err2 = document.getElementById("password__err2");
+    let form = document.forms[0];
+    console.log(email);
     let validEmail = true;
     let validPassword = true;
     if (email !== undefined && email_err !== null) {
@@ -58,7 +60,15 @@ const Login: React.FunctionComponent = () => {
       auth
         .signInWithEmailAndPassword(email, password)
         .then((auth) => {
-          navigate("/courses");
+          const url = "http://localhost:4000/users/signin";
+          const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          };
+          fetch(url, requestOptions)
+            .then((response) => navigate("/"))
+            .catch((error) => setError(error.message));
         })
         .catch((error) => {
           if (password_err2 !== null) {
@@ -66,6 +76,12 @@ const Login: React.FunctionComponent = () => {
           }
           setError("Email / Password is incorrect!");
         });
+      // var delayInMilliseconds = 2000;
+      // setTimeout(function () {}, delayInMilliseconds);
+
+      console.log("Entered");
+
+      console.log("Entered first");
     }
   };
 
@@ -106,6 +122,21 @@ const Login: React.FunctionComponent = () => {
         setError(error.message);
       });
   };
+
+  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+
+  //   const url = "http://localhost:4000/users/signin";
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ email, password }),
+  //   };
+  //   fetch(url, requestOptions)
+  //     .then((response) => console.log("Submitted successfully"))
+  //     .catch((error) => console.log("Form submit error", error));
+  // };
+
   return (
     <div className="flex flex-col bg-sky-300 min-h-screen">
       <div className="flex justify-between bg-white h-5/6 mt-20 mb-20 ml-72 mr-72 opacity-80 shadow-2xl shadow-slate-900 rounded-3xl">
@@ -117,55 +148,61 @@ const Login: React.FunctionComponent = () => {
             <p className="flex font-bold justify-center text-2xl pb-16 text-blue-400">
               Sign In
             </p>
-            <div className="flex-col justify-center ml-20 mr-20 mb-10">
-              <div id="email__err" className="text-red-600 hidden"></div>
-              <div className="flex justify-center rounded-md border-2 mb-10">
-                <div className="flex justify-center items-center w-10 border-r-2 bg-blue-200">
-                  <FontAwesomeIcon
-                    icon={faUserAlt}
-                    size={"1x"}
-                    color={"grey"}
+            <form
+              action="http://localhost:4000/users/signin"
+              id="myForm"
+              method="post"
+              onSubmit={signIn}
+            >
+              <div className="flex-col justify-center ml-20 mr-20 mb-10">
+                <div id="email__err" className="text-red-600 hidden"></div>
+                <div className="flex justify-center rounded-md border-2 mb-10">
+                  <div className="flex justify-center items-center w-10 border-r-2 bg-blue-200">
+                    <FontAwesomeIcon
+                      icon={faUserAlt}
+                      size={"1x"}
+                      color={"grey"}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    value={email}
+                    placeholder="Email ID"
+                    className="w-full"
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                <input
-                  type="text"
-                  value={email}
-                  placeholder="Email ID"
-                  className="w-full"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div id="password__err" className="text-red-600 hidden">
-                Password must be atleast 6 characters!
-              </div>
-              <div className="flex justify-center rounded-md border-2">
-                <div className="flex justify-center items-center w-10 border-r-2 bg-blue-200">
-                  <FontAwesomeIcon icon={faLock} size={"1x"} color={"grey"} />
+                <div id="password__err" className="text-red-600 hidden">
+                  Password must be atleast 6 characters!
                 </div>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="w-full"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <div className="flex justify-center rounded-md border-2">
+                  <div className="flex justify-center items-center w-10 border-r-2 bg-blue-200">
+                    <FontAwesomeIcon icon={faLock} size={"1x"} color={"grey"} />
+                  </div>
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    className="w-full"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
               </div>
-            </div>
-            <div
-              id="password__err2"
-              className="text-red-600 hidden justify-center"
-            >
-              <p>{error}</p>
-            </div>
-            <div className="flex justify-center mb-4">
-              <button
-                type="submit"
-                onClick={signIn}
-                className="bg-blue-200 w-2/5 rounded-full h-10 text-lg text-gray-500 shadow-slate-400 font-bold shadow-2xl cursor-pointer"
+              <div
+                id="password__err2"
+                className="text-red-600 hidden justify-center"
               >
-                Log In
-              </button>
-            </div>
+                <p>{error}</p>
+              </div>
+              <div className="flex justify-center mb-4">
+                <button
+                  type="submit"
+                  className="bg-blue-200 w-2/5 rounded-full h-10 text-lg text-gray-500 shadow-slate-400 font-bold shadow-2xl cursor-pointer"
+                >
+                  Log In
+                </button>
+              </div>
+            </form>
             <div className="flex justify-center">
               <div className="flex-col">
                 <p className="flex justify-center text-sm font-semibold">OR</p>
