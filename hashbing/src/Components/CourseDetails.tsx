@@ -126,10 +126,10 @@ function CourseDetails() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col basis-1/5 rounded-br-2xl h-full">
+          <div className="flex flex-col basis-1/5 rounded-br-2xl h-full relative">
             <div className="flex-col h-10"></div>
-            <div className="flex shadow-2xl cursor-pointer h-96 sticky top-10">
-              <div className="flex-col h-full bg-white shadow-2xl">
+            <div className="flex cursor-pointer h-96 fixed">
+              <div className="flex-col h-full mr-20 mt-10 bg-white shadow-2xl">
                 {/* Img */}
                 <div className="flex justify-center">
                   <img src={logo} alt="" className="h-40 w-full object-fill" />

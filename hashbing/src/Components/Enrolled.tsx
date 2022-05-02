@@ -50,7 +50,11 @@ function Enrolled() {
                       </button>
                     </div>
                     <div className="flex justify-center">
-                      <button className="text-blue-400 p-3">Enroll</button>
+                      <button
+                        className="text-blue-400 p-3"
+                      >
+                        Enroll
+                      </button>
                     </div>
                   </div>
                 </div>
