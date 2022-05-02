@@ -67,7 +67,17 @@ const Login: React.FunctionComponent = () => {
             body: JSON.stringify({ email, password }),
           };
           fetch(url, requestOptions)
-            .then((response) => navigate("/"))
+            .then((response) => {
+              if (response.ok == true) navigate("/");
+              else {
+                if (password_err2 !== null) {
+                  password_err2.style.display = "flex";
+                  response.text().then((text) => {
+                    setError(text);
+                  });
+                }
+              }
+            })
             .catch((error) => setError(error.message));
         })
         .catch((error) => {

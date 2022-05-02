@@ -124,7 +124,17 @@ function Signup() {
               body: JSON.stringify({ firstName, lastName, email, password }),
             };
             fetch(url, requestOptions)
-              .then((response) => navigate("/login"))
+              .then((response) => {
+                if (response.ok == true) navigate("/");
+                else {
+                  if (password_err2 !== null) {
+                    password_err2.style.display = "flex";
+                    response.text().then((text) => {
+                      setError(text);
+                    });
+                  }
+                }
+              })
               .catch((error) => setError(error.message));
           }
         })
@@ -236,6 +246,7 @@ function Signup() {
                     className="w-full bg-green-200 placeholder-black"
                     value={email}
                     id="register_email"
+                    required
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
@@ -252,6 +263,7 @@ function Signup() {
                     className="w-full bg-green-200 placeholder-black"
                     id="register_password"
                     value={password}
+                    required
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
@@ -269,6 +281,7 @@ function Signup() {
                     placeholder="Re-Enter Password"
                     className="w-full bg-green-200 placeholder-black"
                     value={repassword}
+                    required
                     id="register_re_password"
                     onChange={(e) => setRepassword(e.target.value)}
                   />
