@@ -135,7 +135,12 @@ function Signup() {
                   }
                 }
               })
-              .catch((error) => setError(error.message));
+              .catch((error) => {
+                setError(error.message);
+                if (password_err2 !== null) {
+                  password_err2.style.display = "flex";
+                }
+              });
           }
         })
         .catch((error) => {
