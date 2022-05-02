@@ -14,6 +14,7 @@ import Users from "./Components/Users";
 import Authored from "./Components/Authored";
 import NewCourseContainer from "./courseCreation/NewCourseContainer";
 import NewCourseWizard from "./courseCreation/NewCourseWizard";
+import CourseForm from "./Components/CourseForm";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -33,6 +34,7 @@ function App() {
           <Route path="/users" element={<Users />}></Route>
           <Route path="/courses/new" element={<NewCourseContainer />}></Route>
           <Route path="/course/new/:id" element={<NewCourseWizard />}></Route>
+          <Route path="/courses/new/:id/add" element={<CourseForm />}></Route>
         </Routes>
       </div>
     </BrowserRouter>
