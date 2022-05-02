@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "./Header";
 import logo from "../Images/course1.png";
 
 function Courses() {
+  const [enrollStatus, setEnrollStatus] = useState(false);
+  const [id, setId] = useState("");
+  
   const hoverChange = () => {
     console.log("entered");
     // return <CourseHoverDetails />;
@@ -13,6 +16,21 @@ function Courses() {
     );
   };
   const details = { section: "enrolled" };
+
+  const changeEnrollStatus = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (enrollStatus === false) setEnrollStatus(true);
+    else setEnrollStatus(false);
+    const url = "http://localhost:4000/courses/changeEnrollment";
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, enrollStatus }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => console.log("Status Changed Successfully"))
+      .catch((error) => console.log(error.message));
+  };
   return (
     <div className="flex bg-white w-screen rounded-2xl">
       <div className="flex flex-col w-full h-full rounded-2xl">
@@ -63,7 +81,21 @@ function Courses() {
                       </button>
                     </div>
                     <div className="flex justify-center">
-                      <button className="text-blue-400 p-3">Enroll</button>
+                      {enrollStatus ? (
+                        <button
+                          className="text-blue-400 p-3"
+                          onClick={changeEnrollStatus}
+                        >
+                          Enrolled
+                        </button>
+                      ) : (
+                        <button
+                          className="text-blue-400 p-3"
+                          onClick={changeEnrollStatus}
+                        >
+                          Enroll
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
