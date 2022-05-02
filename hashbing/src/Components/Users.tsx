@@ -13,7 +13,7 @@ function Users() {
   return (
     <div className="flex bg-white w-screen rounded-2xl">
       <div className="flex flex-col w-full h-full rounded-2xl">
-        <Header />
+        <Header selection="users" />
         <div className="flex flex-col bg-gray-200 w-full h-full rounded-b-2xl shadow-2xl">
           <div className="flex w-full justify-center">
             <div className="flex flex-col">
