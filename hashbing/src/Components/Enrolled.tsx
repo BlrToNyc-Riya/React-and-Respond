@@ -6,9 +6,9 @@ function Enrolled() {
   return (
     <div className="flex bg-white w-screen rounded-2xl">
       <div className="flex flex-col w-full h-full rounded-2xl">
-        <Header />
+        <Header selection="enrolled" />
         <div className="flex bg-gray-200 w-full h-full rounded-b-2xl shadow-2xl">
-          <div className="grid w-full h-full md:grid-cols-3 gap-14 p-10 grid-cols-1">
+          <div className="grid w-full h-full md:grid-cols-3 gap-20 p-20 grid-cols-1">
             <div className="flex bg-white shadow-2xl cursor-pointer">
               <div className="flex-col">
                 {/* Img */}
@@ -50,11 +50,7 @@ function Enrolled() {
                       </button>
                     </div>
                     <div className="flex justify-center">
-                      <button
-                        className="text-blue-400 p-3"
-                      >
-                        Enroll
-                      </button>
+                      <button className="text-blue-400 p-3">Enroll</button>
                     </div>
                   </div>
                 </div>
