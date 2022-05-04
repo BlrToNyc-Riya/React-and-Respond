@@ -55,7 +55,7 @@ function Users() {
             <p className="font-bold text-xl text-center underline mb-2">
               Enrolled Courses :
             </p>
-            <div className="grid w-full h-full md:grid-cols-3 gap-14 p-10 grid-cols-1">
+            <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
               <div className="flex cursor-pointer h-80 top-10">
                 <div className="flex-col h-full bg-white shadow-2xl">
                   {/* Img */}
@@ -100,7 +100,7 @@ function Users() {
             <p className="font-bold text-xl text-center underline mb-2">
               Courses Authored:
             </p>
-            <div className="grid w-full h-full md:grid-cols-3 gap-14 p-10 grid-cols-1">
+            <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
               <div className="flex cursor-pointer h-80 top-10">
                 <div className="flex-col h-full bg-white shadow-2xl">
                   {/* Img */}

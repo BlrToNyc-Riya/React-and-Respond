@@ -51,9 +51,9 @@ function CourseDetails() {
               </div>
             </div>
             <div className="flex-col w-full mb-20 mt-10 h-full">
-              <div className="flex align-middle items-center m-10 h-full bg-white shadow-2xl">
-                <div className="flex-col">
-                  <p className="text-2xl font-sans font-bold text-left pl-10">
+              <div className="flex rounded-xl align-middle items-center m-10 h-full bg-white shadow-2xl">
+                <div className="flex-col p-10">
+                  <p className="text-3xl font-sans font-bold text-left pl-10 pb-10">
                     What You will Learn
                   </p>
                   <br />
