@@ -2,6 +2,7 @@ import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 function Header(props: { selection: string }) {
   return (
