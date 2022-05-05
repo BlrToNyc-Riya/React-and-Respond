@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import Header from '../Components/Header'
 import { ClipboardCheckIcon } from '@heroicons/react/solid'
 import Button from '../Components/Button'
 import NewCourseInit from './NewCourseInit'
@@ -31,7 +30,6 @@ function NewCourseContainer ({}: Props): React.ReactElement {
 
   return (
     <div>
-      <Header />
       {renderLoader()}
       {renderCourseCreator()}
     </div>

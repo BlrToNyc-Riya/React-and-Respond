@@ -1,8 +1,15 @@
 import React from 'react'
 import { Transforms, Element as SlateElement } from 'slate'
 import { useSlateStatic, ReactEditor } from 'slate-react'
+import { CustomElement, CustomText, EditorType } from './TextEditor.types'
 
-const VideoElement = ({ attributes, children, element }) => {
+const VideoElement = ({
+  attributes,
+  children,
+  element
+}: {
+  element: CustomElement
+}) => {
   const editor = useSlateStatic()
   const { url } = element
   return (

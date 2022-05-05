@@ -1,11 +1,35 @@
-import React, { useMemo } from 'react'
-import { createEditor, Descendant, BaseEditor, Editor } from 'slate'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
+import {
+  createEditor,
+  Descendant,
+  BaseEditor,
+  Editor,
+  Transforms,
+  BaseSelection
+} from 'slate'
 import { Slate, Editable, ReactEditor, withReact, useSlate } from 'slate-react'
 import { HistoryEditor, withHistory } from 'slate-history'
-import { CustomElement, CustomText, EditorType } from './TextEditor.types'
+import {
+  CustomElement,
+  CustomText,
+  EditorType,
+  InlineText
+} from './TextEditor.types'
 import Icons from '../utilComponents/Icons'
 import Button from '../Components/Button'
 import Buttons from '../utilComponents/Buttons'
+import VideoElement from './VideoElement'
+import { Toolbar } from './ToolBar'
+import { useEditorConfig } from './TextEditor.hooks'
+import {
+  ExampleDocument,
+  getActiveStyles,
+  isLinkNodeSelection,
+  toggleStyle
+} from './TextEditor.utils'
+import MarkButton from './MarkButton'
+import LinkPopOver from './LinkPopOver'
+import useSelection from './Selection.hooks'
 
 type Props = {}
 
@@ -13,147 +37,107 @@ declare module 'slate' {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor & HistoryEditor
     Element: CustomElement
-    Text: CustomText
+    Text: InlineText
   }
 }
 
 const initialValue: Descendant[] = [
   {
-    type: 'paragraph',
+    type: 'image',
+    url:
+      'https://cdn.vox-cdn.com/thumbor/Pkmq1nm3skO0-j693JTMd7RL0Zk=/0x0:2012x1341/1200x800/filters:focal(0x0:2012x1341)/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg',
+    caption: 'Puppy',
+    // empty text node as child for the Void element.
     children: [{ text: '' }]
   }
-  // {
-  //   type: 'iframe',
-  //   url: '',
-  //   children: [{ text: '' }]
-  // }
 ]
 
+const withEmbeds = (editor: BaseEditor & ReactEditor & HistoryEditor) => {
+  const { isVoid } = editor
+
+  editor.isVoid = element =>
+    element.type === 'iframe' || element.type === 'image'
+      ? true
+      : isVoid(element)
+
+  editor.insertData = (data: DataTransfer) => {
+    const text = data.getData('text/plain')
+    if (text) {
+      editor.insertData(data)
+    }
+  }
+  return editor
+}
+
 const TextEditor = (props: Props) => {
-  const editor = useMemo(() => withHistory(withReact(createEditor())), [])
+  const editor = useMemo(() => withEmbeds(withReact(createEditor())), [])
+  const editorRef = useRef<HTMLDivElement>(null)
+  const [value, setValue] = useState(initialValue)
+  const { renderElement, renderLeaf, onKeyDown } = useEditorConfig(editor)
+  const [previousSelection, selection, setSelection] = useSelection(editor)
+
+  let selectionForLink = null
+  if (isLinkNodeSelection(editor, selection)) {
+    selectionForLink = selection
+  } else if (
+    selection == null &&
+    isLinkNodeSelection(editor, previousSelection)
+  ) {
+    selectionForLink = previousSelection
+  }
+  const ref = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current.focus()
+    }
+  }, [])
+
+  const onChangeHandler = useCallback(
+    (document: Descendant[]) => {
+      setValue(document)
+      setSelection(editor.selection)
+    },
+    [editor.selection, setSelection]
+  )
+
   return (
-    <Slate editor={editor} value={initialValue}>
-      <>
+    <Slate editor={editor} value={ExampleDocument} onChange={onChangeHandler}>
+      <Toolbar selection={selection}>
+        <MarkButton format='h1' icon='h1' />
+        <MarkButton format='h2' icon='h2' />
+        <MarkButton format='h3' icon='h3' />
+        <MarkButton format='h4' icon='h4' />
         <MarkButton format='bold' icon='bold' />
         <MarkButton format='italic' icon='italic' />
         <MarkButton format='underline' icon='underline' />
+        <MarkButton format='link' icon='link' />
         <MarkButton format='code' icon='code' />
-
-        {/* <BlockButton format="heading-one" icon="looks_one" />
-        <BlockButton format="heading-two" icon="looks_two" />
-        <BlockButton format="block-quote" icon="format_quote" />
-        <BlockButton format="numbered-list" icon="format_list_numbered" />
-        <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-        <BlockButton format="left" icon="format_align_left" />
-        <BlockButton format="center" icon="format_align_center" />
-        <BlockButton format="right" icon="format_align_right" />
-        <BlockButton format="justify" icon="format_align_justify" /> */}
-      </>
-      <Editable
-        // readOnly
-        placeholder='Enter some text...'
-        renderElement={({ element, attributes, children }) => {
-          console.log('element', element.type)
-          switch (element.type) {
-            case 'bold':
-              return <strong {...attributes}>{children}</strong>
-            case 'italic':
-              return <em {...attributes}>{children}</em>
-            case 'code':
-              console.log('here rendering code')
-              return (
-                <pre className='bg-slate-500' {...attributes}>
-                  {children}
-                </pre>
-              )
-            case 'iframe':
-              return (
-                <iframe
-                  frameBorder='0'
-                  width='100%'
-                  height='500px'
-                  src='https://replit.com/@ritza/demo-embed?embed=true'
-                ></iframe>
-              )
-            case 'link':
-              return (
-                <a href={element.url} {...attributes} className='bg-lime-50'>
-                  {children}
-                </a>
-              )
-            default:
-              return <div {...attributes}>{children}</div>
-          }
-        }}
-        renderLeaf={({ leaf, attributes, children }) => {
-          console.log('leaf', leaf)
-          if (leaf.bold) {
-            children = (
-              <span className='font-bold' {...attributes}>
-                {children}
-              </span>
-            )
-          }
-          if (leaf.italic) {
-            children = (
-              <span className='italic' {...attributes}>
-                {children}
-              </span>
-            )
-          }
-          if (leaf.code) {
-            console.log('here rendering code')
-            children = (
-              <pre>
-                <code className=' language-python' {...attributes}>
-                  {children}
-                </code>
-              </pre>
-            )
-            return children
-          }
-          if (leaf.underline) {
-            children = (
-              <span className='underline' {...attributes}>
-                {children}
-              </span>
-            )
-          }
-
-          return <span {...attributes}>{children}</span>
-        }}
-      />
+        <MarkButton format='iframe' icon='embed' />
+      </Toolbar>
+      <div className='editor' ref={editorRef}>
+        {selectionForLink != null ? (
+          <LinkPopOver
+            editorOffsets={
+              editorRef.current != null
+                ? {
+                    x: editorRef.current.getBoundingClientRect().x,
+                    y: editorRef.current.getBoundingClientRect().y
+                  }
+                : null
+            }
+            selectionForLink={selection}
+          />
+        ) : null}
+        <Editable
+          // readOnly
+          placeholder='Create your course'
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          onKeyDown={onKeyDown}
+        />
+      </div>
     </Slate>
-  )
-}
-
-const toggleMark = (editor: EditorType, format: string) => {
-  const isActive = isMarkActive(editor, format)
-
-  if (isActive) {
-    Editor.removeMark(editor, format)
-  } else {
-    Editor.addMark(editor, format, true)
-  }
-}
-
-const isMarkActive = (editor: EditorType, format: string) => {
-  const marks = Editor.marks(editor)
-  return marks ? marks[format] === true : false
-}
-
-const MarkButton = ({ format, icon }) => {
-  const editor = useSlate()
-  return (
-    <Buttons
-      active={isMarkActive(editor, format)}
-      onMouseDown={event => {
-        event.preventDefault()
-        toggleMark(editor, format)
-      }}
-    >
-      <Icons src={icon} />
-    </Buttons>
   )
 }
 
