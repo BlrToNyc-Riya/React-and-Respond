@@ -1,15 +1,79 @@
+import { FontawesomeObject } from "@fortawesome/fontawesome-svg-core";
 import {
   faEdit,
   faPencil,
   faPencilAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from "@fortawesome/react-fontawesome";
+import { IconProps } from "@mui/material";
+import axios from "axios";
+import React, {
+  FormEventHandler,
+  HTMLProps,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import logo from "../Images/course1.png";
 import Header from "./Header";
 
 function Users() {
+  const [images, setImages] = useState<File>();
+  const [profilePic, setProfilePic] = useState();
+  const fileInput = useRef<HTMLInputElement>(null);
+  const submitBtn = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    // if (images.length < 1) return;
+    // let newImgUrl: string[] = [];
+    // newImgUrl.push(URL.createObjectURL(images));
+    // setImageURLs(newImgUrl);
+
+    return () => {};
+  }, [images]);
+
+  useEffect(() => {
+    console.log("images: ", images);
+  });
+
+  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // console.log(e.target.value);
+    if (e.target.files != null) setImages(e.target.files[0]);
+    console.log(images);
+    setTimeout(() => {
+      submitBtn.current?.click();
+    }, 2000);
+  };
+
+  const uploadTrigger = () => {
+    fileInput.current?.click();
+  };
+
+  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    var formData = new FormData();
+    if (images != undefined) {
+      formData.append("myImage", images);
+    }
+    console.log(formData.get("myImage"));
+    const url = "http://localhost:4000/users/upload";
+    const config = {
+      headers: { "content-Type": "multipart/form-data" },
+    };
+    axios
+      .post(url, formData, config)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="flex bg-white w-screen rounded-2xl">
       <div className="flex flex-col w-full h-full rounded-2xl">
@@ -19,17 +83,37 @@ function Users() {
             <div className="flex flex-col">
               <div className="flex items-center">
                 <div className="bg-white mt-4 p-14 rounded-full">
-                  <FontAwesomeIcon
-                    icon={faUser}
-                    size={"5x"}
-                    color={"grey"}
-                    className="relative left-2"
-                  />
-                  <FontAwesomeIcon
-                    icon={faPencilAlt}
-                    className="relative top-16 left-6"
-                    color={"black"}
-                  />
+                  <form id="myForm" onSubmit={onFormSubmit}>
+                    {profilePic ? (
+                      <FontAwesomeIcon
+                        icon={faUser}
+                        size={"5x"}
+                        color={"grey"}
+                        className="relative left-2"
+                      />
+                    ) : (
+                      <img src={profilePic}></img>
+                    )}
+                    <FontAwesomeIcon
+                      icon={faPencilAlt}
+                      className="relative top-16 left-6"
+                      color={"black"}
+                      id="pencil_icon"
+                      onClick={uploadTrigger}
+                    />{" "}
+                    <input
+                      type="file"
+                      id="myfile"
+                      className="hidden"
+                      name="profile-file"
+                      onChange={onImageChange}
+                      ref={fileInput}
+                      required
+                    />
+                    <button type="submit" className="hidden" ref={submitBtn}>
+                      Submit
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>

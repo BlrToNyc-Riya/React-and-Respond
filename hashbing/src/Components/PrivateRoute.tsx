@@ -10,18 +10,18 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const userDetail = useSelector((state: RootStateOrAny) => state.users);
 
   useEffect(() => {
-    console.log("User logged in: ", userDetail);
-    auth.onAuthStateChanged((authUser) => {
-      console.log("The user is :", authUser);
-      if (authUser) {
-        dispatch(setUser("SET_USER", authUser));
-      } else {
-        dispatch(setUser("SET_USER", null));
-      }
-    });
+    console.log("User logged in: ", userDetail.user);
+    // auth.onAuthStateChanged((authUser) => {
+    //   console.log("The user is :", authUser);
+    //   if (authUser) {
+    //     dispatch(setUser("SET_USER", authUser));
+    //   } else {
+    //     dispatch(setUser("SET_USER", null));
+    //   }
+    // });
   }, []);
 
-  if (userDetail.user === undefined) {
+  if (userDetail.user === null) {
     console.log("Entered!!!!!");
     return <Navigate to="/login" state={{ from: location }} />;
   }
