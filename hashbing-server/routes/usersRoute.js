@@ -3,7 +3,6 @@ const path = require("path");
 const { ObjectID } = require("mongodb");
 const router = express.Router();
 const users = require("../data/users");
-const { authMiddleware } = require("../middlewares/auth");
 const session = require("express-session");
 const xss = require("xss");
 const multer = require("multer");
