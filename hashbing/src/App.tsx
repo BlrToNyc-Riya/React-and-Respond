@@ -38,7 +38,6 @@ function App() {
   const userDetail = useSelector((state: RootStateOrAny) => state.users);
 
   useEffect(() => {
-    console.log("User logged in: ", userDetail.user);
     auth.onAuthStateChanged((authUser) => {
       console.log("The user is :", authUser);
       if (authUser) {
@@ -68,7 +67,7 @@ function App() {
             path="/"
             element={
               <PrivateRoute>
-                <Courses emailId={userDetail?.user?.email} />
+                <Courses emailId={userDetail?.email} />
               </PrivateRoute>
             }
           ></Route>

@@ -1,10 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import logo from "../Images/course1.png";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+type courseDet = {
+  title: string;
+  description: string;
+  courseOutcome1: string;
+  courseOutcome2: string;
+  courseOutcome3: string;
+  courseOutcome4: string;
+};
+
 function CourseDetails() {
+  const [course, setCourse] = useState<courseDet>();
+  useEffect(() => {
+    const getCourseById = () => {
+      console.log("Hello");
+      const url = `http://localhost:4000/courses/627362abf35444a3be2fc907/`;
+      const requestOptions = {
+        method: "GET",
+      };
+      fetch(url, requestOptions)
+        .then(async (response) => {
+          const cou = await response.json();
+          console.log(cou);
+          setCourse(cou);
+        })
+        .catch((error) => console.log(error.message));
+    };
+    getCourseById();
+  }, [course]);
+
   return (
     <div className="flex bg-white w-screen rounded-2xl">
       <div className="flex flex-col w-full h-full rounded-2xl">
@@ -16,13 +44,11 @@ function CourseDetails() {
                 <div className="flex-col">
                   <br />
                   <p className="text-4xl text-white font-sans font-bold text-left pl-10">
-                    Modern React Course for Beginners-Foundation Course
+                    {course?.title}
                   </p>
                   <br />
                   <p className="text-md text-white font-sans font-bold text-left pl-10">
-                    Dive in and learn React.js from scratch! Learn Reactjs,
-                    Hooks, Redux, React Routing, Animations, Next.js and way
-                    more!
+                    {course?.description}
                   </p>
                   <br />
                   <p className="text-sm text-white font-sans font-bold pl-10">
@@ -98,28 +124,25 @@ function CourseDetails() {
                   <br />
                   <div className="flex flex-wrap">
                     <p className="text-xs font-sans text-left pl-10 w-1/2">
-                      <FontAwesomeIcon icon={faCircleCheck} size={"1x"} /> Build
-                      powerful, fast, user-friendly and reactive web apps.
+                      <FontAwesomeIcon icon={faCircleCheck} size={"1x"} />{" "}
+                      {course?.courseOutcome1}
                     </p>
                     <br />
 
                     <p className="text-xs font-sans text-left pl-10 w-1/2">
                       {" "}
                       <FontAwesomeIcon icon={faCircleCheck} size={"1x"} />
-                      Apply for high-paid jobs or work as a freelancer in one
-                      the most-demanded sectors you can find in web dev right
-                      now
+                      {course?.courseOutcome2}
                     </p>
                     <br />
                     <p className="text-xs font-sans text-left pl-10 pt-10 w-1/2">
                       <FontAwesomeIcon icon={faCircleCheck} size={"1x"} />{" "}
-                      Provide amazing user experiences by leveraging the power
-                      of JavaScript with ease
+                      {course?.courseOutcome3}
                     </p>
 
                     <p className="text-xs font-sans pl-10 pt-10 w-1/2">
-                      <FontAwesomeIcon icon={faCircleCheck} size={"1x"} /> Learn
-                      all about React Hooks and React Components
+                      <FontAwesomeIcon icon={faCircleCheck} size={"1x"} />
+                      {course?.courseOutcome4}
                     </p>
                   </div>
                 </div>
