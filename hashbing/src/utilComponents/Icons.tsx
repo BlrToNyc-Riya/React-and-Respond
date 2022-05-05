@@ -34,6 +34,16 @@ const renderIcon = (src: string) => {
       return <FormatAlignCenter />
     case 'outdent':
       return <FormatAlignCenter />
+    case 'embed':
+      return <div>External Link</div>
+    case 'h1':
+      return <div>h1</div>
+    case 'h2':
+      return <div>h2</div>
+    case 'h3':
+      return <div>h3</div>
+    case 'h4':
+      return <div>h4</div>
     default:
       return <span></span>
   }

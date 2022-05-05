@@ -6,7 +6,7 @@ import {
 } from './../actions/types/CourseAction.types'
 
 export const defaultState: CourseStateType = {
-  data: { name: 'test', authorId: 0, details: '', tags: [] },
+  data: { name: 'Q', authorId: 0, details: '', tags: [] },
   loading: false,
   error: ''
 }
