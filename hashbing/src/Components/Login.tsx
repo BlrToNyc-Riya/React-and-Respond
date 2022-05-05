@@ -60,11 +60,12 @@ const Login: React.FunctionComponent = () => {
       auth
         .signInWithEmailAndPassword(email, password)
         .then((auth) => {
+          navigate("/");
           const url = "http://localhost:4000/users/signin";
           const requestOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ email }),
           };
           fetch(url, requestOptions)
             .then((response) => {

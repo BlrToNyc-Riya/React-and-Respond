@@ -1,8 +1,9 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 let ref: React.LegacyRef<HTMLDivElement>;
 
 const SearchBar = () => {
+  const [searchInput, setSearchInput] = useState("");
   const clickPoint = useRef<HTMLDivElement>(null);
   const handleFocus = () => {
     if (clickPoint.current != null) clickPoint.current.style.display = "none";
@@ -10,6 +11,12 @@ const SearchBar = () => {
 
   const handleBlur = () => {
     if (clickPoint.current != null) clickPoint.current.style.display = "block";
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    
   };
 
   return (
@@ -22,11 +29,7 @@ const SearchBar = () => {
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path
-              fill-rule="evenodd"
-              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-              clip-rule="evenodd"
-            ></path>
+            <path d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"></path>
           </svg>
         </div>
         <input
@@ -35,6 +38,7 @@ const SearchBar = () => {
           placeholder="Search Here..."
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onChange={(e) => handleSearch(e)}
         />
       </div>
     </div>
