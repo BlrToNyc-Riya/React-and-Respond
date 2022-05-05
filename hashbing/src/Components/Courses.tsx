@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import Header from "./Header";
 import logo from "../Images/course1.png";
 import SearchBar from "./SearchBar";
+import { useNavigate, useParams } from "react-router-dom";
 
-function Courses() {
+function Courses(props: { emailId: string }) {
   const [enrollStatus, setEnrollStatus] = useState(false);
-  const [id, setId] = useState("");
-
+  const email = props.emailId;
+  const navigate = useNavigate();
   const hoverChange = () => {
     console.log("entered");
     // return <CourseHoverDetails />;
@@ -20,18 +21,20 @@ function Courses() {
 
   const changeEnrollStatus = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (enrollStatus === false) setEnrollStatus(true);
-    else setEnrollStatus(false);
-    const url = "http://localhost:4000/courses/changeEnrollment";
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, enrollStatus }),
-    };
-    fetch(url, requestOptions)
-      .then((response) => console.log("Status Changed Successfully"))
-      .catch((error) => console.log(error.message));
+    if (enrollStatus === false) {
+      setEnrollStatus(true);
+      const url = `http://localhost:4000/courses/1/enroll`;
+      const requestOptions = {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      };
+      fetch(url, requestOptions)
+        .then((response) => console.log("Status Changed Successfully"))
+        .catch((error) => console.log(error.message));
+    } else setEnrollStatus(false);
   };
+
   return (
     <div className="flex bg-white w-screen rounded-2xl">
       <div className="flex flex-col w-full h-full rounded-2xl">
@@ -83,7 +86,10 @@ function Courses() {
                   {/* Details Section */}
                   <div className="flex-col mt-4">
                     <div className="flex justify-center">
-                      <button className="bg-blue-400 p-3 w-full text-white">
+                      <button
+                        className="bg-blue-400 p-3 w-full text-white"
+                        onClick={() => navigate("/courses/1")}
+                      >
                         Go To Details
                       </button>
                     </div>

@@ -1,10 +1,23 @@
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { Link } from "react-router-dom";
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { auth } from "../firebase";
 import SearchBar from "./SearchBar";
 
 function Header(props: { selection: string }) {
+  const dispatch = useDispatch();
+  const userDetail = useSelector((state: RootStateOrAny) => state.users);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    if (userDetail) {
+      console.log("logout");
+      auth.signOut();
+      navigate("/login");
+    }
+  };
   return (
     <div className="flex w-full shadow-2xl">
       <div className="flex w-1/2 justify-start">
@@ -23,17 +36,19 @@ function Header(props: { selection: string }) {
               className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40 "
             >
               <li>
-                <a className="hover:bg-sky-400" href="/">
+                <Link className="hover:bg-sky-400 hover:text-black" to="/">
                   Courses
-                </a>
+                </Link>
               </li>
               <li>
-                <a className="hover:bg-sky-400" href="/users">
-                  John Wick
-                </a>
+                <Link className="hover:bg-sky-400 hover:text-black" to="/users">
+                  {userDetail?.user?.displayName}
+                </Link>
               </li>
               <li>
-                <a className="hover:bg-sky-400">Logout</a>
+                <div className="hover:bg-sky-400" onClick={handleLogout}>
+                  Logout
+                </div>
               </li>
             </ul>
           </div>
@@ -88,15 +103,20 @@ function Header(props: { selection: string }) {
               id="users"
               className="text-md font-bold text-blue-400 p-5 cursor-pointer"
             >
-              Users
+              {userDetail.user.displayName}
             </div>
           ) : (
             <div id="users" className="text-md font-bold p-5 cursor-pointer">
-              Users
+              {userDetail.user.displayName}
             </div>
           )}
         </Link>
-        <div className="text-md font-bold p-5 cursor-pointer">Logout</div>
+        <div
+          className="text-md font-bold p-5 cursor-pointer"
+          onClick={handleLogout}
+        >
+          Logout
+        </div>
       </div>
     </div>
   );

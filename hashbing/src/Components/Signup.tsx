@@ -121,11 +121,11 @@ function Signup() {
             const requestOptions = {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ firstName, lastName, email, password }),
+              body: JSON.stringify({ firstName, lastName, email }),
             };
             fetch(url, requestOptions)
               .then((response) => {
-                if (response.ok == true) navigate("/");
+                if (response.ok == true) navigate("/login");
                 else {
                   if (password_err2 !== null) {
                     password_err2.style.display = "flex";
@@ -166,7 +166,7 @@ function Signup() {
     firebase
       .auth()
       .signInWithPopup(provider)
-      .then((result) => {
+      .then((auth) => {
         navigate("/");
       })
       .catch((error) => {
