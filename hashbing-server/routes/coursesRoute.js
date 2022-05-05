@@ -29,7 +29,27 @@ router.post('/newcourse', async (req, res) => {
 		return res.json({ error: err });
 	}
 });
+router.put('/:id/enroll', async (req, res) => {
+	try {
+        let courseId = req.params.id;
+		let { email } = req.body;
+		if (!email) {
+			return res.sendStatus(400).send('User not logged in');
+		} else {
+			console.log('here');
+			// return res.sendStatus(200).json({ data: 1 });
+			const data = await courses.enrollToCourse(email,courseId);
+			console.log('here after', data);
+            if(!data)
+                throw "Error in creating the new course";
+			return res.status(200).json({ data: data });
 
+		}
+	} catch (err) {
+		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
+		return res.json({ error: err });
+	}
+});
 router.get('/:id',async(req,res)=>{
     try{
         try {

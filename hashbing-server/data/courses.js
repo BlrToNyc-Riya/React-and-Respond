@@ -42,6 +42,29 @@ module.exports = {
         if(!course)
             throw "No course found with this id";
         return course;
-     }
+     },
+
+    async enrollToCourse(email,courseId){
+        if(!email || !courseId)
+            throw "Error with user's email or the course id not fetched..";
+            courseId = ObjectID(courseId);
+            const courseCollection = await courses();
+            const course = await courseCollection.findOne({_id:courseId});
+            if(!course)
+                throw "No course found with this id, unable to register";
+            const userCollection = await users();
+		    const user = await userCollection.findOne({ email });
+            if(!user){
+                throw "Invalid user login, unable to register for the course";
+            }
+            const found = user.coursesEnrolled.find(element => element == objectIdToString(courseId));
+            if(found){
+                throw "Course already enrolled";
+            }
+            user.coursesEnrolled.push(objectIdToString(courseId));
+            const updateInfo = await userCollection.updateOne({ _id: user._id }, { $set: user });
+            if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw 'Update failed';
+            return "Enrolled successfully!!";
+    }
 
 }

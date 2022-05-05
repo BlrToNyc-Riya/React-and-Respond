@@ -7,27 +7,22 @@ const {
 	isValidString,
 	isValidUsername,
 	isValidPassword,
+	isValidEmail
 } = require('../utils/utils');
 const saltRounds = 10;
 
 module.exports = {
-	async createUser({ email, password, firstName, lastName  }) {
-		console.log('data', email, password);
-		isValidString(email, 'name');
-		isValidString(password, 'password');
+	async createUser({ email, firstName, lastName  }) {	
 		email = email.toLowerCase().trim();
-		password = password.trim();
-		// isValidPassword(password);
+		isValidEmail(email);
 		const userCollection = await users();
 		const userData = await userCollection.findOne({ email });
 		if (userData) {
 			throw { message: 'User already exists', code: 403 };
 		}
-		const hash = await bcrypt.hash(password, saltRounds);
 
 		const user = {
 			email,
-			password: hash,
 			DOB:"",
 			bio:"",
 			profilePic:"",
@@ -44,14 +39,6 @@ module.exports = {
 		return { userInserted: true, user: user };
 	},
 
-	// async loginUser(userName, password) {
-	// 	const usersCollection = await users();
-	// 	const user = await usersCollection.findOne({ userName: userName });
-	// 	if (!user) throw 'User not found';
-	// 	// const isPasswordValid = await bcrypt.compare(password, user.password);
-	// 	if (!isPasswordValid) throw 'Invalid password';
-	// 	return user;
-	// },
 
 	async getUserById(id) {
 		const usersCollection = await users();
@@ -59,25 +46,23 @@ module.exports = {
 		if (user === null) throw 'No user with that id';
 		return user;
 	},
-	async authenticateUser(email, password) {
-		if (!email || !password) throw 'You must supply both username and password';
+	async getUserByEmail(email) {
+		const usersCollection = await users();
+		const user = await usersCollection.findOne({ email: email });
+		if (user === null) throw 'No user with that id';
+		return user;
+	},
+	async authenticateUser(email) {
+		if (!email) throw 'You must supply both username';
 		if (typeof email !== 'string') throw 'Email is invalid';
 		else if (email.trim() === '') throw 'Email is empty spaces';
-		if (typeof password !== 'string') throw 'Password is invalid';
-		else if (password.trim() === '') throw 'Password is empty spaces';
-	
-		// if (email.search(/[a-z][a-z0-9]+@stevens\.edu/i) === -1) throw 'You must supply valid username or password';
-		// if (password.length < 8 || password.length > 15) throw 'Password must be between 8 and 15 characters';
 		email = email.toLowerCase();
-	
 		const userCollection = await users();
 		const user = await userCollection.findOne({ email });
 		if (user) {
-			let match = await bcrypt.compare(password, user.password);
-			if (match) {
 				return { authenticated: true, user };
 			}
-		}
+		
 		throw 'Invalid username or password';
 	}
 };

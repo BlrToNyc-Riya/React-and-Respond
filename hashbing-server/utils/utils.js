@@ -133,7 +133,7 @@ exports.isValidObjectId = (objectId, paramName) => {
 	}
 };
 exports.handleUserInfo = userInfo => {
-	const props = ['firstName', 'lastName', 'userName', 'profilePic', 'bio', 'role', 'coursesEnrolled', 'courseAuthored', 'phoneNumber'];
+	const props = ['firstName', 'lastName', 'profilePic', 'bio', 'role', 'coursesEnrolled', 'courseAuthored', 'phoneNumber'];
 	return props.reduce((pre, cur) => {
 		pre[cur] = userInfo[cur];
 		return pre;
@@ -148,5 +148,11 @@ exports.objectIdToString = id => {
 		});
 	}
 	return id.toString();
+}
+exports.isValidEmail = email =>{
+	emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	if (!emailRegex.test(email)) {
+		throw { message: `Email is not valid ${email}`, code: 400 };
+	}
 }
 exports.saltRounds = 12;
