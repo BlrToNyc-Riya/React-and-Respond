@@ -1,15 +1,17 @@
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useState } from "react";
 import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import SearchBar from "./SearchBar";
+import logo1 from "../public/uploads/IMAGE-1651806371090.jpeg";
 
 function Header(props: { selection: string }) {
   const dispatch = useDispatch();
   const userDetail = useSelector((state: RootStateOrAny) => state.users);
   const navigate = useNavigate();
+  const [profilePic, setProfilePic] = useState("");
 
   const handleLogout = () => {
     if (userDetail) {
@@ -21,15 +23,23 @@ function Header(props: { selection: string }) {
   return (
     <div className="flex w-full shadow-2xl">
       <div className="flex w-1/2 justify-start">
-        <div className="flex m-4">
+        <div className="flex ml-4">
           <div className="dropdown dropdown-hover">
-            <label tabIndex={0} className="m-1">
-              <FontAwesomeIcon
-                icon={faUserCircle}
-                size={"2x"}
-                color={"grey"}
-                className="cursor-pointer relative"
-              />
+            <label tabIndex={0} className="">
+              {profilePic ? (
+                <img
+                  className="relative mt-3 h-10 w-10 rounded-full object-fill"
+                  src={logo1}
+                  alt=""
+                />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faUserCircle}
+                  size={"2x"}
+                  color={"grey"}
+                  className="cursor-pointer relative mt-4"
+                />
+              )}
             </label>
             <ul
               tabIndex={0}

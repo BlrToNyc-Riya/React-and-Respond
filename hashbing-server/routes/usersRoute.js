@@ -14,7 +14,7 @@ const {
 
 //Multer Functions required
 const storage = multer.diskStorage({
-  destination: "./public/uploads/",
+  destination: ".././hashbing/src/public/uploads/",
   filename: function (req, file, cb) {
     cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
   },

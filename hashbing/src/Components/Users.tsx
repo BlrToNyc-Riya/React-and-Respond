@@ -20,11 +20,14 @@ import React, {
   useState,
 } from "react";
 import logo from "../Images/course1.png";
+import logo1 from "../public/uploads/IMAGE-1651806371090.jpeg";
 import Header from "./Header";
 
 function Users() {
   const [images, setImages] = useState<File>();
-  const [profilePic, setProfilePic] = useState();
+  const [profilePic, setProfilePic] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
   const submitBtn = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -82,39 +85,43 @@ function Users() {
           <div className="flex w-full justify-center">
             <div className="flex flex-col">
               <div className="flex items-center">
-                <div className="bg-white mt-4 p-14 rounded-full">
-                  <form id="myForm" onSubmit={onFormSubmit}>
-                    {profilePic ? (
+                <form id="myForm" onSubmit={onFormSubmit}>
+                  {profilePic ? (
+                    <img
+                      className="relative mt-4 h-48 w-48 rounded-full object-fill"
+                      src={logo1}
+                      alt=""
+                    />
+                  ) : (
+                    <div className="bg-white mt-4 p-14 rounded-full">
                       <FontAwesomeIcon
                         icon={faUser}
                         size={"5x"}
                         color={"grey"}
-                        className="relative left-2"
+                        className="relative"
                       />
-                    ) : (
-                      <img src={profilePic}></img>
-                    )}
-                    <FontAwesomeIcon
-                      icon={faPencilAlt}
-                      className="relative top-16 left-6"
-                      color={"black"}
-                      id="pencil_icon"
-                      onClick={uploadTrigger}
-                    />{" "}
-                    <input
-                      type="file"
-                      id="myfile"
-                      className="hidden"
-                      name="profile-file"
-                      onChange={onImageChange}
-                      ref={fileInput}
-                      required
-                    />
-                    <button type="submit" className="hidden" ref={submitBtn}>
-                      Submit
-                    </button>
-                  </form>
-                </div>
+                    </div>
+                  )}
+                  <FontAwesomeIcon
+                    icon={faPencilAlt}
+                    className="relative bottom-4 left-36"
+                    color={"black"}
+                    id="pencil_icon"
+                    onClick={uploadTrigger}
+                  />{" "}
+                  <input
+                    type="file"
+                    id="myfile"
+                    className="hidden"
+                    name="profile-file"
+                    onChange={onImageChange}
+                    ref={fileInput}
+                    required
+                  />
+                  <button type="submit" className="hidden" ref={submitBtn}>
+                    Submit
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -124,15 +131,22 @@ function Users() {
             <p className="font-bold text-xl text-center underline mb-6">
               Profile :
             </p>
-            <p className="font-bold text-lg">
-              Name:
-              <span className="font-semibold ml-1 mr-1">John</span>
-              <span className="font-semibold">Wick</span>
-            </p>
-            <p className="font-bold text-lg">
-              Email:
-              <span className="font-semibold ml-2">Johnwick@hotmail.com</span>
-            </p>
+            <form action="">
+              <p className="font-bold text-lg">
+                Name:
+                <span
+                  className="font-semibold ml-1 mr-1"
+                  contentEditable="true"
+                >
+                  John
+                </span>
+                <span className="font-semibold">Wick</span>
+              </p>
+              <p className="font-bold text-lg">
+                Email:
+                <span className="font-semibold ml-2">Johnwick@hotmail.com</span>
+              </p>
+            </form>
           </div>
           <br />
           <div className="flex flex-col justify-left ml-4 mb-10">
