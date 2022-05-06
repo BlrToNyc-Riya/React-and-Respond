@@ -19,9 +19,19 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../Images/course1.png";
 import logo1 from "../public/uploads/IMAGE-1651806371090.jpeg";
 import Header from "./Header";
+type courseDet = {
+  _id: string;
+  title: string;
+  description: string;
+  courseOutcome1: string;
+  courseOutcome2: string;
+  courseOutcome3: string;
+  courseOutcome4: string;
+};
 
 function Users() {
   const [images, setImages] = useState<File>();
@@ -30,18 +40,115 @@ function Users() {
   const [lastName, setLastName] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
   const submitBtn = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    // if (images.length < 1) return;
-    // let newImgUrl: string[] = [];
-    // newImgUrl.push(URL.createObjectURL(images));
-    // setImageURLs(newImgUrl);
-
-    return () => {};
-  }, [images]);
+  const [courses, setCourses] = useState<courseDet[]>();
+  const navigate = useNavigate();
+  const [rerender, setRerender] = useState(false);
+  const [authored, setAuthored] = useState<String[]>();
+  const [enrolled, setEnrolled] = useState<String[]>([]);
 
   useEffect(() => {
-    console.log("images: ", images);
-  });
+    const url = `http://localhost:4000/courses/`;
+    // const requestOptions = {
+    //   method: "GET",
+    //   credentials: "include",
+    // };
+    const unsubscribe = fetch(url, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(async (response) => {
+        const cou = await response.json();
+        console.log(cou);
+        setCourses(cou.courses);
+      })
+      .catch((error) => console.log(error.message));
+    return () => {
+      unsubscribe;
+    };
+  }, [rerender]);
+
+  useEffect(() => {
+    const url = `http://localhost:4000/courses/Enrolled/`;
+    // const requestOptions = {
+    //   method: "GET",
+    // };
+    const unsubscribe = fetch(url, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(async (response) => {
+        const cou = await response.json();
+        console.log(cou);
+        setEnrolled(cou.Enrolled);
+      })
+      .catch((error) => console.log(error.message));
+    return () => {
+      unsubscribe;
+    };
+  }, [rerender]);
+  const enrollCourse = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
+    e.preventDefault();
+    const url = `http://localhost:4000/courses/${id}/enroll`;
+    // const requestOptions = {
+    //   method: "PUT",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ email }),
+    //   credentials: "same-origin",
+    // };
+    fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    })
+      .then((response) => {
+        console.log("Status Changed Successfully");
+        setRerender(!rerender);
+      })
+      .catch((error) => console.log(error.message));
+  };
+
+  const unregisterCourse = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    id: string
+  ) => {
+    const url = `http://localhost:4000/courses/${id}/unregister`;
+    // const requestOptions = {
+    //   method: "PUT",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ email }),
+    //   credentials: "same-origin",
+    // };
+    fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    })
+      .then((response) => {
+        console.log("Status Changed Successfully");
+        setRerender(!rerender);
+      })
+      .catch((error) => console.log(error.message));
+  };
+
+  useEffect(() => {
+    const url = `http://localhost:4000/courses/Authored/`;
+    // const requestOptions = {
+    //   method: "GET",
+    // };
+    const unsubscribe = fetch(url, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(async (response) => {
+        const cou = await response.json();
+        console.log(cou);
+        setAuthored(cou.Anrolled);
+      })
+      .catch((error) => console.log(error.message));
+    return () => {
+      unsubscribe;
+    };
+  }, [rerender]);
 
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(e.target.value);
@@ -149,44 +256,63 @@ function Users() {
               Enrolled Courses :
             </p>
             <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
-              <div className="flex cursor-pointer h-80 top-10">
-                <div className="flex-col h-full bg-white shadow-2xl">
-                  {/* Img */}
-                  <div className="flex justify-center">
-                    <img
-                      src={logo}
-                      alt=""
-                      className="h-40 w-full object-fill"
-                    />
-                  </div>
-                  {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
-                  {/* Topic */}
-                  <div className="flex-col">
-                    <div className="flex-col">
-                      <p className="text-lg font-sans font-bold text-center pl-2">
-                        Modern React Course for Beginners-Foundation Course
-                      </p>
-                    </div>
-                    {/* Score */}
-                    <div className="flex-col mt-4">
-                      <p className="text-xs font-sans font-semibold text-gray-500 pl-2">
-                        Chapter Progress : 0/30 completed(25%)
-                      </p>
-                      <div className="bg-gray-300 h-2 rounded-3xl m-2">
-                        <div className="bg-blue-400 w-1/4 h-2 rounded-3xl"></div>
+              {courses?.map(
+                (course) =>
+                  enrolled.includes(course._id) && (
+                    <div className="flex cursor-pointer h-80 top-10">
+                      <div className="flex-col h-full bg-white shadow-2xl">
+                        {/* Img */}
+                        <div className="flex justify-center">
+                          <img
+                            src={logo}
+                            alt=""
+                            className="h-40 w-full object-fill"
+                          />
+                        </div>
+                        {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
+                        {/* Topic */}
+                        <div className="flex-col">
+                          <div className="flex-col">
+                            <p className="text-lg font-sans font-bold text-center pl-2">
+                              {course?.title}
+                            </p>
+                          </div>
+                          {/* Score */}
+                          <div className="flex-col mt-4">
+                            <p className="text-xs font-sans font-semibold text-gray-500 pl-2">
+                              Chapter Progress : 0/30 completed(25%)
+                            </p>
+                            <div className="bg-gray-300 h-2 rounded-3xl m-2">
+                              <div className="bg-blue-400 w-1/4 h-2 rounded-3xl"></div>
+                            </div>
+                          </div>
+                          {/* Details Section */}
+                          <div className="flex-col mt-4 bg-white">
+                            <div className="flex justify-center">
+                              {enrolled?.includes(course._id) ? (
+                                <button
+                                  className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                  onClick={(e) =>
+                                    unregisterCourse(e, course._id)
+                                  }
+                                >
+                                  Unregister
+                                </button>
+                              ) : (
+                                <button
+                                  className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                  onClick={(e) => enrollCourse(e, course._id)}
+                                >
+                                  Enroll
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    {/* Details Section */}
-                    <div className="flex-col mt-4 bg-white">
-                      <div className="flex justify-center">
-                        <button className="bg-sky-400 p-3 w-4/5 mb-4 text-white">
-                          Enroll
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  )
+              )}
             </div>
           </div>
           <div className="flex flex-col justify-left ml-4 m">
@@ -194,44 +320,63 @@ function Users() {
               Courses Authored:
             </p>
             <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
-              <div className="flex cursor-pointer h-80 top-10">
-                <div className="flex-col h-full bg-white shadow-2xl">
-                  {/* Img */}
-                  <div className="flex justify-center">
-                    <img
-                      src={logo}
-                      alt=""
-                      className="h-40 w-full object-fill"
-                    />
-                  </div>
-                  {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
-                  {/* Topic */}
-                  <div className="flex-col">
-                    <div className="flex-col">
-                      <p className="text-lg font-sans font-bold text-center pl-2">
-                        Modern React Course for Beginners-Foundation Course
-                      </p>
-                    </div>
-                    {/* Score */}
-                    <div className="flex-col mt-4 bg-white">
-                      <p className="text-xs font-sans font-semibold text-gray-500 pl-2">
-                        Chapter Progress : 0/30 completed(25%)
-                      </p>
-                      <div className="bg-gray-300 h-2 rounded-3xl m-2">
-                        <div className="bg-blue-400 w-1/4 h-2 rounded-3xl"></div>
+              {courses?.map(
+                (course) =>
+                  authored?.includes(course._id) && (
+                    <div className="flex cursor-pointer h-80 top-10">
+                      <div className="flex-col h-full bg-white shadow-2xl">
+                        {/* Img */}
+                        <div className="flex justify-center">
+                          <img
+                            src={logo}
+                            alt=""
+                            className="h-40 w-full object-fill"
+                          />
+                        </div>
+                        {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
+                        {/* Topic */}
+                        <div className="flex-col">
+                          <div className="flex-col">
+                            <p className="text-lg font-sans font-bold text-center pl-2">
+                              {course?.title}
+                            </p>
+                          </div>
+                          {/* Score */}
+                          <div className="flex-col mt-4 bg-white">
+                            <p className="text-xs font-sans font-semibold text-gray-500 pl-2">
+                              Chapter Progress : 0/30 completed(25%)
+                            </p>
+                            <div className="bg-gray-300 h-2 rounded-3xl m-2">
+                              <div className="bg-blue-400 w-1/4 h-2 rounded-3xl"></div>
+                            </div>
+                          </div>
+                          {/* Details Section */}
+                          <div className="flex-col mt-4 bg-white">
+                            <div className="flex justify-center">
+                              {enrolled?.includes(course._id) ? (
+                                <button
+                                  className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                  onClick={(e) =>
+                                    unregisterCourse(e, course._id)
+                                  }
+                                >
+                                  Unregister
+                                </button>
+                              ) : (
+                                <button
+                                  className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                  onClick={(e) => enrollCourse(e, course._id)}
+                                >
+                                  Enroll
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    {/* Details Section */}
-                    <div className="flex-col mt-4 bg-white">
-                      <div className="flex justify-center">
-                        <button className="bg-sky-400 p-3 w-4/5 mb-4 text-white">
-                          Enroll
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  )
+              )}
             </div>
           </div>
         </div>

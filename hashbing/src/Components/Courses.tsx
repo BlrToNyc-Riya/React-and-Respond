@@ -13,11 +13,10 @@ type courseDet = {
   courseOutcome4: string;
 };
 
-function Courses(props: { emailId: string }) {
-  const [enrollStatus, setEnrollStatus] = useState(false);
+function Courses() {
+  const [rerender, setRerender] = useState(false);
   const [courses, setCourses] = useState<courseDet[]>();
   const [enrolled, setEnrolled] = useState<String[]>([]);
-  const email = props.emailId;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,7 +38,7 @@ function Courses(props: { emailId: string }) {
     return () => {
       unsubscribe;
     };
-  }, []);
+  }, [rerender]);
 
   useEffect(() => {
     const url = `http://localhost:4000/courses/Enrolled/`;
@@ -59,7 +58,7 @@ function Courses(props: { emailId: string }) {
     return () => {
       unsubscribe;
     };
-  }, []);
+  }, [rerender]);
   const enrollCourse = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
     const url = `http://localhost:4000/courses/${id}/enroll`;
@@ -72,10 +71,12 @@ function Courses(props: { emailId: string }) {
     fetch(url, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
       credentials: "include",
     })
-      .then((response) => console.log("Status Changed Successfully"))
+      .then((response) => {
+        console.log("Status Changed Successfully");
+        setRerender(!rerender);
+      })
       .catch((error) => console.log(error.message));
   };
 
@@ -93,10 +94,12 @@ function Courses(props: { emailId: string }) {
     fetch(url, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
       credentials: "include",
     })
-      .then((response) => console.log("Status Changed Successfully"))
+      .then((response) => {
+        console.log("Status Changed Successfully");
+        setRerender(!rerender);
+      })
       .catch((error) => console.log(error.message));
   };
 
@@ -104,7 +107,7 @@ function Courses(props: { emailId: string }) {
     <div className="flex bg-white w-screen rounded-2xl">
       <div className="flex flex-col w-full h-full rounded-2xl">
         <Header selection="courses" />
-        <div className="flex flex-col bg-gray-200 w-full h-full rounded-b-2xl shadow-2xl">
+        <div className="flex flex-col bg-gray-200 w-full h-full min-h-screen rounded-b-2xl shadow-2xl">
           <div className="flex justify-left ml-20 mt-10">
             <span className="flex font-bold text-lg items-center">
               Search Courses:
@@ -165,7 +168,7 @@ function Courses(props: { emailId: string }) {
                             className="text-blue-400 p-3"
                             onClick={(e) => unregisterCourse(e, course._id)}
                           >
-                            Enrolled
+                            Unregister
                           </button>
                         ) : (
                           <button

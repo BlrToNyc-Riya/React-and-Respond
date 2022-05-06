@@ -60,7 +60,7 @@ function App() {
             path="/"
             element={
               users?.user !== null && users?.user.email !== null ? (
-                <Courses emailId={users?.user.email} />
+                <Courses />
               ) : (
                 <Login />
               )
