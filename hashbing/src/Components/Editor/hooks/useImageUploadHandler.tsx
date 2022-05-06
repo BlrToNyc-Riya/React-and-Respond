@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { EditorType } from '../../../courseCreation/TextEditor.types'
+import BE_URL from '../utils/apiHelper'
 
 export default function useImageUploadHandler (
   editor: EditorType,
@@ -37,7 +38,7 @@ export default function useImageUploadHandler (
       )
 
       axios
-        .post('/upload', formData, {
+        .post(`${BE_URL}/courses/uploadPic`, formData, {
           headers: {
             'content-type': 'multipart/form-data'
           }
