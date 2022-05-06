@@ -17,23 +17,23 @@ type Props = {
 const renderIcon = (src: string) => {
   switch (src) {
     case 'bold':
-      return <FormatBold />
+      return <FormatBold color='primary' />
     case 'italic':
-      return <FormatItalic />
+      return <FormatItalic color='primary' />
     case 'underline':
-      return <FormatUnderlined />
+      return <FormatUnderlined color='primary' />
     case 'link':
-      return <InsertLink />
+      return <InsertLink color='primary' />
     case 'image':
-      return <Image />
+      return <Image color='primary' />
     case 'code':
-      return <Code />
+      return <Code color='primary' />
     case 'quote':
-      return <FormatQuote />
+      return <FormatQuote color='primary' />
     case 'indent':
-      return <FormatAlignCenter />
+      return <FormatAlignCenter color='primary' />
     case 'outdent':
-      return <FormatAlignCenter />
+      return <FormatAlignCenter color='primary' />
     case 'embed':
       return <div>External Link</div>
     case 'h1':
