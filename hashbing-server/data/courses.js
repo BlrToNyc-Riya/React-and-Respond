@@ -8,7 +8,10 @@ module.exports = {
     async createCourse(title,body,description,author,topicsTagged, courseOutcome1,courseOutcome2,courseOutcome3,courseOutcome4){
         // errorCheckingCourse(title,body,author);
         // const id = ObjectID(author);
-        const user = await userData.getUserByEmail(author);
+        // const user = await userData.getUserByEmail(author);
+        const usersCollection = await users();
+		const user = await usersCollection.findOne({ email: author });
+		if (user === null) throw 'No user with that id';
         console.log(user);
         if(!user)
             throw "Author not found";
