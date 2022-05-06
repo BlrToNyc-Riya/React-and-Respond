@@ -29,13 +29,14 @@ import {
 } from "react-redux";
 import { auth } from "./firebase";
 import { setUser } from "./actions/types/users/Users.actions";
-import PrivateRoute from "./Components/PrivateRoute";
+import { Store } from "./store";
+import { UserType } from "./actions/types/UserAction.types";
 
 function App() {
   const [count, setCount] = useState(0);
   const [data, setData] = useState({});
   const dispatch = useDispatch();
-  const userDetail = useSelector((state: RootStateOrAny) => state.users);
+  const { users } = useSelector((state: Store) => state);
 
   useEffect(() => {
     auth.onAuthStateChanged((authUser) => {
@@ -48,14 +49,6 @@ function App() {
     });
   }, []);
 
-  // const ProtectedRoute = ({ user, children }) => {
-  //   if (!user) {
-  //     return <Navigate to="/" replace />;
-  //   }
-
-  //   return children;
-  // };
-
   return (
     <BrowserRouter>
       <div className="App">
@@ -66,53 +59,32 @@ function App() {
           <Route
             path="/"
             element={
-              <PrivateRoute>
-                <Courses emailId={userDetail?.email} />
-              </PrivateRoute>
+              users?.user !== null && users?.user.email !== null ? (
+                <Courses emailId={users?.user.email} />
+              ) : (
+                <Login />
+              )
             }
           ></Route>
           <Route
             path="/courses/:id"
-            element={
-              <PrivateRoute>
-                <CourseDetails />
-              </PrivateRoute>
-            }
+            element={users?.user !== null ? <CourseDetails /> : <Login />}
           ></Route>
           <Route
             path="/enrolled"
-            element={
-              <PrivateRoute>
-                <Enrolled />
-              </PrivateRoute>
-            }
+            element={users?.user !== null ? <Enrolled /> : <Login />}
           ></Route>
           <Route
             path="/authored"
-            element={
-              <PrivateRoute>
-                <Authored />
-              </PrivateRoute>
-            }
+            element={users?.user !== null ? <Authored /> : <Login />}
           ></Route>
           <Route
             path="/users"
-            element={
-              <PrivateRoute>
-                <Users />
-              </PrivateRoute>
-            }
+            element={users?.user !== null ? <Users /> : <Login />}
           ></Route>
           <Route path="/courses/new" element={<NewCourseContainer />}></Route>
           <Route path="/course/new/:id" element={<NewCourseWizard />}></Route>
-          <Route
-            path="/courses/new/:id/add"
-            element={
-              <PrivateRoute>
-                <CourseForm />
-              </PrivateRoute>
-            }
-          ></Route>
+          <Route path="/courses/new/:id/add" element={<CourseForm />}></Route>
         </Routes>
       </div>
     </BrowserRouter>

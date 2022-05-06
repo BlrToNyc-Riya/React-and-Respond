@@ -15,23 +15,20 @@ type courseDet = {
 
 function CourseDetails() {
   const [course, setCourse] = useState<courseDet>();
+
   useEffect(() => {
-    const getCourseById = () => {
-      console.log("Hello");
-      const url = `http://localhost:4000/courses/627362abf35444a3be2fc907/`;
-      const requestOptions = {
-        method: "GET",
-      };
-      fetch(url, requestOptions)
-        .then(async (response) => {
-          const cou = await response.json();
-          console.log(cou);
-          setCourse(cou);
-        })
-        .catch((error) => console.log(error.message));
+    const url = `http://localhost:4000/courses/627362abf35444a3be2fc907/`;
+    const requestOptions = {
+      method: "GET",
     };
-    getCourseById();
-  }, [course]);
+    fetch(url, requestOptions)
+      .then(async (response) => {
+        const cou = await response.json();
+        console.log(cou);
+        setCourse(cou);
+      })
+      .catch((error) => console.log(error.message));
+  }, []);
 
   return (
     <div className="flex bg-white w-screen rounded-2xl">
