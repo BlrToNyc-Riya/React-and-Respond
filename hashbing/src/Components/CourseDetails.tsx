@@ -17,6 +17,8 @@ type courseDet = {
 function CourseDetails() {
   const [course, setCourse] = useState<courseDet>();
   const params = useParams();
+  const [rerender, setRerender] = useState(false);
+  const [enrolled, setEnrolled] = useState<String[]>([]);
   const cid = params.id;
 
   useEffect(() => {
@@ -38,7 +40,70 @@ function CourseDetails() {
     return () => {
       unsubscribe;
     };
-  }, []);
+  }, [rerender]);
+
+  useEffect(() => {
+    const url = `http://localhost:4000/courses/Enrolled/`;
+    // const requestOptions = {
+    //   method: "GET",
+    // };
+    const unsubscribe = fetch(url, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(async (response) => {
+        const cou = await response.json();
+        console.log(cou);
+        setEnrolled(cou.Enrolled);
+      })
+      .catch((error) => console.log(error.message));
+    return () => {
+      unsubscribe;
+    };
+  }, [rerender]);
+  const enrollCourse = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
+    e.preventDefault();
+    const url = `http://localhost:4000/courses/${id}/enroll`;
+    // const requestOptions = {
+    //   method: "PUT",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ email }),
+    //   credentials: "same-origin",
+    // };
+    fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    })
+      .then((response) => {
+        console.log("Status Changed Successfully");
+        setRerender(!rerender);
+      })
+      .catch((error) => console.log(error.message));
+  };
+
+  const unregisterCourse = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    id: string
+  ) => {
+    const url = `http://localhost:4000/courses/${id}/unregister`;
+    // const requestOptions = {
+    //   method: "PUT",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ email }),
+    //   credentials: "same-origin",
+    // };
+    fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    })
+      .then((response) => {
+        console.log("Status Changed Successfully");
+        setRerender(!rerender);
+      })
+      .catch((error) => console.log(error.message));
+  };
 
   return (
     <div className="flex bg-white w-screen rounded-2xl">
@@ -175,9 +240,23 @@ function CourseDetails() {
                   {/* Details Section */}
                   <div className="flex-col mt-4 bg-white">
                     <div className="flex justify-center">
-                      <button className="bg-sky-400 p-3 w-4/5 text-white">
-                        Enroll
-                      </button>
+                      {cid != undefined && enrolled?.includes(cid) ? (
+                        <button
+                          className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                          onClick={(e) => unregisterCourse(e, cid)}
+                        >
+                          Unregister
+                        </button>
+                      ) : (
+                        cid != undefined && (
+                          <button
+                            className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                            onClick={(e) => enrollCourse(e, cid)}
+                          >
+                            Enroll
+                          </button>
+                        )
+                      )}
                     </div>
                     <div className="flex justify-center">
                       <button className="text-sky-400 p-3">
