@@ -2,16 +2,10 @@ import { BaseSelection, Editor, Transforms } from 'slate'
 
 import axios from 'axios'
 import { useCallback } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-import { EditorType } from '../../../courseCreation/TextEditor.types'
 import BE_URL from '../utils/apiHelper'
-import image from '../../../public/uploads'
 import { ReactEditor } from 'slate-react'
 
-export default function useImageUploadHandler (
-  editor: EditorType,
-  selection: BaseSelection
-) {
+export default function useImageUploadHandler (selection: BaseSelection) {
   return useCallback(
     (event: any) => {
       event.preventDefault()
