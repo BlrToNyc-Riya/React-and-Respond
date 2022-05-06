@@ -133,7 +133,7 @@ exports.isValidObjectId = (objectId, paramName) => {
 	}
 };
 exports.handleUserInfo = userInfo => {
-	const props = ['firstName', 'lastName', 'profilePic', 'bio', 'role', 'coursesEnrolled', 'courseAuthored', 'phoneNumber'];
+	const props = ['firstName', 'lastName', 'email', 'profilePic', 'role', 'coursesEnrolled', 'courseAuthored', 'phoneNumber'];
 	return props.reduce((pre, cur) => {
 		pre[cur] = userInfo[cur];
 		return pre;

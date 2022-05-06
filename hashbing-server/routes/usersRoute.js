@@ -86,7 +86,7 @@ router.post("/signin", async (req, res) => {
     isValidEmail(email);
     const { authenticated, user } = await users.authenticateUser(email);
     if (authenticated) {
-      req.session.userid = objectIdToString(user._id);
+      req.session.userid = user.email;
       const userInfo = handleUserInfo(user);
       console.log(req.session);
       res.json(userInfo);
@@ -95,5 +95,24 @@ router.post("/signin", async (req, res) => {
     res.status(400).send(error?.message ?? error); //need to render
   }
 });
+
+router.put("/profile", async (req, res) => {
+	try {
+	  const email  = req.session.userid;
+	  const {phoneNumber, bio} = req.body;
+	  if(!email)
+		throw "please login first to update your profile..."
+	  const user = await users.getUserByEmail(email);
+	  if(!user)
+		throw "Invalid login, try again"
+      const updatedUser = await users.updateUser(phoneNumber,bio,email);
+	  if(!updatedUser)
+		throw "Could not update the user";
+	  res.json(updatedUser);
+	  
+	} catch (error) {
+	  res.status(400).send(error?.message ?? error); //need to render
+	}
+  });
 
 module.exports = router;
