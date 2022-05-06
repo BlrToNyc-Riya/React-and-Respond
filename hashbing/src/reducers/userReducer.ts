@@ -1,9 +1,12 @@
-import { UserAction } from "../actions/types/UserAction.types";
+import { UserAction, UserStateType } from "../actions/types/UserAction.types";
 
-const initalState = {
+const initalState: UserStateType = {
   user: null,
 };
-const userReducer = (state = initalState, action: UserAction) => {
+const userReducer = (
+  state: UserStateType = initalState,
+  action: UserAction
+) => {
   const { type } = action;
 
   switch (type) {

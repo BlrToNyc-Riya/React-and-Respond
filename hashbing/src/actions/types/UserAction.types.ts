@@ -9,3 +9,7 @@ export type UserAction = {
 export type UserType = {
   user: firebase.User | null;
 };
+
+export type UserStateType = {
+  user: firebase.User | null;
+};
