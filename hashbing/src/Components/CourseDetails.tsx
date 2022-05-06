@@ -3,6 +3,7 @@ import Header from "./Header";
 import logo from "../Images/course1.png";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useParams } from "react-router-dom";
 
 type courseDet = {
   title: string;
@@ -15,19 +16,28 @@ type courseDet = {
 
 function CourseDetails() {
   const [course, setCourse] = useState<courseDet>();
+  const params = useParams();
+  const cid = params.id;
 
   useEffect(() => {
-    const url = `http://localhost:4000/courses/627362abf35444a3be2fc907/`;
-    const requestOptions = {
+    const url = `http://localhost:4000/courses/${cid}/`;
+    // const requestOptions = {
+    //   method: "GET",
+    //   credentials: "include",
+    // };
+    const unsubscribe = fetch(url, {
       method: "GET",
-    };
-    fetch(url, requestOptions)
+      credentials: "include",
+    })
       .then(async (response) => {
         const cou = await response.json();
         console.log(cou);
         setCourse(cou);
       })
       .catch((error) => console.log(error.message));
+    return () => {
+      unsubscribe;
+    };
   }, []);
 
   return (

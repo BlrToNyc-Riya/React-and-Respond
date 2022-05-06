@@ -18,7 +18,20 @@ function CourseForm() {
       password_err2.style.display = "none";
     }
     const url = "http://localhost:4000/courses/signin";
-    const requestOptions = {
+    // const requestOptions = {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     title,
+    //     description,
+    //     courseOutcome1,
+    //     courseOutcome2,
+    //     courseOutcome3,
+    //     courseOutcome4,
+    //   }),
+    // };
+
+    fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -29,9 +42,8 @@ function CourseForm() {
         courseOutcome3,
         courseOutcome4,
       }),
-    };
-
-    fetch(url, requestOptions)
+      credentials: "include",
+    })
       .then((response) => {
         if (response.ok == true) navigate("/");
         else {
