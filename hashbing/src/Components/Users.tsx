@@ -134,12 +134,7 @@ function Users() {
             <form action="">
               <p className="font-bold text-lg">
                 Name:
-                <span
-                  className="font-semibold ml-1 mr-1"
-                  contentEditable="true"
-                >
-                  John
-                </span>
+                <span className="font-semibold ml-1 mr-1">John</span>
                 <span className="font-semibold">Wick</span>
               </p>
               <p className="font-bold text-lg">

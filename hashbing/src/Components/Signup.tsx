@@ -118,12 +118,17 @@ function Signup() {
           console.log(firstName);
           if (auth) {
             const url = "http://localhost:4000/users/signup";
-            const requestOptions = {
+            // const requestOptions = {
+            //   method: "POST",
+            //   headers: { "Content-Type": "application/json" },
+            //   body: JSON.stringify({ firstName, lastName, email }),
+            // };
+            fetch(url, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ firstName, lastName, email }),
-            };
-            fetch(url, requestOptions)
+              credentials: "include",
+            })
               .then((response) => {
                 if (response.ok == true) navigate("/login");
                 else {
