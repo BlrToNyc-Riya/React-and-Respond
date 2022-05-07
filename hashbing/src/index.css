@@ -38,3 +38,7 @@ a,
   border-radius: 4px;
   position: relative;
 }
+
+.ql-container.ql-snow {
+  border: none !important;
+}

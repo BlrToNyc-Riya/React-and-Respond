@@ -67,7 +67,8 @@ services:
     networks:
       - mongo-compose-network
 
-
+volumes:
+  dev-volume:
 networks: 
     mongo-compose-network:
       driver: bridge

@@ -8,7 +8,7 @@ const multer = require('multer');
 const path = require('path');
 
 const storage = multer.diskStorage({
-	destination: '.././hashbing/src/public/upload/',
+	destination: '.././hashbing/src/Components/Editor/hooks/',
 	filename: function (req, file, cb) {
 		cb(null, file.originalname);
 	},
@@ -75,7 +75,9 @@ router.post('/uploadPic', function (req, res) {
 		} else if (err) {
 			return res.status(500).json(err);
 		}
-		console.log('req', req.file);
+		var options = {
+			root: path.join(__dirname),
+		};
 		return res.status(200).send(req.file);
 	});
 });

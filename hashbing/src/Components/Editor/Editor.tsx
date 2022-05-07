@@ -47,6 +47,8 @@ export default function Editor ({ document, onChange }) {
     selectionForLink = previousSelection
   }
 
+  console.log('doc>>', document)
+
   return (
     <Slate editor={editor} value={document} onChange={onChangeLocal}>
       <Container className={'editor-container'}>

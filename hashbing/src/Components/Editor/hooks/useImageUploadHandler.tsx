@@ -5,6 +5,8 @@ import { useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { EditorType } from '../../../courseCreation/TextEditor.types'
 import BE_URL from '../utils/apiHelper'
+import image from '../../../public/uploads'
+import { ReactEditor } from 'slate-react'
 
 export default function useImageUploadHandler (
   editor: EditorType,
@@ -18,9 +20,11 @@ export default function useImageUploadHandler (
         return
       }
       const file = files[0]
+      const newFileName = `${Date.now()}-${file.name}`
+      console.log('files>>', selection)
       const fileName = file.name
       const formData = new FormData()
-      formData.append('photo', file)
+      formData.append('photo', file, newFileName)
 
       const id = uuidv4()
 
@@ -30,12 +34,14 @@ export default function useImageUploadHandler (
           id,
           type: 'image',
           caption: fileName,
-          url: null,
+          url: `/src/Components/Editor/hooks/${newFileName}`,
           isUploading: true,
           children: [{ text: '' }]
         },
         { at: selection, select: true }
       )
+      console.log('>>', editor.children, selection)
+      Editor.end(editor, [1])
 
       axios
         .post(`${BE_URL}/courses/uploadPic`, formData, {
@@ -55,9 +61,14 @@ export default function useImageUploadHandler (
 
             Transforms.setNodes(
               editor,
-              { isUploading: false, url: `/photos/${fileName}` },
+              {
+                isUploading: false,
+                url: `/src/Components/Editor/hooks/${newFileName}`
+              },
               { at: newImageEntry[1] }
             )
+            ReactEditor.focus(editor)
+            Transforms.select(editor, Editor.end(editor, []))
           }, 3000)
         })
         .catch(error => {
