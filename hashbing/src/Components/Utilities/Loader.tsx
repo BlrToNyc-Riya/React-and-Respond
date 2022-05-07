@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 
 type Props = {}
 
@@ -12,3 +12,5 @@ const Loader = (props: Props) => {
     </div>
   )
 }
+
+export default Loader
