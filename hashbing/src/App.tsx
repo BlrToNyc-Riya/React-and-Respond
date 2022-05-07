@@ -32,7 +32,6 @@ import { setUser } from './actions/types/users/Users.actions'
 import { Store } from './store'
 import { UserType } from './actions/types/UserAction.types'
 import PrivateRoute from './Components/PrivateRoute'
-import UnknownPage from './Components/UnknownPage'
 
 function App () {
   const [count, setCount] = useState(0)
@@ -40,14 +39,24 @@ function App () {
   const dispatch = useDispatch()
   const { users } = useSelector((state: Store) => state)
 
+  useEffect(() => {
+    auth.onAuthStateChanged(authUser => {
+      if (authUser) {
+        dispatch(setUser('SET_USER', authUser))
+      } else {
+        dispatch(setUser('SET_USER', null))
+      }
+    })
+  }, [])
+
   return (
     <BrowserRouter>
-      <div className='App h-screen'>
+      <div className='App'>
         <Routes>
           <Route path='/login' element={<Login />}></Route>
           <Route path='/tutorlogin' element={<LoginTutor />}></Route>
           <Route path='/signup' element={<Signup />}></Route>
-          <Route path='/' element={<PrivateRoute user={users} />}>
+          <Route path='/' element={<PrivateRoute user={users.user} />}>
             <Route path='/courses/:id' element={<CourseDetails />} />
             <Route path='/' element={<Courses />} />
             <Route path='/enrolled' element={<Enrolled />} />
@@ -57,7 +66,6 @@ function App () {
             <Route path='/course/new/:id' element={<NewCourseWizard />}></Route>
             <Route path='/courses/new/:id/add' element={<CourseForm />}></Route>
           </Route>
-          <Route path='*' element={<UnknownPage />} />
         </Routes>
       </div>
     </BrowserRouter>
