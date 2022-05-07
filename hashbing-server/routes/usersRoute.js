@@ -15,7 +15,7 @@ const {
 //Multer Functions required
 const storage = multer.diskStorage({
   destination: ".././hashbing/src/public/uploads/",
-  filename: function (req, file, cb) {
+  filename: async function (req, file, cb) {
     cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
   },
 });
@@ -28,29 +28,35 @@ const upload = multer({
   },
 }).single("myImage");
 
-router.post("/upload", function (req, res) {
+router.post("/upload", async (req, res)=> {
+  try{
   console.log("File is", req.file);
-  upload(req, res, function (err) {
+  upload(req, res, async function (err) {
     console.log("Request ---", req.body);
     console.log("Request file ---", req.file); //Here you get file.
-    /*Now do where ever you want to do*/
+    await users.uploadPic(req.session.userid, req.file);
     if (!err) {
-      return res.send(200).end();
+      return res.sendStatus(200).send(err);
     }
-  });
+  });}
+  catch(e){
+    console.log("err>>>>>>>>>>>>>>>>>>>>>>", e);
+    return res.json({ error: e });
+  }
 });
 
-router.get("/profilePic", function (req, res) {
-  console.log("File is", req.file);
-  upload(req, res, function (err) {
-    console.log("Request ---", req.body);
-    console.log("Request file ---", req.file); //Here you get file.
-    /*Now do where ever you want to do*/
-    if (!err) {
-      return res.send(200).end();
-    }
-  });
-});
+// router.get("/profilePic", async (req, res)=> {
+//   console.log("File is", req.file);
+//   upload(req, res, async function (err) {
+//     console.log("Request ---", req.body);
+//     console.log("Request file ---", req.file); //Here you get file.
+//     /*Now do where ever you want to do*/
+    
+//     if (!err) {
+//       return res.sendStatus(200).send(err);
+//     }
+//   });
+// });
 
 router.get("/test", async (req, res) => {
   return res.json({ test: "test" });

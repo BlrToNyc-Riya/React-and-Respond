@@ -9,6 +9,27 @@ app.use(express.json());
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.urlencoded({ extended: true }));
 
+// var multer = require('multer');
+// var upload = multer({dest:'uploads/'});
+
+// var storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, '../hashbing/src/public/uploads');
+//      },
+//     filename: function (req, file, cb) {
+//         cb(null , file.originalname);
+//     }
+// });
+// var upload = multer({ storage: storage })
+// app.post('/upload', upload.single('profile'), (req, res, error) => {
+//   try {
+//     console.log(req.file);
+//     res.send(req.file);
+//   }catch(err) {
+//     res.send(400);
+//   }
+// });
+
 app.use("/", (req, res, next) => {
   console.log(
     "request",

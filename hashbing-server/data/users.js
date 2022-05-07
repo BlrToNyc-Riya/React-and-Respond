@@ -80,5 +80,17 @@ module.exports = {
 		const updatedInfo = await userCollection.updateOne({_id: user._id},{$set: user});
 		if (!updatedInfo.matchedCount && !updatedInfo.modifiedCount) throw 'Update failed';
 		return user;
+	},
+	async uploadPic(email,path){
+		if(!email)
+			throw "You must be signed in to update profile..";
+		const userCollection = await users();
+		const user = await userCollection.findOne({ email });
+		if(!user)
+			throw "Could not fetch user data";
+		user.profilePic = path;
+		const updatedInfo = await userCollection.updateOne({_id: user._id},{$set: user});
+		if (!updatedInfo.matchedCount && !updatedInfo.modifiedCount) throw 'Update failed';
+		return user;
 	}
 };
