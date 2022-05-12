@@ -7,6 +7,9 @@ import { Store } from '../store'
 import { defaultState } from '../reducers/courseReducer'
 import NewCourseWizard from './NewCourseWizard'
 import { Navigate, useNavigate } from 'react-router-dom'
+import NewCourseFeedback from './NewCourseFeedback'
+import { isEmpty } from 'lodash'
+import CourseCreationConfirmation from './CourseCreationConfirmation'
 
 type Props = {}
 
@@ -25,11 +28,15 @@ function NewCourseContainer ({}: Props): React.ReactElement {
     }
     if (courses.data.name === '') {
       return <NewCourseInit />
+    } else if (!isEmpty(courses.data.courseOutcome)) {
+      return <CourseCreationConfirmation />
+    } else if (courses.data.courseContent.length > 0) {
+      return <NewCourseFeedback />
     } else return <NewCourseWizard />
   }
 
   return (
-    <div>
+    <div className='h-full'>
       {renderLoader()}
       {renderCourseCreator()}
     </div>

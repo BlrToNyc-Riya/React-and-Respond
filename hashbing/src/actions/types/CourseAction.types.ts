@@ -3,12 +3,18 @@ export type CourseAction = {
   payload?: string | CourseType
 }
 
+export type InputFieldType = {
+  [key: string]: string
+}
+
 export type CourseType = {
   name: string
-  authorId: number
+  authorId: number | string | undefined
   details: string
-  tags: string[]
+  tags: string
   error?: string
+  courseContent: string
+  courseOutcome: InputFieldType
 }
 
 export type CourseStateType = {
@@ -20,7 +26,8 @@ export type CourseStateType = {
 export enum CourseActionTypes {
   CREATE_COURSE_REQUESTED = 'CREATE_COURSE_REQUESTED',
   CREATE_COURSE_ERROR = 'CREATE_COURSE_ERROR',
-  CREATE_COURSE_INIT_SUCCESS = 'CREATE_COURSE_INIT_SUCCESS'
+  CREATE_COURSE_INIT_SUCCESS = 'CREATE_COURSE_INIT_SUCCESS',
+  CREATE_COURSE_ADD_COURSE_CONTENT = 'CREATE_COURSE_ADD_COURSE_CONTENT'
 }
 
 export interface CourseCreationErrorType {

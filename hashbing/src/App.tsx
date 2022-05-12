@@ -40,10 +40,9 @@ function App () {
   const dispatch = useDispatch()
   const { users } = useSelector((state: Store) => state)
 
-  console.log('users', users)
   return (
     <BrowserRouter>
-      <div className='App'>
+      <div className='App h-screen'>
         <Routes>
           <Route path='/login' element={<Login />}></Route>
           <Route path='/tutorlogin' element={<LoginTutor />}></Route>

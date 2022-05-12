@@ -7,6 +7,7 @@ type courseDet = {
   _id: string
   title: string
   description: string
+  author: string
   courseOutcome1: string
   courseOutcome2: string
   courseOutcome3: string
@@ -106,7 +107,7 @@ function Courses () {
   return (
     <div className='flex bg-white w-screen rounded-2xl'>
       <div className='flex flex-col w-full h-full rounded-2xl'>
-        <Header selection='courses' />
+        {/* <Header selection='courses' /> */}
         <div className='flex flex-col bg-gray-200 w-full h-full min-h-screen rounded-b-2xl shadow-2xl'>
           <div className='flex justify-left ml-20 mt-10'>
             <span className='flex font-bold text-lg items-center'>
@@ -140,7 +141,7 @@ function Courses () {
                     {/* Author */}
                     <div className='flex-col mt-4'>
                       <p className='text-xs font-sans font-semibold pl-2 text-gray-500'>
-                        Govind Radhakrishnan
+                        {`Created By: ${course.author}`}
                       </p>
                     </div>
                     {/* Score */}

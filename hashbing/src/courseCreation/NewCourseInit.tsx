@@ -1,5 +1,5 @@
 import { ClipboardCheckIcon, CheckCircleIcon } from '@heroicons/react/solid'
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import Button from '../Components/Button'
 import {
   courseCreationErrors,
@@ -7,53 +7,65 @@ import {
 } from '../Components/Utilities/Validations'
 import { useDispatch, useSelector } from 'react-redux'
 import { Store } from '../store'
-import {
-  CourseAction,
-  CourseActionTypes,
-  CourseType
-} from '../actions/types/CourseAction.types'
 import { createCourseAction } from '../actions/types/courses/Courses.actions'
+import _ from 'lodash'
 
 type Props = {}
 
+type errorStateType = 'title' | 'description' | 'tags'
+
 function NewCourseInit ({}: Props) {
   const dispatch = useDispatch()
-  const createCourse = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const {
-      courseName,
-      courseDescription,
-      courseTag
-    } = e.target as HTMLFormElement
-
-    const course: CourseType = {
-      name: courseName.value,
-      authorId: 12,
-      details: courseDescription.value,
-      tags: courseTag.value
-    }
-    dispatch(createCourseAction(course))
-  }
-
-  const { courses } = useSelector((state: Store) => state)
-
-  const courseNameRef = React.useRef<HTMLInputElement | null>(null)
-  const courseDescriptionRef = React.useRef<HTMLTextAreaElement>(null)
-  const courseTag = React.useRef<HTMLInputElement>(null)
+  const { users } = useSelector((state: Store) => state)
   //states
   const [courseName, setCourseName] = React.useState<string | null>(null)
   const [courseDetails, setcourseDetails] = React.useState<string | null>(null)
   const [courseTags, setCourseTags] = React.useState<string | null>(null)
-
-  //   React.useEffect(() => {
-  //     courseNameRef.current?.focus()
-  //   }, [])
-
-  const onRefChange = useCallback(node => {
-    if (node !== null) {
-      setCourseName(node.value)
+  const [errorStateList, setErrorStateList] = useState({
+    title: '',
+    description: '',
+    tags: ''
+  })
+  const createCourse = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    let errors = {
+      title: '',
+      description: '',
+      tags: ''
     }
-  }, [])
+    if (!courseName || courseName.length < 2) {
+      errors.title = courseCreationErrors.TITLE
+    } else {
+      errors.title = ''
+    }
+    if (!courseDetails || courseDetails.length < 10) {
+      errors.description = courseCreationErrors.DESCRIPTION
+    } else {
+      errors.description = ''
+    }
+    if (!courseTags || courseTags.length < 2) {
+      errors.tags = courseCreationErrors.TITLE
+    } else {
+      errors.tags = ''
+    }
+    if (
+      errors.title === '' &&
+      errors.tags === '' &&
+      errors.description === ''
+    ) {
+      dispatch(
+        createCourseAction({
+          name: courseName as string,
+          authorId: users?.user?.uid,
+          details: courseDetails as string,
+          tags: courseTags as string,
+          courseContent: '',
+          courseOutcome: {}
+        })
+      )
+    }
+    return setErrorStateList(errors)
+  }
 
   const renderCheckIcon = (val: string | null): React.ReactNode => {
     if (val === null) return null
@@ -62,10 +74,11 @@ function NewCourseInit ({}: Props) {
     }
     return <div></div>
   }
-  const isRequired = (val: string | null): boolean => {
+  const isRequired = (val: string | null, length: number = 2): boolean => {
     if (val === null) return false
-    return isValidString(val, 2) ? false : true
+    return isValidString(val, length) ? false : true
   }
+
   return (
     <div>
       <div className='h-screen flex flex-col w-full '>
@@ -78,7 +91,7 @@ function NewCourseInit ({}: Props) {
             className='flex flex-col shadow border items-center justify-evenly w-3/4 h-full md:h-1/2 p-2'
             onSubmit={e => createCourse(e)}
           >
-            <div className='flex w-full justify-center h-1/2'>
+            <div className='flex w-full justify-center h-1/1'>
               <div className='flex flex-col w-full p-2 '>
                 <div className='formElements items-evenly justify-evenly items-start'>
                   <label className='text-gray-700' htmlFor='courseName'>
@@ -90,7 +103,7 @@ function NewCourseInit ({}: Props) {
                       className='w-3/4 ml-2 border-b-2 px-2'
                       type='text'
                       placeholder='Course Name'
-                      ref={courseNameRef}
+                      // ref={courseNameRef}
                       onChange={e => setCourseName(e.target.value)}
                     />
                     <p
@@ -115,12 +128,12 @@ function NewCourseInit ({}: Props) {
                       id='courseDescription'
                       className='max-w-3/4 ml-2 border-b-2 px-2'
                       placeholder='Course Details'
-                      ref={courseDescriptionRef}
+                      // ref={courseDescriptionRef}
                       onChange={e => setcourseDetails(e.target.value)}
                     />
                     <p
                       className={`block mt-2 text-sm text-red-600 dark:text-red-500 ${
-                        isRequired(courseDetails) ? '' : 'hidden'
+                        isRequired(courseDetails, 10) ? '' : 'hidden'
                       }`}
                     >
                       <span className='font-medium'>OOPS!</span>{' '}
@@ -139,7 +152,7 @@ function NewCourseInit ({}: Props) {
                       className='w-3/4 ml-2 border-b-2 px-2'
                       type='text'
                       placeholder='Course Tag'
-                      ref={courseTag}
+                      // ref={courseTag}
                       onChange={e => setCourseTags(e.target.value)}
                     />
 
@@ -169,6 +182,17 @@ function NewCourseInit ({}: Props) {
               </Button>
             </div>
           </form>
+          {!_.isEmpty(errorStateList) && (
+            <ul className='flex flex-col border p-2 my-2'>
+              {Object.keys(errorStateList).map(
+                (value: errorStateType, index: number) => (
+                  <li key={index} className='text-red-500'>
+                    {errorStateList[value]}
+                  </li>
+                )
+              )}
+            </ul>
+          )}
         </div>
       </div>
     </div>

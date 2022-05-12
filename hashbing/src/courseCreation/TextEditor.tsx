@@ -2,6 +2,8 @@ import { Component, createRef, Dispatch, SetStateAction } from 'react'
 import ReactQuill, { Quill } from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { Width, Float, Height, ImageWithStyle } from './ImageWithStyle'
+import classNames from 'classNames'
+import hljs from 'highlight.js'
 
 Quill.register('formats/float', Float)
 Quill.register('formats/height', Height)
@@ -10,10 +12,11 @@ Quill.register('formats/image', ImageWithStyle, true)
 
 type EditorPropsType = {
   updateDocument: Dispatch<SetStateAction<string>>
+  className: string
 }
-class Editor extends Component<EditorPropsType, {}> {
-  private reactQuillRef: React.RefObject<HTMLInputElement | null>
-  public quillRef: React.RefObject<HTMLInputElement | null> | null
+class TextEditor extends Component<EditorPropsType, {}> {
+  private reactQuillRef: React.ClassAttributes<ReactQuill>
+  public quillRef: React.ClassAttributes<ReactQuill>
   constructor (props: EditorPropsType) {
     super(props)
     this.reactQuillRef = createRef()
@@ -23,6 +26,15 @@ class Editor extends Component<EditorPropsType, {}> {
 
   componentDidMount () {
     this.registerFormat()
+    window.addEventListener('beforeunload', function (event) {
+      event.returnValue = ''
+    })
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', function (event) {
+      event.returnValue = ''
+    })
   }
 
   componentDidUpdate () {
@@ -41,23 +53,10 @@ class Editor extends Component<EditorPropsType, {}> {
     }
   }
 
-  addImage = () => {
-    let range = this.quillRef.getSelection()
-    if (!range) {
-      return
-    }
-    console.log('Adding image')
-    this.quillRef.insertEmbed(range.index + 1, 'image', {
-      src:
-        'https://images.unsplash.com/photo-1508614999368-9260051292e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNTMxNTJ8MHwxfHNlYXJjaHw1fHxncmFkaWVudHxlbnwwfDB8fHwxNjM1MTU5MDY4&ixlib=rb-1.2.1&q=80&w=1080',
-      caption: 'Image caption'
-    })
-  }
-
   render () {
-    const { updateDocument } = this.props
+    const { updateDocument, className } = this.props
     return (
-      <>
+      <div className={classNames(className)}>
         <ReactQuill
           ref={this.reactQuillRef}
           value={this.state.editorHtml}
@@ -65,17 +64,17 @@ class Editor extends Component<EditorPropsType, {}> {
             this.setState({ editorHtml: value })
             updateDocument(value)
           }}
-          modules={Editor.modules}
-          formats={Editor.formats}
+          modules={modules}
+          formats={formats}
           bounds={'#root'}
           placeholder='Write something'
         />
-      </>
+      </div>
     )
   }
 }
 
-Editor.modules = {
+const modules = {
   toolbar: [
     [{ header: '1' }, { header: '2' }, { font: [] }],
     [{ size: [] }],
@@ -86,24 +85,16 @@ Editor.modules = {
       { indent: '-1' },
       { indent: '+1' }
     ],
-    ['link', 'image', 'video'],
+    ['link', 'image', 'video', 'code-block'],
     ['clean']
   ],
   clipboard: {
     // toggle to add extra line breaks when pasting HTML:
     matchVisual: false
   }
-  // imageResize: {
-  //   parchment: Quill.import('parchment'),
-  //   modules: ['Resize', 'DisplaySize']
-  // }
 }
 
-/*
- * Quill editor formats
- * See https://quilljs.com/docs/formats/
- */
-Editor.formats = [
+const formats = [
   'header',
   'font',
   'size',
@@ -117,7 +108,8 @@ Editor.formats = [
   'indent',
   'link',
   'image',
-  'video'
+  'video',
+  'code-block'
 ]
 
-export default Editor
+export default TextEditor

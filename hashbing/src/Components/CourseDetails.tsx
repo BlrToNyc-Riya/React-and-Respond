@@ -108,7 +108,7 @@ function CourseDetails () {
   return (
     <div className='flex bg-white w-screen rounded-2xl'>
       <div className='flex flex-col w-full h-full rounded-2xl'>
-        <Header selection='courses' />
+        {/* <Header selection='courses' /> */}
         <div className='flex bg-gray-200 h-full rounded-b-2xl'>
           <div className='flex flex-col basis-3/4 h-full'>
             <div className='flex-col w-full h-full'>

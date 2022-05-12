@@ -6,7 +6,14 @@ import {
 } from './../actions/types/CourseAction.types'
 
 export const defaultState: CourseStateType = {
-  data: { name: 'Q', authorId: 0, details: '', tags: [] },
+  data: {
+    name: '',
+    authorId: 0,
+    details: '',
+    tags: '',
+    courseContent: '',
+    courseOutcome: {}
+  },
   loading: false,
   error: ''
 }
@@ -31,6 +38,18 @@ export const courseReducer = (
         ...state,
         loading: false,
         data: action.payload as CourseType,
+        error: ''
+      }
+    case CourseActionTypes.CREATE_COURSE_ADD_COURSE_CONTENT:
+      const courseData = action.payload as CourseType
+      return {
+        ...state,
+        loading: false,
+        data: {
+          ...state.data,
+          courseContent: courseData.courseContent,
+          courseOutcome: courseData.courseOutcome
+        },
         error: ''
       }
     default:

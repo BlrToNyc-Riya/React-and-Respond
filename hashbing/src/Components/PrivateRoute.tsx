@@ -5,6 +5,7 @@ import { UserStateType, UserType } from '../actions/types/UserAction.types'
 import { setUser } from '../actions/types/users/Users.actions'
 import { auth } from '../firebase'
 import { Store } from '../store'
+import Header from './Header'
 import Loader from './Utilities/Loader'
 
 const PrivateRoute = ({
@@ -35,7 +36,14 @@ const PrivateRoute = ({
   else if (user?.user === null) {
     return <Navigate to='/login' replace />
   } else {
-    return children ? children : <Outlet />
+    return children ? (
+      children
+    ) : (
+      <>
+        <Header selection='' />
+        <Outlet />
+      </>
+    )
   }
 }
 

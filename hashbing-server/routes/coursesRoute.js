@@ -6,6 +6,15 @@ const users = require('../data/users');
 const { isValidObjectId } = require('../utils/utils');
 const multer = require('multer');
 const path = require('path');
+const decodeIDToken = require('../middlewares/authMiddleware');
+const lodash = require('lodash');
+const chalk = require('chalk');
+const {
+	objectIdToString,
+	isValidStringField,
+	isValidArray,
+	isValidObject,
+} = require('../utils/utils');
 
 const storage = multer.diskStorage({
 	destination: '.././hashbing/src/Components/Editor/hooks/',
@@ -34,7 +43,7 @@ router.get('/', async (req, res) => {
 		res.status(400).send(e?.message ?? e);
 	}
 });
-router.get('/Authored', async (req, res) => {
+router.get('/authored', async (req, res) => {
 	console.log('here');
 	try {
 		const email = req.session.userid;
@@ -73,41 +82,33 @@ router.post('/uploadPic', function (req, res) {
 		return res.status(200).send(req.file);
 	});
 });
-router.post('/newcourse', async (req, res) => {
+router.post('/create', decodeIDToken, async (req, res) => {
 	try {
-		if (!req.session.userid)
-			throw 'You need to signin to be able to create courses';
-		let {
-			title,
-			body,
-			description,
-			topicsTagged,
-			courseOutcome1,
-			courseOutcome2,
-			courseOutcome3,
-			courseOutcome4,
-		} = req.body;
-		if (!title || !body) {
-			return res.sendStatus(400).send('Missing required fields');
+		console.log(chalk.blue('req.session.userid', !!req.session.user));
+		// if (!req.session.userid || !req.session.user)
+		// 	throw 'You need to signin to be able to create courses';
+		let { title, body, description, topicsTagged, courseOutcome } =
+			req.body;
+		if (!title || !body || !description) {
+			throw 'Missing required fields';
 		} else {
-			console.log('here');
-			if (!courseOutcome1) courseOutcome1 = '';
-			if (!courseOutcome2) courseOutcome2 = '';
-			if (!courseOutcome3) courseOutcome3 = '';
-			if (!courseOutcome4) courseOutcome4 = '';
-			if (!topicsTagged) topicsTagged = '';
-			// return res.sendStatus(200).json({ data: 1 });
-			let author = req.session.userid;
+			isValidStringField(title, 3);
+			isValidStringField(body, 3);
+			isValidStringField(description, 10);
+			if (lodash.isEmpty(courseOutcome))
+				throw 'Course Outcome is required';
+
+			if (!topicsTagged) throw 'Course needs to be linked with a tag';
+			let author = req.session.user;
+			console.log('here >>>>>>>>');
+			console.log('author>>>>>>>>>', author);
 			const data = await courses.createCourse(
 				title,
 				body,
 				description,
-				author,
+				req.session.user.email,
 				topicsTagged,
-				courseOutcome1,
-				courseOutcome2,
-				courseOutcome3,
-				courseOutcome4
+				courseOutcome
 			);
 			console.log('here after', data);
 			if (!data) throw 'Error in creating the new course';
