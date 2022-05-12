@@ -44,7 +44,7 @@ module.exports = {
 			author: author,
 			topicsTagged: topics,
 			courseOutcome,
-			metaData: { timeStamp: new Date().getTime(), published: false },
+			metaData: { timeStamp: new Date().getTime(), published: true },
 		};
 
 		const newCourseInfo = await courseCollection.insertOne(course);
