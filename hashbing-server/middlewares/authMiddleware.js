@@ -1,5 +1,5 @@
 const admin = require('firebase-admin');
-const serviceAccount = require('../config/e-learning-2dcea-firebase-adminsdk-sb5rd-871f977143.json');
+const serviceAccount = require('../config/firebaseConfig.json');
 const chalk = require('chalk');
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
