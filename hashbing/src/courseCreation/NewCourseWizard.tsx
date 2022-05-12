@@ -1,16 +1,39 @@
 import React, { useState } from 'react'
-import Editor from '../Components/Editor/Editor'
 import TextEditor from './TextEditor'
-import { ExampleDocument } from './TextEditor.utils'
+import Header from '../Components/Header'
+import Buttons from '../utilComponents/Buttons'
+import Button from '../Components/Button'
+import { createCourseAddActionAction } from '../actions/types/courses/Courses.actions'
+import { useDispatch, useSelector } from 'react-redux'
+import { Store } from '../store'
 
 type Props = {}
 
 function NewCourseWizard ({}: Props) {
-  const [document, updateDocument] = useState(ExampleDocument)
+  const [document, updateDocument] = useState('')
+  const dispatch = useDispatch()
+  const { courses } = useSelector((state: Store) => state)
+  const { data } = courses
+  const submitDocument = () => {
+    if (document.length === 0) return alert('Please enter valid course data')
+    dispatch(
+      createCourseAddActionAction({
+        name: data.name,
+        authorId: data.authorId,
+        details: data.details,
+        tags: data.tags,
+        courseOutcome: data.courseOutcome,
+        courseContent: document
+      })
+    )
+  }
   return (
-    <div className='mx-5'>
-      {/* Test */}
-      <Editor document={document} onChange={updateDocument} />
+    <div className='h-screen'>
+      {/* <Header selection='authored' /> */}
+      <div className='m-5 flex items-center flex-col '>
+        <Button name='Publish Course' onClick={submitDocument} />
+        <TextEditor updateDocument={updateDocument} className='mt-10' />
+      </div>
     </div>
   )
 }

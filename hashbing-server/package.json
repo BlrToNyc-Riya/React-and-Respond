@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "startServer": "nodemon app.js",
     "startDevServer": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.7.2",
     "btoa": "^1.2.1",
+    "chalk": "^4.1.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -25,6 +26,7 @@
     "express-pjax": "^0.0.1",
     "express-session": "^1.17.2",
     "express-validator": "^6.13.0",
+    "firebase-admin": "^10.2.0",
     "flat": "^5.0.2",
     "formidable": "^2.0.1",
     "mongodb": "^4.1.4",

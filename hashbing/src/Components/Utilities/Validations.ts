@@ -14,7 +14,7 @@ export const isValidString = (str: string, minLength?: number): boolean => {
 }
 
 export enum courseCreationErrors {
-  TITLE = 'Title is required and must be at least 3 characters long',
+  TITLE = 'Title is required and must be at least 2 characters long',
   DESCRIPTION = 'Description is required and must be at least 10 characters long',
-  TAGS = 'Tags is required and must be at least 3 characters long'
+  TAGS = 'Tags is required and must be at least 2 characters long'
 }

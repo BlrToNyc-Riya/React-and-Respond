@@ -26,9 +26,10 @@ exports.isValidString = (value, paramName, minLength) => {
 	}
 };
 
-exports.isValidBlogTitle = (blogTitle) => {
-	if (!blogTitle) throw { message: 'Blog title is not provided', code: 400 };
-	this.isValidString(blogTitle, 'blogTitle', 3);
+exports.isValidStringField = (title, minLength = 3) => {
+	if (!title) throw { message: 'Parameter is not provided', code: 400 };
+	console.log('title', title);
+	this.isValidString(title, 'parameter', minLength);
 };
 
 exports.isValidBlogBody = (body) => {
@@ -74,6 +75,25 @@ exports.isValidPassword = (password) => {
 	let passwordRegex = /^[A-Za-z0-9!:',.@#$%^&*()_-]{6,}$/;
 	if (!passwordRegex.test(password)) {
 		throw { message: `Password is not valid ${password}`, code: 400 };
+	}
+};
+
+exports.isValidArray = (arr) => {
+	if (!arr) {
+		throw {
+			message: 'Array is not provided',
+			status: 400,
+		};
+	} else if (!Array.isArray(arr)) {
+		throw {
+			message: 'Array is not an array',
+			status: 400,
+		};
+	} else if (arr.length === 0) {
+		throw {
+			message: 'Array is empty',
+			status: 400,
+		};
 	}
 };
 
@@ -132,27 +152,37 @@ exports.isValidObjectId = (objectId, paramName) => {
 		};
 	}
 };
-exports.handleUserInfo = userInfo => {
-	const props = ['firstName', 'lastName', 'email', 'profilePic', 'role', 'coursesEnrolled', 'courseAuthored', 'phoneNumber'];
+exports.handleUserInfo = (userInfo) => {
+	const props = [
+		'firstName',
+		'lastName',
+		'email',
+		'profilePic',
+		'role',
+		'coursesEnrolled',
+		'courseAuthored',
+		'phoneNumber',
+	];
 	return props.reduce((pre, cur) => {
 		pre[cur] = userInfo[cur];
 		return pre;
 	}, {});
 };
 
-exports.objectIdToString = id => {
+exports.objectIdToString = (id) => {
 	if (Array.isArray(id)) {
-		return id.map(item => {
+		return id.map((item) => {
 			item._id = item?._id.toString();
 			return item;
 		});
 	}
 	return id.toString();
-}
-exports.isValidEmail = email =>{
-	emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+};
+exports.isValidEmail = (email) => {
+	emailRegex =
+		/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	if (!emailRegex.test(email)) {
 		throw { message: `Email is not valid ${email}`, code: 400 };
 	}
-}
+};
 exports.saltRounds = 12;
