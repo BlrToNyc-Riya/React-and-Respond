@@ -5,7 +5,7 @@ import logo1 from "../Images/google-logo.png";
 import React, { EventHandler, useReducer, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import firebase from "firebase";
-import { auth } from "../firebase";
+import { auth, createToken } from "../firebase";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 const Login: React.FunctionComponent = () => {
@@ -59,8 +59,9 @@ const Login: React.FunctionComponent = () => {
     if (validEmail && validPassword) {
       auth
         .signInWithEmailAndPassword(email, password)
-        .then((auth) => {
+        .then(async (auth) => {
           navigate("/");
+          const header = await createToken();
           const url = "http://localhost:4000/users/signin";
           // const requestOptions = {
           //   method: "POST",
@@ -70,7 +71,7 @@ const Login: React.FunctionComponent = () => {
           // };
           fetch(url, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: header.headers,
             body: JSON.stringify({ email }),
             credentials: "include",
           })
