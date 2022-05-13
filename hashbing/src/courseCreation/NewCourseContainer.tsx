@@ -10,6 +10,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import NewCourseFeedback from './NewCourseFeedback'
 import { isEmpty } from 'lodash'
 import CourseCreationConfirmation from './CourseCreationConfirmation'
+import Loader from '../Components/Utilities/Loader'
 
 type Props = {}
 
@@ -19,16 +20,23 @@ function NewCourseContainer ({}: Props): React.ReactElement {
 
   const renderLoader = (): React.ReactNode => {
     if (courses.loading) {
-      return <div>Loading...</div>
+      return <Loader />
     } else return null
   }
   const renderCourseCreator = (): React.ReactNode => {
+    console.log('course', courses.created)
     if (courses.loading) {
       return null
-    }
-    if (courses.data.name === '') {
+    } else if (courses.error)
+      return (
+        <p>
+          OOPS an error occured while creating the course. Please try again
+          later
+        </p>
+      )
+    else if (courses.data.name === '' && !courses.created) {
       return <NewCourseInit />
-    } else if (!isEmpty(courses.data.courseOutcome)) {
+    } else if (courses.created) {
       return <CourseCreationConfirmation />
     } else if (courses.data.courseContent.length > 0) {
       return <NewCourseFeedback />

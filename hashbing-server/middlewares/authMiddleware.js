@@ -11,11 +11,6 @@ async function decodeIDToken(req, res, next) {
 		next();
 	} else {
 		const header = req.headers?.authorization;
-		console.log(
-			'here in else block',
-			header !== 'Bearer null' &&
-				req.headers?.authorization?.startsWith('Bearer ')
-		);
 		if (
 			header !== 'Bearer null' &&
 			req.headers?.authorization?.startsWith('Bearer ')
@@ -23,9 +18,8 @@ async function decodeIDToken(req, res, next) {
 			const idToken = req.headers.authorization.split('Bearer ')[1];
 			try {
 				const decodedToken = await admin.auth().verifyIdToken(idToken);
-				console.log('decodedToken', chalk.blue(decodedToken));
 				req.session.user = decodedToken;
-				console.log(chalk.green('decodedToken'), req.session.user);
+				console.log(chalk.blue('===> authenticated'));
 				next();
 			} catch (err) {
 				console.log(err);

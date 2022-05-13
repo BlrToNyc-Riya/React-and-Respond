@@ -21,13 +21,15 @@ export type CourseStateType = {
   data: CourseType
   error: string
   loading: boolean
+  created: boolean
 }
 
 export enum CourseActionTypes {
   CREATE_COURSE_REQUESTED = 'CREATE_COURSE_REQUESTED',
   CREATE_COURSE_ERROR = 'CREATE_COURSE_ERROR',
   CREATE_COURSE_INIT_SUCCESS = 'CREATE_COURSE_INIT_SUCCESS',
-  CREATE_COURSE_ADD_COURSE_CONTENT = 'CREATE_COURSE_ADD_COURSE_CONTENT'
+  CREATE_COURSE_ADD_COURSE_CONTENT = 'CREATE_COURSE_ADD_COURSE_CONTENT',
+  CREATE_COURSE_RESET = 'CREATE_COURSE_RESET'
 }
 
 export interface CourseCreationErrorType {

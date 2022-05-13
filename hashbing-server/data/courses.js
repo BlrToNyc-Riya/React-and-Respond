@@ -142,7 +142,6 @@ module.exports = {
 		const courseCollection = await courses();
 		const allCourses = await courseCollection.find({}).toArray();
 		if (!allCourses) throw 'could not fetch courses';
-		console.log(allCourses);
 		return allCourses;
 	},
 };

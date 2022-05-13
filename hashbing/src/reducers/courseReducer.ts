@@ -15,7 +15,8 @@ export const defaultState: CourseStateType = {
     courseOutcome: {}
   },
   loading: false,
-  error: ''
+  error: '',
+  created: false
 }
 export const courseReducer = (
   state: CourseStateType = defaultState,
@@ -25,7 +26,8 @@ export const courseReducer = (
     case CourseActionTypes.CREATE_COURSE_REQUESTED:
       return {
         ...state,
-        loading: true
+        loading: true,
+        created: false
       }
     case CourseActionTypes.CREATE_COURSE_ERROR:
       return {
@@ -52,6 +54,9 @@ export const courseReducer = (
         },
         error: ''
       }
+    case CourseActionTypes.CREATE_COURSE_RESET:
+      console.log({ ...defaultState, created: true })
+      return { ...defaultState, created: true }
     default:
       return state
   }

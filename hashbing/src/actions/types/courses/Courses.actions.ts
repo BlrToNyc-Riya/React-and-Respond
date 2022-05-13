@@ -70,6 +70,10 @@ export const createCourseAddActionAction = (
         type: CourseActionTypes.CREATE_COURSE_ADD_COURSE_CONTENT,
         payload: course
       })
+      if (submit)
+        dispatch({
+          type: CourseActionTypes.CREATE_COURSE_RESET
+        })
     } catch (error) {
       const typedError = error as Error
       dispatch({
