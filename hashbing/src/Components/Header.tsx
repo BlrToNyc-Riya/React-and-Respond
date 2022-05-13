@@ -48,6 +48,14 @@ function Header (props: { selection: string }) {
               className='dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40 '
             >
               <li>
+                <Link
+                  className='hover:bg-sky-400 hover:text-black'
+                  to='/courses/new'
+                >
+                  Create Course
+                </Link>
+              </li>
+              <li>
                 <Link className='hover:bg-sky-400 hover:text-black' to='/'>
                   Courses
                 </Link>
@@ -106,6 +114,20 @@ function Header (props: { selection: string }) {
           ) : (
             <div id='authored' className='text-md font-bold p-5 cursor-pointer'>
               Authored
+            </div>
+          )}
+        </Link>
+        <Link to='/courses/new'>
+          {pathname.includes('/courses/new') ? (
+            <div
+              id='authored'
+              className='text-md font-bold text-blue-400 p-5 cursor-pointer'
+            >
+              Create Course
+            </div>
+          ) : (
+            <div id='authored' className='text-md font-bold p-5 cursor-pointer'>
+              Create Course
             </div>
           )}
         </Link>

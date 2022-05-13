@@ -44,7 +44,7 @@ module.exports = {
 			author: author,
 			topicsTagged: topics,
 			courseOutcome,
-			metaData: { timeStamp: new Date().getTime(), published: false },
+			metaData: { timeStamp: new Date().getTime(), published: true },
 		};
 
 		const newCourseInfo = await courseCollection.insertOne(course);
@@ -142,7 +142,6 @@ module.exports = {
 		const courseCollection = await courses();
 		const allCourses = await courseCollection.find({}).toArray();
 		if (!allCourses) throw 'could not fetch courses';
-		console.log(allCourses);
 		return allCourses;
 	},
 };

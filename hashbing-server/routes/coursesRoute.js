@@ -44,7 +44,6 @@ router.get('/', async (req, res) => {
 	}
 });
 router.get('/authored', async (req, res) => {
-	console.log('here');
 	try {
 		const email = req.session.userid;
 		if (!email) throw 'could not fetch authored courses, please login';
@@ -56,15 +55,16 @@ router.get('/authored', async (req, res) => {
 		return;
 	}
 });
-router.get('/Enrolled', async (req, res) => {
-	console.log('here');
+router.get('/enrolled', decodeIDToken, async (req, res) => {
+	console.log('enrolling');
 	try {
-		const email = req.session.userid;
+		const email = req.session.user.email;
 		if (!email) throw 'could not fetch enrolled courses, please login';
 		const data = await courses.getAllEnrolledCourses(email);
 		if (!data) throw 'No Enrolled courses found';
-		res.json({ Enrolled: data });
+		return res.json({ Enrolled: data });
 	} catch (error) {
+		console.log('error', error);
 		res.status(400).send(error?.message ?? error);
 		return;
 	}
@@ -84,7 +84,7 @@ router.post('/uploadPic', function (req, res) {
 });
 router.post('/create', decodeIDToken, async (req, res) => {
 	try {
-		console.log(chalk.blue('req.session.userid', !!req.session.user));
+		// console.log(chalk.blue('req.session.userid', !!req.session.user));
 		// if (!req.session.userid || !req.session.user)
 		// 	throw 'You need to signin to be able to create courses';
 		let { title, body, description, topicsTagged, courseOutcome } =
@@ -100,8 +100,6 @@ router.post('/create', decodeIDToken, async (req, res) => {
 
 			if (!topicsTagged) throw 'Course needs to be linked with a tag';
 			let author = req.session.user;
-			console.log('here >>>>>>>>');
-			console.log('author>>>>>>>>>', author);
 			const data = await courses.createCourse(
 				title,
 				body,
@@ -119,37 +117,32 @@ router.post('/create', decodeIDToken, async (req, res) => {
 		return res.json({ error: err });
 	}
 });
-router.put('/:id/enroll', async (req, res) => {
+router.put('/:id/enroll', decodeIDToken, async (req, res) => {
+	console.log(chalk.blue('enrolling'));
 	try {
 		let courseId = req.params.id;
-		let email = req.session.userid;
-		if (!email) {
-			return res.sendStatus(400).send('User not logged in');
-		} else {
-			console.log('here');
-			// return res.sendStatus(200).json({ data: 1 });
-			const data = await courses.enrollToCourse(email, courseId);
-			console.log('here after', data);
-			if (!data)
-				throw 'Error while enrolling you into the course, please try again';
-			return res.status(200).json({ data: data });
-		}
+		let email = req.session.user.email;
+
+		console.log('here');
+		// return res.sendStatus(200).json({ data: 1 });
+		const data = await courses.enrollToCourse(email, courseId);
+		console.log('here after', data);
+		if (!data)
+			throw 'Error while enrolling you into the course, please try again';
+		return res.status(200).json({ data: data });
 	} catch (err) {
 		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
 		return res.json({ error: err });
 	}
 });
-router.put('/:id/unregister', async (req, res) => {
+router.put('/:id/unregister', decodeIDToken, async (req, res) => {
 	try {
 		let courseId = req.params.id;
-		let email = req.session.userid;
+		let email = req.session.user.email;
 		if (!email) {
-			return res.sendStatus(400).send('User not logged in');
+			throw 'User not logged in';
 		} else {
-			console.log('here');
-			// return res.sendStatus(200).json({ data: 1 });
 			const data = await courses.unregisterCourse(email, courseId);
-			console.log('here after', data);
 			if (!data)
 				throw 'Error while unregistering the course, please try again';
 			if (!data) throw 'Error in creating the new course';

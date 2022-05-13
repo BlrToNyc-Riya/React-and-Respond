@@ -4,14 +4,12 @@ import logo from '../Images/course1.png'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useParams } from 'react-router-dom'
+import { createToken } from '../firebase'
 
 type courseDetailType = {
   title: string
   description: string
-  courseOutcome1: string
-  courseOutcome2: string
-  courseOutcome3: string
-  courseOutcome4: string
+  courseOutcome: { [key: string]: string }
 }
 
 function CourseDetails () {
@@ -22,44 +20,43 @@ function CourseDetails () {
   const cid = params.id
 
   useEffect(() => {
-    const url = `http://localhost:4000/courses/${cid}/`
-    // const requestOptions = {
-    //   method: "GET",
-    //   credentials: "include",
-    // };
-    const unsubscribe = fetch(url, {
-      method: 'GET',
-      credentials: 'include'
-    })
-      .then(async response => {
-        const cou = await response.json()
-        console.log(cou)
-        setCourse(cou)
+    const fetchData = async () => {
+      const header = await createToken()
+      const url = `http://localhost:4000/courses/${cid}/`
+      fetch(url, {
+        method: 'GET',
+        headers: header.headers
       })
-      .catch(error => console.log(error.message))
-    return () => {
-      unsubscribe
+        .then(async response => {
+          const cou = await response.json()
+          console.log(cou)
+          setCourse(cou)
+        })
+        .catch(error => console.log(error.message))
     }
+    fetchData()
   }, [rerender])
 
   useEffect(() => {
-    const url = `http://localhost:4000/courses/Enrolled/`
-    // const requestOptions = {
-    //   method: "GET",
-    // };
-    const unsubscribe = fetch(url, {
-      method: 'GET',
-      credentials: 'include'
-    })
-      .then(async response => {
-        const cou = await response.json()
-        console.log(cou)
-        setEnrolled(cou.Enrolled)
+    const fetchData = async () => {
+      const url = `http://localhost:4000/courses/Enrolled/`
+      // const requestOptions = {
+      //   method: "GET",
+      // };
+      const header = await createToken()
+      fetch(url, {
+        method: 'GET',
+        credentials: 'include',
+        headers: header.headers
       })
-      .catch(error => console.log(error.message))
-    return () => {
-      unsubscribe
+        .then(async response => {
+          const cou = await response.json()
+          console.log(cou)
+          setEnrolled(cou.Enrolled)
+        })
+        .catch(error => console.log(error.message))
     }
+    fetchData()
   }, [rerender])
   const enrollCourse = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault()
@@ -137,14 +134,14 @@ function CourseDetails () {
                     </span>
                   </p>
                   {/* Score */}
-                  <div className='flex-col m-6'>
+                  {/* <div className='flex-col m-6'>
                     <p className='text-xs font-sans font-semibold pl-2'>
                       Chapter Progress : 0/30 completed(25%)
                     </p>
                     <div className='bg-gray-300 h-2 rounded-3xl m-2'>
                       <div className='bg-blue-600 w-1/4 h-2 rounded-3xl'></div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -156,35 +153,19 @@ function CourseDetails () {
                   </p>
                   <br />
                   <div className='flex flex-wrap'>
-                    <p className='text-xs font-sans text-left pl-10 w-1/2'>
-                      <FontAwesomeIcon icon={faCircleCheck} size={'1x'} /> Build
-                      powerful, fast, user-friendly and reactive web apps.
-                    </p>
+                    {course &&
+                      Object.keys(course.courseOutcome)?.map(id => (
+                        <h1 className='text-xs font-sans text-left pl-10 w-1/2'>
+                          <FontAwesomeIcon icon={faCircleCheck} size={'1x'} />{' '}
+                          {course?.courseOutcome[id]}
+                        </h1>
+                      ))}
                     <br />
-
-                    <p className='text-xs font-sans text-left pl-10 w-1/2'>
-                      {' '}
-                      <FontAwesomeIcon icon={faCircleCheck} size={'1x'} />
-                      Apply for high-paid jobs or work as a freelancer in one
-                      the most-demanded sectors you can find in web dev right
-                      now
-                    </p>
-                    <br />
-                    <p className='text-xs font-sans text-left pl-10 pt-10 w-1/2'>
-                      <FontAwesomeIcon icon={faCircleCheck} size={'1x'} />{' '}
-                      Provide amazing user experiences by leveraging the power
-                      of JavaScript with ease
-                    </p>
-
-                    <p className='text-xs font-sans pl-10 pt-10 w-1/2'>
-                      <FontAwesomeIcon icon={faCircleCheck} size={'1x'} /> Learn
-                      all about React Hooks and React Components
-                    </p>
                   </div>
                 </div>
               </div>
             </div>
-            <p className='text-4xl font-sans font-bold text-left pl-10'>
+            {/* <p className='text-4xl font-sans font-bold text-left pl-10'>
               Course Content
             </p>
             <div className='flex-col w-full mb-20 h-full'>
@@ -219,7 +200,7 @@ function CourseDetails () {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className='flex flex-col basis-1/5 rounded-br-2xl h-full relative'>
             <div className='flex-col h-10'></div>
