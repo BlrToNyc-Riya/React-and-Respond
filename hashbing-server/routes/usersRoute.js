@@ -11,6 +11,7 @@ const {
   objectIdToString,
   isValidEmail,
 } = require("../utils/utils");
+const decodeIDToken = require("../middlewares/authMiddleware");
 
 //Multer Functions required
 const storage = multer.diskStorage({
@@ -28,18 +29,19 @@ const upload = multer({
   },
 }).single("myImage");
 
-router.post("/upload", async (req, res)=> {
-  try{
-  console.log("File is", req.file);
-  upload(req, res, async function (err) {
-    console.log("Request ---", req.body);
-    console.log("Request file ---", req.file); //Here you get file.
-    await users.uploadPic(req.session.userid, req.file);
-    if (!err) {
-      return res.sendStatus(200).send(err);
-    }
-  });}
-  catch(e){
+router.post("/upload", decodeIDToken, async (req, res) => {
+  try {
+    console.log("File is", req.file);
+    upload(req, res, async function (err) {
+      console.log(req.session.userid);
+      console.log("Request ---", req.body);
+      console.log("Request file ---", req.file); //Here you get file.
+      await users.uploadPic(req.session.userid, req.file);
+      if (!err) {
+        return res.sendStatus(200).send(err);
+      }
+    });
+  } catch (e) {
     console.log("err>>>>>>>>>>>>>>>>>>>>>>", e);
     return res.json({ error: e });
   }
@@ -51,7 +53,7 @@ router.post("/upload", async (req, res)=> {
 //     console.log("Request ---", req.body);
 //     console.log("Request file ---", req.file); //Here you get file.
 //     /*Now do where ever you want to do*/
-    
+
 //     if (!err) {
 //       return res.sendStatus(200).send(err);
 //     }
@@ -103,22 +105,18 @@ router.post("/signin", async (req, res) => {
 });
 
 router.put("/profile", async (req, res) => {
-	try {
-	  const email  = req.session.userid;
-	  const {phoneNumber, bio} = req.body;
-	  if(!email)
-		throw "please login first to update your profile..."
-	  const user = await users.getUserByEmail(email);
-	  if(!user)
-		throw "Invalid login, try again"
-      const updatedUser = await users.updateUser(phoneNumber,bio,email);
-	  if(!updatedUser)
-		throw "Could not update the user";
-	  res.json(updatedUser);
-	  
-	} catch (error) {
-	  res.status(400).send(error?.message ?? error); //need to render
-	}
-  });
+  try {
+    const email = req.session.userid;
+    const { phoneNumber, bio } = req.body;
+    if (!email) throw "please login first to update your profile...";
+    const user = await users.getUserByEmail(email);
+    if (!user) throw "Invalid login, try again";
+    const updatedUser = await users.updateUser(phoneNumber, bio, email);
+    if (!updatedUser) throw "Could not update the user";
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(400).send(error?.message ?? error); //need to render
+  }
+});
 
 module.exports = router;

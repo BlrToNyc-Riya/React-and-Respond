@@ -14,7 +14,7 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import { auth } from "../firebase";
+import { auth, createToken } from "../firebase";
 import logo1 from "../Images/google-logo.png";
 import firebase from "firebase";
 
@@ -113,11 +113,12 @@ function Signup() {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
-        .then((auth) => {
+        .then(async (auth) => {
           auth.user?.updateProfile({ displayName: firstName });
           console.log(firstName);
           if (auth) {
             const url = "http://localhost:4000/users/signup";
+            const header = await createToken();
             // const requestOptions = {
             //   method: "POST",
             //   headers: { "Content-Type": "application/json" },
@@ -125,7 +126,7 @@ function Signup() {
             // };
             fetch(url, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: header.headers,
               body: JSON.stringify({ firstName, lastName, email }),
               credentials: "include",
             })
