@@ -43,10 +43,49 @@ function Users() {
   const submitBtn = useRef<HTMLButtonElement>(null);
   const [courses, setCourses] = useState<courseDet[]>();
   const navigate = useNavigate();
+  const [selection, setSelection] = useState("Profile");
   const [rerender, setRerender] = useState(false);
+  const [toggleEditFirstName, setToggleEditFirstName] = useState(false);
+  const [toggleEditLastName, setToggleEditLastName] = useState(false);
   const [authored, setAuthored] = useState<String[]>();
   const [enrolled, setEnrolled] = useState<String[]>([]);
+  const profileField = useRef<HTMLDivElement>(null);
+  const enrolledField = useRef<HTMLDivElement>(null);
+  const authoredField = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (selection === "Profile") {
+      if (
+        profileField.current != null &&
+        enrolledField.current != null &&
+        authoredField.current != null
+      ) {
+        profileField.current.style.backgroundColor = "#60A5FA";
+        enrolledField.current.style.backgroundColor = "white";
+        authoredField.current.style.backgroundColor = "white";
+      }
+    } else if (selection === "Enrolled") {
+      if (
+        profileField.current != null &&
+        enrolledField.current != null &&
+        authoredField.current != null
+      ) {
+        enrolledField.current.style.backgroundColor = "#60A5FA";
+        profileField.current.style.backgroundColor = "white";
+        authoredField.current.style.backgroundColor = "white";
+      }
+    } else if (selection === "Authored") {
+      if (
+        profileField.current != null &&
+        enrolledField.current != null &&
+        authoredField.current != null
+      ) {
+        authoredField.current.style.backgroundColor = "#60A5FA";
+        enrolledField.current.style.backgroundColor = "white";
+        profileField.current.style.backgroundColor = "white";
+      }
+    }
+  });
   useEffect(() => {
     const fetchCourses = async () => {
       const header = await createToken();
@@ -206,6 +245,23 @@ function Users() {
       });
   };
 
+  const onProfileChange = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const header = await createToken();
+    const url = "http://localhost:4000/users/profileUpdate";
+    // const config = {
+    //   headers: { "content-Type": "multipart/form-data" },
+    // };
+    axios
+      .post(url, header)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="flex bg-white w-screen rounded-2xl">
       <div className="flex flex-col w-full h-full rounded-2xl">
@@ -256,157 +312,257 @@ function Users() {
           </div>
           <br />
           <br />
-          <div className="flex flex-col justify-left ml-10">
-            <p className="font-bold text-xl text-center underline mb-6">
-              Profile :
-            </p>
-            <form action="">
-              <p className="font-bold text-lg">
-                Name:
-                <span className="font-semibold ml-1 mr-1">John</span>
-                <span className="font-semibold">Wick</span>
-              </p>
-              <p className="font-bold text-lg">
-                Email:
-                <span className="font-semibold ml-2">Johnwick@hotmail.com</span>
-              </p>
-            </form>
+          <div className="flex w-screen bg-white">
+            <div
+              className="flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer"
+              onClick={() => setSelection("Profile")}
+              ref={profileField}
+            >
+              Profile
+            </div>
+            <div
+              className="flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer"
+              onClick={() => setSelection("Enrolled")}
+              ref={enrolledField}
+            >
+              Enrolled
+            </div>
+            <div
+              className="flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer"
+              onClick={() => setSelection("Authored")}
+              ref={authoredField}
+            >
+              Authored
+            </div>
           </div>
-          <br />
-          <div className="flex flex-col justify-left ml-4 mb-10">
-            <p className="font-bold text-xl text-center underline mb-2">
-              Enrolled Courses :
-            </p>
-            <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
-              {courses?.map(
-                (course) =>
-                  enrolled.includes(course._id) && (
-                    <div
-                      className="flex cursor-pointer h-80 top-10"
-                      key={course._id}
-                    >
-                      <div className="flex-col h-full bg-white shadow-2xl">
-                        {/* Img */}
-                        <div className="flex justify-center">
-                          <img
-                            src={logo}
-                            alt=""
-                            className="h-40 w-full object-fill"
-                          />
-                        </div>
-                        {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
-                        {/* Topic */}
-                        <div className="flex-col">
-                          <div className="flex-col min-h-16">
-                            <p className="text-lg font-sans font-bold text-center pl-2">
-                              {course?.title}
-                            </p>
+          {selection === "Profile" ? (
+            <div className="flex p-20 justify-left ml-10 h-full">
+              <form onSubmit={onProfileChange}>
+                <p className="font-bold text-lg">
+                  First Name:
+                  {toggleEditFirstName == false ? (
+                    <span>
+                      <span className="font-semibold ml-1 mr-1">John</span>
+                      <FontAwesomeIcon
+                        icon={faPencilAlt}
+                        className="relative"
+                        color={"black"}
+                        size={"1x"}
+                        id="pencil_icon_1"
+                        onClick={() =>
+                          setToggleEditFirstName(!toggleEditFirstName)
+                        }
+                      />
+                    </span>
+                  ) : (
+                    <span>
+                      <input
+                        type="text"
+                        className=" bg-sky-200 placeholder-black"
+                        required
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                      />{" "}
+                      &nbsp;
+                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
+                        Submit
+                      </button>
+                      <FontAwesomeIcon
+                        icon={faPencilAlt}
+                        className="relative"
+                        color={"black"}
+                        size={"1x"}
+                        id="pencil_icon_1"
+                        onClick={() =>
+                          setToggleEditFirstName(!toggleEditFirstName)
+                        }
+                      />
+                    </span>
+                  )}
+                </p>
+                <br />
+                <p className="font-bold text-lg">
+                  Last Name:
+                  {toggleEditLastName == false ? (
+                    <span>
+                      <span className="font-semibold ml-1 mr-1">Wick</span>
+                      <FontAwesomeIcon
+                        icon={faPencilAlt}
+                        className="relative"
+                        color={"black"}
+                        size={"1x"}
+                        onClick={() =>
+                          setToggleEditLastName(!toggleEditLastName)
+                        }
+                      />
+                    </span>
+                  ) : (
+                    <span>
+                      <input
+                        type="text"
+                        className=" bg-sky-200 placeholder-black"
+                        required
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                      />{" "}
+                      &nbsp;
+                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
+                        Submit
+                      </button>
+                      <FontAwesomeIcon
+                        icon={faPencilAlt}
+                        className="relative"
+                        color={"black"}
+                        size={"1x"}
+                        onClick={() =>
+                          setToggleEditLastName(!toggleEditLastName)
+                        }
+                      />
+                    </span>
+                  )}
+                </p>
+                <br />
+                <p className="font-bold text-lg">
+                  Email:
+                  <span className="font-semibold ml-2">
+                    Johnwick@hotmail.com
+                  </span>
+                </p>
+              </form>
+            </div>
+          ) : selection === "Enrolled" ? (
+            <div className="flex flex-col justify-left ml-4 mb-10">
+              <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
+                {courses?.map(
+                  (course) =>
+                    enrolled.includes(course._id) && (
+                      <div
+                        className="flex cursor-pointer h-80 top-10"
+                        key={course._id}
+                      >
+                        <div className="flex-col h-full bg-white shadow-2xl">
+                          {/* Img */}
+                          <div className="flex justify-center">
+                            <img
+                              src={logo}
+                              alt=""
+                              className="h-40 w-full object-fill"
+                            />
                           </div>
-                          {/* Score */}
-                          <div className="flex-col mt-4">
-                            <p className="text-xs font-sans font-semibold text-gray-500 pl-2">
-                              Chapter Progress : 0/30 completed(25%)
-                            </p>
-                            <div className="bg-gray-300 h-2 rounded-3xl m-2">
-                              <div className="bg-blue-400 w-1/4 h-2 rounded-3xl"></div>
+                          {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
+                          {/* Topic */}
+                          <div className="flex-col">
+                            <div className="flex-col min-h-16">
+                              <p className="text-lg font-sans font-bold text-center pl-2">
+                                {course?.title}
+                              </p>
                             </div>
-                          </div>
-                          {/* Details Section */}
-                          <div className="flex-col mt-4 bg-white">
-                            <div className="flex justify-center">
-                              {enrolled?.includes(course._id) ? (
-                                <button
-                                  className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
-                                  onClick={(e) =>
-                                    unregisterCourse(e, course._id)
-                                  }
-                                >
-                                  Unregister
-                                </button>
-                              ) : (
-                                <button
-                                  className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
-                                  onClick={(e) => enrollCourse(e, course._id)}
-                                >
-                                  Enroll
-                                </button>
-                              )}
+                            {/* Score */}
+                            <div className="flex-col mt-4">
+                              <p className="text-xs font-sans font-semibold text-gray-500 pl-2">
+                                Chapter Progress : 0/30 completed(25%)
+                              </p>
+                              <div className="bg-gray-300 h-2 rounded-3xl m-2">
+                                <div className="bg-blue-400 w-1/4 h-2 rounded-3xl"></div>
+                              </div>
+                            </div>
+                            {/* Details Section */}
+                            <div className="flex-col mt-4 bg-white">
+                              <div className="flex justify-center">
+                                {enrolled?.includes(course._id) ? (
+                                  <button
+                                    className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                    onClick={(e) =>
+                                      unregisterCourse(e, course._id)
+                                    }
+                                  >
+                                    Unregister
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                    onClick={(e) => enrollCourse(e, course._id)}
+                                  >
+                                    Enroll
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )
-              )}
+                    )
+                )}
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col justify-left ml-4 m">
-            <p className="font-bold text-xl text-center underline mb-2">
-              Courses Authored:
-            </p>
-            <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
-              {courses?.map(
-                (course) =>
-                  authored?.includes(course._id) && (
-                    <div
-                      className="flex cursor-pointer h-80 top-10"
-                      key={course._id}
-                    >
-                      <div className="flex-col h-full bg-white shadow-2xl">
-                        {/* Img */}
-                        <div className="flex justify-center">
-                          <img
-                            src={logo}
-                            alt=""
-                            className="h-40 w-full object-fill"
-                          />
-                        </div>
-                        {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
-                        {/* Topic */}
-                        <div className="flex-col">
-                          <div className="flex-col min-h-16">
-                            <p className="text-lg font-sans font-bold text-center pl-2">
-                              {course?.title}
-                            </p>
+          ) : selection === "Authored" ? (
+            <div className="flex flex-col justify-left ml-4 m">
+              <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
+                {courses?.map(
+                  (course) =>
+                    authored?.includes(course._id) && (
+                      <div
+                        className="flex cursor-pointer h-80 top-10"
+                        key={course._id}
+                      >
+                        <div className="flex-col h-full bg-white shadow-2xl">
+                          {/* Img */}
+                          <div className="flex justify-center">
+                            <img
+                              src={logo}
+                              alt=""
+                              className="h-40 w-full object-fill"
+                            />
                           </div>
-                          {/* Score */}
-                          <div className="flex-col mt-4 bg-white">
-                            <p className="text-xs font-sans font-semibold text-gray-500 pl-2">
-                              Chapter Progress : 0/30 completed(25%)
-                            </p>
-                            <div className="bg-gray-300 h-2 rounded-3xl m-2">
-                              <div className="bg-blue-400 w-1/4 h-2 rounded-3xl"></div>
+                          {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
+                          {/* Topic */}
+                          <div className="flex-col">
+                            <div className="flex-col min-h-16">
+                              <p className="text-lg font-sans font-bold text-center pl-2">
+                                {course?.title}
+                              </p>
                             </div>
-                          </div>
-                          {/* Details Section */}
-                          <div className="flex-col mt-4 bg-white">
-                            <div className="flex justify-center">
-                              {enrolled?.includes(course._id) ? (
-                                <button
-                                  className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
-                                  onClick={(e) =>
-                                    unregisterCourse(e, course._id)
-                                  }
-                                >
-                                  Unregister
-                                </button>
-                              ) : (
-                                <button
-                                  className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
-                                  onClick={(e) => enrollCourse(e, course._id)}
-                                >
-                                  Enroll
-                                </button>
-                              )}
+                            {/* Score */}
+                            <div className="flex-col mt-4 bg-white">
+                              <p className="text-xs font-sans font-semibold text-gray-500 pl-2">
+                                Chapter Progress : 0/30 completed(25%)
+                              </p>
+                              <div className="bg-gray-300 h-2 rounded-3xl m-2">
+                                <div className="bg-blue-400 w-1/4 h-2 rounded-3xl"></div>
+                              </div>
+                            </div>
+                            {/* Details Section */}
+                            <div className="flex-col mt-4 bg-white">
+                              <div className="flex justify-center">
+                                {enrolled?.includes(course._id) ? (
+                                  <button
+                                    className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                    onClick={(e) =>
+                                      unregisterCourse(e, course._id)
+                                    }
+                                  >
+                                    Unregister
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                    onClick={(e) => enrollCourse(e, course._id)}
+                                  >
+                                    Enroll
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )
-              )}
+                    )
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>
