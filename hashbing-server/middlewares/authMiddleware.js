@@ -11,6 +11,7 @@ async function decodeIDToken(req, res, next) {
 		next();
 	} else {
 		const header = req.headers?.authorization;
+
 		if (
 			header !== 'Bearer null' &&
 			req.headers?.authorization?.startsWith('Bearer ')
@@ -22,11 +23,11 @@ async function decodeIDToken(req, res, next) {
 				console.log(chalk.blue('===> authenticated'));
 				next();
 			} catch (err) {
-				console.log(err);
+				console.log('error in auth', err);
 				return res.json({ error: 'Unauthorized user' });
 				// next();
 			}
-		}
+		} else return res.status(403).json({ error: 'Unauthorized user' });
 		// next();
 	}
 	// return next();

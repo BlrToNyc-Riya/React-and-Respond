@@ -186,4 +186,23 @@ router.delete("/:id", decodeIDToken, async (req, res) => {
     return res.json({ error: err });
   }
 });
+
+router.get('/user/enrolled/:id', decodeIDToken, async (req, res) => {
+	try {
+		isValidObjectId(req.params.id);
+		console.log('testing');
+		const course = await courses.getCourseByIdPerUser(
+			req.params.id.toString(),
+			req.session.user.email
+		);
+		console.log('course', course);
+		if (!course) {
+			throw { message: 'Invalid course Id', status: 404 };
+		}
+		return res.status(200).json(course);
+	} catch (err) {
+		console.log('err', err);
+		return res.status(err?.status || 500).json(err);
+	}
+});
 module.exports = router;
