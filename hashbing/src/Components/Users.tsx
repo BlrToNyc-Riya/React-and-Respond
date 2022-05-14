@@ -46,12 +46,17 @@ type userDetail = {
   courseAuthored: [string];
   firstName: string;
   lastName: string;
+  bio: string;
+  phoneNumber: string;
 };
+
 function Users() {
   const [images, setImages] = useState<File>();
   const [profilePic, setProfilePic] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [bio, setBio] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const fileInput = useRef<HTMLInputElement>(null);
   const submitBtn = useRef<HTMLButtonElement>(null);
   const [courses, setCourses] = useState<courseDet[]>();
@@ -60,12 +65,15 @@ function Users() {
   const [rerender, setRerender] = useState(false);
   const [toggleEditFirstName, setToggleEditFirstName] = useState(false);
   const [toggleEditLastName, setToggleEditLastName] = useState(false);
+  const [toggleEditBio, setToggleEditBio] = useState(false);
+  const [toggleEditPhoneNo, setToggleEditPhoneNo] = useState(false);
   const [authored, setAuthored] = useState<String[]>();
   const [enrolled, setEnrolled] = useState<String[]>([]);
   const [user, setUser] = useState<userDetail>();
   const profileField = useRef<HTMLDivElement>(null);
   const enrolledField = useRef<HTMLDivElement>(null);
   const authoredField = useRef<HTMLDivElement>(null);
+  const error = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (selection === 'Profile') {
@@ -229,24 +237,34 @@ function Users() {
     e: React.MouseEvent<HTMLButtonElement>,
     id: string
   ) => {
+    console.log('entered');
     const header = await createToken();
-    const url = `http://localhost:4000/courses/${id}/delete`;
+    const url = `http://localhost:4000/courses/${id}`;
     // const requestOptions = {
     //   method: "PUT",
     //   headers: { "Content-Type": "application/json" },
     //   body: JSON.stringify({ email }),
     //   credentials: "same-origin",
     // };
-    fetch(url, {
-      method: 'DELETE',
-      headers: header.headers,
-      credentials: 'include',
-    })
+    axios
+      .delete(url, header)
       .then((response) => {
-        console.log('Status Changed Successfully');
+        console.log(response);
         setRerender(!rerender);
       })
-      .catch((error) => console.log(error.message));
+      .catch((error) => {
+        console.log(error);
+      });
+    // fetch(url, {
+    //   method: 'DELETE',
+    //   headers: header.headers,
+    //   credentials: 'include',
+    // })
+    //   .then((response) => {
+    //     console.log('Status Changed Successfully');
+    //     setRerender(!rerender);
+    //   })
+    //   .catch((error) => console.log(error.message));
   };
   useEffect(() => {
     const fetchToken = async () => {
@@ -310,15 +328,32 @@ function Users() {
 
   const onProfileChange = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log('entered');
+    if (error.current != null) {
+      error.current.style.display = 'none';
+    }
     const header = await createToken();
     const url = 'http://localhost:4000/users/profile';
+    if (!phoneNumber.match(/^\d\d\d\d\d\d\d\d\d\d$/)) {
+      if (error.current != null) {
+        error.current.innerText =
+          'Incorrect Phone number format! Phone number should be made up of 10 digits.';
+        error.current.style.display = 'flex';
+        return;
+      }
+    }
     // const config = {
     //   headers: { "content-Type": "multipart/form-data" },
     // };
     axios
-      .put(url, header)
+      .put(url, { bio, phoneNumber }, header)
       .then((response) => {
         console.log(response);
+        setRerender(!rerender);
+        setToggleEditFirstName(false);
+        setToggleEditLastName(false);
+        setToggleEditBio(false);
+        setToggleEditPhoneNo(false);
       })
       .catch((error) => {
         console.log(error);
@@ -493,6 +528,83 @@ function Users() {
                   Email:
                   <span className="font-semibold ml-2">{user?.email}</span>
                 </p>
+                <br />
+                <p className="font-bold text-lg">
+                  Bio:
+                  {toggleEditBio == false ? (
+                    <span>
+                      <span className="font-semibold ml-1 mr-1">
+                        {user?.bio}
+                      </span>
+                      <FontAwesomeIcon
+                        icon={faPencilAlt}
+                        className="relative"
+                        color={'black'}
+                        size={'1x'}
+                        onClick={() => setToggleEditBio(!toggleEditBio)}
+                      />
+                    </span>
+                  ) : (
+                    <span>
+                      <input
+                        type="text"
+                        className=" bg-sky-200 placeholder-black"
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                      />{' '}
+                      &nbsp;
+                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
+                        Submit
+                      </button>
+                      <FontAwesomeIcon
+                        icon={faPencilAlt}
+                        className="relative"
+                        color={'black'}
+                        size={'1x'}
+                        onClick={() => setToggleEditBio(!toggleEditBio)}
+                      />
+                    </span>
+                  )}
+                </p>
+                <br />
+                <p className="font-bold text-lg">
+                  PhoneNumber:
+                  {toggleEditPhoneNo == false ? (
+                    <span>
+                      <span className="font-semibold ml-1 mr-1">
+                        {user?.phoneNumber}
+                      </span>
+                      <FontAwesomeIcon
+                        icon={faPencilAlt}
+                        className="relative"
+                        color={'black'}
+                        size={'1x'}
+                        onClick={() => setToggleEditPhoneNo(!toggleEditPhoneNo)}
+                      />
+                    </span>
+                  ) : (
+                    <span>
+                      <input
+                        type="text"
+                        className=" bg-sky-200 placeholder-black"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                      />{' '}
+                      &nbsp;
+                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
+                        Submit
+                      </button>
+                      <FontAwesomeIcon
+                        icon={faPencilAlt}
+                        className="relative"
+                        color={'black'}
+                        size={'1x'}
+                        onClick={() => setToggleEditPhoneNo(!toggleEditPhoneNo)}
+                      />
+                    </span>
+                  )}
+                </p>
+                <div className="hidden text-red-500" ref={error}></div>
               </form>
             </div>
           ) : selection === 'Enrolled' ? (
