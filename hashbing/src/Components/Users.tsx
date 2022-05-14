@@ -1,9 +1,12 @@
 import { FontawesomeObject } from "@fortawesome/fontawesome-svg-core";
 import {
+  faClipboardCheck,
   faEdit,
   faPencil,
   faPencilAlt,
+  faTrash,
   faUser,
+  faXmarkSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   FontAwesomeIcon,
@@ -32,6 +35,8 @@ type courseDet = {
   courseOutcome2: string;
   courseOutcome3: string;
   courseOutcome4: string;
+  topicsTagged: [string];
+  author: string;
 };
 
 function Users() {
@@ -185,6 +190,29 @@ function Users() {
       .catch((error) => console.log(error.message));
   };
 
+  const deleteCourse = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    id: string
+  ) => {
+    const header = await createToken();
+    const url = `http://localhost:4000/courses/${id}/delete`;
+    // const requestOptions = {
+    //   method: "PUT",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ email }),
+    //   credentials: "same-origin",
+    // };
+    fetch(url, {
+      method: "DELETE",
+      headers: header.headers,
+      credentials: "include",
+    })
+      .then((response) => {
+        console.log("Status Changed Successfully");
+        setRerender(!rerender);
+      })
+      .catch((error) => console.log(error.message));
+  };
   useEffect(() => {
     const fetchToken = async () => {
       const header = await createToken();
@@ -336,7 +364,7 @@ function Users() {
             </div>
           </div>
           {selection === "Profile" ? (
-            <div className="flex p-20 justify-left ml-10 h-full">
+            <div className="flex p-20 justify-left ml-10 h-screen">
               <form onSubmit={onProfileChange}>
                 <p className="font-bold text-lg">
                   First Name:
@@ -431,134 +459,181 @@ function Users() {
               </form>
             </div>
           ) : selection === "Enrolled" ? (
-            <div className="flex flex-col justify-left ml-4 mb-10">
-              <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
-                {courses?.map(
-                  (course) =>
-                    enrolled.includes(course._id) && (
-                      <div
-                        className="flex cursor-pointer h-80 top-10"
-                        key={course._id}
-                      >
-                        <div className="flex-col h-full bg-white shadow-2xl">
-                          {/* Img */}
-                          <div className="flex justify-center">
-                            <img
-                              src={logo}
-                              alt=""
-                              className="h-40 w-full object-fill"
-                            />
-                          </div>
-                          {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
-                          {/* Topic */}
-                          <div className="flex-col">
-                            <div className="flex-col min-h-16">
-                              <p className="text-lg font-sans font-bold text-center pl-2">
-                                {course?.title}
-                              </p>
+            <div className="flex flex-col justify-left ml-4 mb-10 h-screen">
+              {enrolled?.length === 0 ? (
+                <div className="flex bg-gray-200 min-h-screen rounded-b-2xl p-20 shadow-2xl items-start justify-center h-3/4">
+                  <p className="text-xl font-semibold">
+                    No Courses enrolled by the user. Enroll for a course and
+                    come back!
+                  </p>
+                </div>
+              ) : (
+                <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
+                  {courses?.map(
+                    (course) =>
+                      enrolled.includes(course._id) && (
+                        <div
+                          className="flex cursor-pointer h-80 top-10"
+                          key={course._id}
+                        >
+                          <div className="flex-col h-full bg-white shadow-2xl">
+                            {/* Img */}
+                            <div className="flex justify-center">
+                              <img
+                                src={logo}
+                                alt=""
+                                className="h-40 w-full object-fill"
+                              />
                             </div>
-                            {/* Score */}
-                            <div className="flex-col mt-4">
-                              <p className="text-xs font-sans font-semibold text-gray-500 pl-2">
-                                Chapter Progress : 0/30 completed(25%)
-                              </p>
-                              <div className="bg-gray-300 h-2 rounded-3xl m-2">
-                                <div className="bg-blue-400 w-1/4 h-2 rounded-3xl"></div>
+                            {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
+                            {/* Topic */}
+                            <div className="flex-col">
+                              <div className="flex-col min-h-16">
+                                <p className="text-lg font-sans font-bold text-center pl-2">
+                                  {course?.title}
+                                </p>
                               </div>
-                            </div>
-                            {/* Details Section */}
-                            <div className="flex-col mt-4 bg-white">
-                              <div className="flex justify-center">
-                                {enrolled?.includes(course._id) ? (
-                                  <button
-                                    className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
-                                    onClick={(e) =>
-                                      unregisterCourse(e, course._id)
-                                    }
+                              <div className="flex-col">
+                                <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
+                                  Created by:{" "}
+                                  <span className="text-black">
+                                    {course?.author}
+                                  </span>
+                                </p>
+                              </div>
+                              {/* Tags */}
+                              <div className="flex-grow mt-4">
+                                {course?.topicsTagged?.map((tag) => (
+                                  <span
+                                    className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
+                                    key={tag}
                                   >
-                                    Unregister
-                                  </button>
-                                ) : (
-                                  <button
-                                    className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
-                                    onClick={(e) => enrollCourse(e, course._id)}
-                                  >
-                                    Enroll
-                                  </button>
-                                )}
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
+                              {/* Details Section */}
+                              <div className="flex-col mt-4 bg-white">
+                                <div className="flex justify-center">
+                                  {enrolled?.includes(course._id) ? (
+                                    <button
+                                      className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                      onClick={(e) =>
+                                        unregisterCourse(e, course._id)
+                                      }
+                                    >
+                                      Unregister &nbsp;
+                                      <FontAwesomeIcon
+                                        icon={faXmarkSquare}
+                                        className="relative"
+                                        color={"white"}
+                                        size={"1x"}
+                                      />
+                                    </button>
+                                  ) : (
+                                    <button
+                                      className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                      onClick={(e) =>
+                                        enrollCourse(e, course._id)
+                                      }
+                                    >
+                                      Enroll &nbsp;
+                                      <FontAwesomeIcon
+                                        icon={faClipboardCheck}
+                                        className="relative"
+                                        color={"white"}
+                                        size={"1x"}
+                                      />
+                                    </button>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )
-                )}
-              </div>
+                      )
+                  )}
+                </div>
+              )}
             </div>
           ) : selection === "Authored" ? (
-            <div className="flex flex-col justify-left ml-4 m">
-              <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
-                {courses?.map(
-                  (course) =>
-                    authored?.includes(course._id) && (
-                      <div
-                        className="flex cursor-pointer h-80 top-10"
-                        key={course._id}
-                      >
-                        <div className="flex-col h-full bg-white shadow-2xl">
-                          {/* Img */}
-                          <div className="flex justify-center">
-                            <img
-                              src={logo}
-                              alt=""
-                              className="h-40 w-full object-fill"
-                            />
-                          </div>
-                          {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
-                          {/* Topic */}
-                          <div className="flex-col">
-                            <div className="flex-col min-h-16">
-                              <p className="text-lg font-sans font-bold text-center pl-2">
-                                {course?.title}
-                              </p>
+            <div className="flex flex-col justify-left ml-4 h-screen">
+              {authored?.length === 0 ? (
+                <div className="flex bg-gray-200 min-h-screen rounded-b-2xl p-20 shadow-2xl items-start justify-center h-3/4">
+                  <p className="text-xl font-semibold">
+                    The user has not authored any Courses! Feel free to add a
+                    new course!
+                  </p>
+                </div>
+              ) : (
+                <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
+                  {courses?.map(
+                    (course) =>
+                      authored?.includes(course._id) && (
+                        <div
+                          className="flex cursor-pointer h-80 top-10"
+                          key={course._id}
+                        >
+                          <div className="flex-col h-full bg-white shadow-2xl">
+                            {/* Img */}
+                            <div className="flex justify-center">
+                              <img
+                                src={logo}
+                                alt=""
+                                className="h-40 w-full object-fill"
+                              />
                             </div>
-                            {/* Score */}
-                            <div className="flex-col mt-4 bg-white">
-                              <p className="text-xs font-sans font-semibold text-gray-500 pl-2">
-                                Chapter Progress : 0/30 completed(25%)
-                              </p>
-                              <div className="bg-gray-300 h-2 rounded-3xl m-2">
-                                <div className="bg-blue-400 w-1/4 h-2 rounded-3xl"></div>
+                            {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
+                            {/* Topic */}
+                            <div className="flex-col">
+                              <div className="flex-col min-h-16">
+                                <p className="text-lg font-sans font-bold text-center pl-2">
+                                  {course?.title}
+                                </p>
                               </div>
-                            </div>
-                            {/* Details Section */}
-                            <div className="flex-col mt-4 bg-white">
-                              <div className="flex justify-center">
-                                {enrolled?.includes(course._id) ? (
+                              <div className="flex-col">
+                                <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
+                                  Created by:{" "}
+                                  <span className="text-black">
+                                    {course?.author}
+                                  </span>
+                                </p>
+                              </div>
+                              {/* Tags */}
+                              <div className="flex-grow mt-4">
+                                {course?.topicsTagged?.map((tag) => (
+                                  <span
+                                    className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
+                                    key={tag}
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
+                              {/* Details Section */}
+                              <div className="flex-col mt-4 bg-white">
+                                <div className="flex justify-center">
                                   <button
                                     className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
-                                    onClick={(e) =>
-                                      unregisterCourse(e, course._id)
-                                    }
+                                    onClick={(e) => deleteCourse(e, course._id)}
                                   >
-                                    Unregister
+                                    Delete Course &nbsp;
+                                    <FontAwesomeIcon
+                                      icon={faTrash}
+                                      className="relative"
+                                      color={"white"}
+                                      size={"1x"}
+                                    />
                                   </button>
-                                ) : (
-                                  <button
-                                    className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
-                                    onClick={(e) => enrollCourse(e, course._id)}
-                                  >
-                                    Enroll
-                                  </button>
-                                )}
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )
-                )}
-              </div>
+                      )
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <></>

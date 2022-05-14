@@ -264,16 +264,6 @@ const Login: React.FunctionComponent = () => {
                     Send Reset Password Link to Email
                   </span>
                 </div>
-                <div className="flex justify-center">
-                  <p className="text-sm font-semibold text-blue-400">
-                    Want to teach?
-                  </p>{" "}
-                  <Link to="/tutorlogin">
-                    <span className="text-sm ml-1 font-semibold text-gray-500 cursor-pointer">
-                      Tutor Login
-                    </span>
-                  </Link>
-                </div>
               </div>
             </div>
           </div>
