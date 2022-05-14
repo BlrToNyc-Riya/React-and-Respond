@@ -147,13 +147,13 @@ router.post("/signinwithgoogle", async (req, res) => {
 router.put("/profile", decodeIDToken, async (req, res) => {
   try {
     const email = req.session.user.email;
-    const { phoneNumber, bio } = req.body;
+    const { firstName, lastName, bio } = req.body;
     if (!email) throw "please login first to update your profile...";
     const user = await users.getUserByEmail(email);
-    if (!phoneNumber && !bio) res.json(user);
+    if (!firstName && !bio && !lastName) res.json(user);
     else {
       if (!user) throw "Invalid login, try again";
-      const updatedUser = await users.updateUser(phoneNumber, bio, email);
+      const updatedUser = await users.updateUser(firstName, lastName, bio, email);
       if (!updatedUser) throw "Could not update the user";
       res.json(updatedUser);
     }
