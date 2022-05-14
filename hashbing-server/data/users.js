@@ -71,15 +71,17 @@ module.exports = {
 		
 		throw 'Invalid username or password';
 	},
-	async updateUser(phoneNumber="", bio="",email){
+	async updateUser(firstName="",lastName="", bio="",email){
 		if(!email)
 			throw "You must be signed in to update profile..";
 		const userCollection = await users();
 		const user = await userCollection.findOne({ email });
 		if(!user)
 			throw "Could not fetch user data";
-		if(phoneNumber !="")
-			user.phoneNumber = phoneNumber;
+		if(firstName !="")
+			user.firstName = firstName;
+		if(lastName != "")
+			user.lastName = lastName;
 		if(bio !="")
 			user.bio = bio;
 
