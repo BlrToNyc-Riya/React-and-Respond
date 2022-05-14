@@ -53,10 +53,9 @@ type userDetail = {
 function Users() {
   const [images, setImages] = useState<File>();
   const [profilePic, setProfilePic] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [bio, setBio] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [firstName, setFirstName] = useState<string | undefined>();
+  const [lastName, setLastName] = useState<string | undefined>();
+  const [bio, setBio] = useState<string | undefined>();
   const fileInput = useRef<HTMLInputElement>(null);
   const submitBtn = useRef<HTMLButtonElement>(null);
   const [courses, setCourses] = useState<courseDet[]>();
@@ -66,9 +65,8 @@ function Users() {
   const [toggleEditFirstName, setToggleEditFirstName] = useState(false);
   const [toggleEditLastName, setToggleEditLastName] = useState(false);
   const [toggleEditBio, setToggleEditBio] = useState(false);
-  const [toggleEditPhoneNo, setToggleEditPhoneNo] = useState(false);
-  const [authored, setAuthored] = useState<String[]>();
-  const [enrolled, setEnrolled] = useState<String[]>([]);
+  const [authored, setAuthored] = useState<string[]>();
+  const [enrolled, setEnrolled] = useState<string[]>([]);
   const [user, setUser] = useState<userDetail>();
   const profileField = useRef<HTMLDivElement>(null);
   const enrolledField = useRef<HTMLDivElement>(null);
@@ -126,6 +124,9 @@ function Users() {
           const userDetails = await response.json();
           console.log(userDetails);
           setUser(userDetails);
+          setFirstName(user?.firstName);
+          setLastName(user?.lastName);
+          setBio(user?.bio);
         })
         .catch((error) => console.log(error.message));
     };
@@ -334,33 +335,18 @@ function Users() {
     }
     const header = await createToken();
     const url = 'http://localhost:4000/users/profile';
-    console.log(phoneNumber);
-    let phoneNo;
-    if (phoneNumber !== '') {
-      phoneNo = phoneNumber;
-    } else {
-      phoneNo = user?.phoneNumber;
-    }
-    if (!phoneNo?.match(/^\d\d\d\d\d\d\d\d\d\d$/)) {
-      if (error.current != null) {
-        error.current.innerText =
-          'Incorrect Phone number format! Phone number should be made up of 10 digits.';
-        error.current.style.display = 'flex';
-        return;
-      }
-    }
+    console.log(bio);
     // const config = {
     //   headers: { "content-Type": "multipart/form-data" },
     // };
     axios
-      .put(url, { bio, phoneNumber: phoneNo }, header)
+      .put(url, { firstName, lastName, bio }, header)
       .then((response) => {
         console.log(response);
         setRerender(!rerender);
         setToggleEditFirstName(false);
         setToggleEditLastName(false);
         setToggleEditBio(false);
-        setToggleEditPhoneNo(false);
       })
       .catch((error) => {
         console.log(error);
@@ -467,7 +453,7 @@ function Users() {
                         type="text"
                         className=" bg-sky-200 placeholder-black"
                         required
-                        value={firstName}
+                        defaultValue={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                       />{' '}
                       &nbsp;
@@ -511,7 +497,7 @@ function Users() {
                         type="text"
                         className=" bg-sky-200 placeholder-black"
                         required
-                        value={lastName}
+                        defaultValue={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                       />{' '}
                       &nbsp;
@@ -556,7 +542,7 @@ function Users() {
                       <input
                         type="text"
                         className=" bg-sky-200 placeholder-black"
-                        value={bio}
+                        defaultValue={bio}
                         onChange={(e) => setBio(e.target.value)}
                       />{' '}
                       &nbsp;
@@ -574,43 +560,6 @@ function Users() {
                   )}
                 </p>
                 <br />
-                <p className="font-bold text-lg">
-                  PhoneNumber:
-                  {toggleEditPhoneNo == false ? (
-                    <span>
-                      <span className="font-semibold ml-1 mr-1">
-                        {user?.phoneNumber}
-                      </span>
-                      <FontAwesomeIcon
-                        icon={faPencilAlt}
-                        className="relative"
-                        color={'black'}
-                        size={'1x'}
-                        onClick={() => setToggleEditPhoneNo(!toggleEditPhoneNo)}
-                      />
-                    </span>
-                  ) : (
-                    <span>
-                      <input
-                        type="text"
-                        className=" bg-sky-200 placeholder-black"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                      />{' '}
-                      &nbsp;
-                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
-                        Submit
-                      </button>
-                      <FontAwesomeIcon
-                        icon={faPencilAlt}
-                        className="relative"
-                        color={'black'}
-                        size={'1x'}
-                        onClick={() => setToggleEditPhoneNo(!toggleEditPhoneNo)}
-                      />
-                    </span>
-                  )}
-                </p>
                 <div className="hidden text-red-500" ref={error}></div>
               </form>
             </div>
