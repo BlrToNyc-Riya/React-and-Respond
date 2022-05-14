@@ -334,7 +334,14 @@ function Users() {
     }
     const header = await createToken();
     const url = 'http://localhost:4000/users/profile';
-    if (!phoneNumber.match(/^\d\d\d\d\d\d\d\d\d\d$/)) {
+    console.log(phoneNumber);
+    let phoneNo;
+    if (phoneNumber !== '') {
+      phoneNo = phoneNumber;
+    } else {
+      phoneNo = user?.phoneNumber;
+    }
+    if (!phoneNo?.match(/^\d\d\d\d\d\d\d\d\d\d$/)) {
       if (error.current != null) {
         error.current.innerText =
           'Incorrect Phone number format! Phone number should be made up of 10 digits.';
@@ -346,7 +353,7 @@ function Users() {
     //   headers: { "content-Type": "multipart/form-data" },
     // };
     axios
-      .put(url, { bio, phoneNumber }, header)
+      .put(url, { bio, phoneNumber: phoneNo }, header)
       .then((response) => {
         console.log(response);
         setRerender(!rerender);
