@@ -52,6 +52,12 @@ module.exports = {
 		if (user === null) throw 'No user with that id';
 		return user;
 	},
+	async userExists(email){
+		const usersCollection = await users();
+		const user = await usersCollection.findOne({ email: email });
+		if (user === null) return false;
+		return true;
+	},
 	async authenticateUser(email) {
 		if (!email) throw 'You must supply both username';
 		if (typeof email !== 'string') throw 'Email is invalid';
@@ -65,15 +71,17 @@ module.exports = {
 		
 		throw 'Invalid username or password';
 	},
-	async updateUser(phoneNumber="", bio="",email){
+	async updateUser(firstName="",lastName="", bio="",email){
 		if(!email)
 			throw "You must be signed in to update profile..";
 		const userCollection = await users();
 		const user = await userCollection.findOne({ email });
 		if(!user)
 			throw "Could not fetch user data";
-		if(phoneNumber !="")
-			user.phoneNumber = phoneNumber;
+		if(firstName !="")
+			user.firstName = firstName;
+		if(lastName != "")
+			user.lastName = lastName;
 		if(bio !="")
 			user.bio = bio;
 

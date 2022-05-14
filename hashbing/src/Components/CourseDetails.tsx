@@ -1,85 +1,85 @@
-import React, { useEffect, useState } from 'react'
-import Header from './Header'
-import logo from '../Images/course1.png'
+import React, { useEffect, useState } from "react";
+import Header from "./Header";
+import logo from "../Images/course1.png";
 import {
   faCircleCheck,
   faClipboardCheck,
   faXmarkSquare
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useNavigate, useParams } from 'react-router-dom'
-import { createToken } from '../firebase'
-import { faXingSquare } from '@fortawesome/free-brands-svg-icons'
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate, useParams } from "react-router-dom";
+import { createToken } from "../firebase";
+import { faXingSquare } from "@fortawesome/free-brands-svg-icons";
 
 type courseDetailType = {
-  title: string
-  description: string
-  courseOutcome: { [key: string]: string }
-  author: string
-  topicsTagged: [string]
-  _id: string
-}
+  title: string;
+  description: string;
+  courseOutcome: { [key: string]: string };
+  author: string;
+  topicsTagged: [string];
+  _id: string;
+};
 
 function CourseDetails () {
-  const [course, setCourse] = useState<courseDetailType>()
-  const params = useParams()
-  const [rerender, setRerender] = useState(false)
-  const [enrolled, setEnrolled] = useState<String[]>([])
-  const navigate = useNavigate()
-  const cid = params.id
+  const [course, setCourse] = useState<courseDetailType>();
+  const params = useParams();
+  const [rerender, setRerender] = useState(false);
+  const [enrolled, setEnrolled] = useState<String[]>([]);
+  const navigate = useNavigate();
+  const cid = params.id;
 
   useEffect(() => {
     const fetchData = async () => {
-      const header = await createToken()
-      const url = `http://localhost:4000/courses/${cid}/`
+      const header = await createToken();
+      const url = `http://localhost:4000/courses/${cid}/`;
       fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: header.headers
       })
         .then(async response => {
-          const cou = await response.json()
-          console.log(cou)
-          setCourse(cou)
+          const cou = await response.json();
+          console.log(cou);
+          setCourse(cou);
         })
-        .catch(error => console.log(error.message))
-    }
-    fetchData()
+        .catch(error => console.log(error.message));
+    };
+    fetchData();
     return () => {
-      fetchData
-    }
-  }, [rerender])
+      fetchData;
+    };
+  }, [rerender]);
 
   useEffect(() => {
     const fetchEnrolled = async () => {
-      const url = `http://localhost:4000/courses/Enrolled/`
+      const url = `http://localhost:4000/courses/Enrolled/`;
       // const requestOptions = {
       //   method: "GET",
       // };
-      const header = await createToken()
+      const header = await createToken();
       fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: header.headers,
-        credentials: 'include'
+        credentials: "include"
       })
         .then(async response => {
-          const cou = await response.json()
-          console.log(cou)
-          setEnrolled(cou.Enrolled)
+          const cou = await response.json();
+          console.log(cou);
+          setEnrolled(cou.Enrolled);
         })
-        .catch(error => console.log(error.message))
-    }
-    fetchEnrolled()
+        .catch(error => console.log(error.message));
+    };
+    fetchEnrolled();
     return () => {
-      fetchEnrolled
-    }
-  }, [rerender])
+      fetchEnrolled;
+    };
+  }, [rerender]);
   const enrollCourse = async (
     e: React.MouseEvent<HTMLButtonElement>,
     id: string
   ) => {
-    e.preventDefault()
-    const header = await createToken()
-    const url = `http://localhost:4000/courses/${id}/enroll`
+    e.preventDefault();
+    const header = await createToken();
+    const url = `http://localhost:4000/courses/${id}/enroll`;
     // const requestOptions = {
     //   method: "PUT",
     //   headers: { "Content-Type": "application/json" },
@@ -87,23 +87,23 @@ function CourseDetails () {
     //   credentials: "same-origin",
     // };
     fetch(url, {
-      method: 'PUT',
+      method: "PUT",
       headers: header.headers,
-      credentials: 'include'
+      credentials: "include"
     })
       .then(response => {
-        console.log('Status Changed Successfully')
-        setRerender(!rerender)
+        console.log("Status Changed Successfully");
+        setRerender(!rerender);
       })
-      .catch(error => console.log(error.message))
-  }
+      .catch(error => console.log(error.message));
+  };
 
   const unregisterCourse = async (
     e: React.MouseEvent<HTMLButtonElement>,
     id: string
   ) => {
-    const header = await createToken()
-    const url = `http://localhost:4000/courses/${id}/unregister`
+    const header = await createToken();
+    const url = `http://localhost:4000/courses/${id}/unregister`;
     // const requestOptions = {
     //   method: "PUT",
     //   headers: { "Content-Type": "application/json" },
@@ -111,16 +111,16 @@ function CourseDetails () {
     //   credentials: "same-origin",
     // };
     fetch(url, {
-      method: 'PUT',
+      method: "PUT",
       headers: header.headers,
-      credentials: 'include'
+      credentials: "include"
     })
       .then(response => {
-        console.log('Status Changed Successfully')
-        setRerender(!rerender)
+        console.log("Status Changed Successfully");
+        setRerender(!rerender);
       })
-      .catch(error => console.log(error.message))
-  }
+      .catch(error => console.log(error.message));
+  };
 
   return (
     <div className='flex bg-white w-screen rounded-2xl'>
@@ -136,20 +136,20 @@ function CourseDetails () {
                     {course?.title}
                   </p>
                   <br />
-                  <p className='text-md text-white font-sans font-bold text-left pl-10'>
+                  <p className='text-xl text-white font-sans font-bold text-left pl-10'>
                     {course?.description}
                   </p>
                   <br />
                   <p className='text-sm text-white font-sans font-bold pl-10'>
                     Created by :
-                    <span className='text-xs font-sans font-semibold pl-2 text-black'>
+                    <span className='text-sm font-sans font-semibold pl-2 text-black'>
                       {course?.author}
                     </span>
                   </p>
                   <br />
                   <p className='text-sm text-white font-sans font-bold pl-10'>
                     Last Updated on :
-                    <span className='text-xs font-sans font-semibold pl-2 text-black'>
+                    <span className='text-sm font-sans font-semibold pl-2 text-black'>
                       15/05/2021
                     </span>
                   </p>
@@ -177,8 +177,8 @@ function CourseDetails () {
                   <div className='flex flex-wrap'>
                     {course &&
                       Object.keys(course.courseOutcome)?.map(id => (
-                        <h1 className='text-xs font-sans text-left pl-10 w-1/2'>
-                          <FontAwesomeIcon icon={faCircleCheck} size={'1x'} />{' '}
+                        <h1 className='text-md font-sans text-left pl-10 w-1/2'>
+                          <FontAwesomeIcon icon={faCircleCheck} size={"1x"} />{" "}
                           {course?.courseOutcome[id]}
                         </h1>
                       ))}
@@ -236,7 +236,7 @@ function CourseDetails () {
                 {/* Topic */}
                 <div className='flex-col'>
                   <div className='flex-col min-h-16'>
-                    <p className='text-lg font-sans font-bold text-center pl-2'>
+                    <p className='text-xl font-sans font-bold text-center pl-2'>
                       {course?.title}
                     </p>
                   </div>
@@ -263,8 +263,8 @@ function CourseDetails () {
                           <FontAwesomeIcon
                             icon={faXmarkSquare}
                             className='relative'
-                            color={'white'}
-                            size={'1x'}
+                            color={"white"}
+                            size={"1x"}
                           />
                         </button>
                       ) : (
@@ -277,8 +277,8 @@ function CourseDetails () {
                             <FontAwesomeIcon
                               icon={faClipboardCheck}
                               className='relative'
-                              color={'white'}
-                              size={'1x'}
+                              color={"white"}
+                              size={"1x"}
                             />
                           </button>
                         )
@@ -305,7 +305,7 @@ function CourseDetails () {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default CourseDetails
+export default CourseDetails;
