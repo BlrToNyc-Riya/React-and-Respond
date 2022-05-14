@@ -4,8 +4,12 @@ import { v4 as uuidv4 } from 'uuid'
 import { useDispatch, useSelector } from 'react-redux'
 import { Store } from '../store'
 import { createCourseAddActionAction } from '../actions/types/courses/Courses.actions'
-import { InputFieldType } from '../actions/types/CourseAction.types'
+import {
+  courseCreationStatus,
+  InputFieldType
+} from '../actions/types/CourseAction.types'
 import _ from 'lodash'
+import { useNavigate } from 'react-router-dom'
 
 type Props = {}
 
@@ -33,6 +37,7 @@ function NewCourseFeedback ({}: Props) {
   // handle click event of the Add button
   const handleAddClick = () => setInputList({ ...inputList, [uuidv4()]: '' })
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { courses } = useSelector((state: Store) => state)
 
   const addCourseOutCome = (e: React.FormEvent<HTMLFormElement>) => {
@@ -42,7 +47,7 @@ function NewCourseFeedback ({}: Props) {
     }
     const { data } = courses
     setOutcomeError(false)
-    return dispatch(
+    dispatch(
       createCourseAddActionAction(
         {
           name: data.name,
@@ -52,9 +57,11 @@ function NewCourseFeedback ({}: Props) {
           courseContent: data.courseContent,
           courseOutcome: inputList
         },
+        courseCreationStatus.COURSE_CREATION_STAGE_3,
         true
       )
     )
+    return navigate('/courses/courseCreateConfirmation')
   }
 
   return (

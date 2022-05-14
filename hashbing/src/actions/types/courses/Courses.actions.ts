@@ -2,13 +2,17 @@ import {
   CourseActionTypes,
   CourseAction,
   CourseType,
-  CourseCreationErrorType
+  CourseCreationErrorType,
+  courseCreationStatus
 } from './../CourseAction.types'
 import { Dispatch } from 'redux'
 import axios from 'axios'
 import { createToken } from '../../../firebase'
 
-export const createCourseAction = (course: CourseType) => {
+export const createCourseAction = (
+  course: CourseType,
+  status: courseCreationStatus
+) => {
   return async (dispatch: Dispatch<CourseAction>) => {
     dispatch({
       type: CourseActionTypes.CREATE_COURSE_REQUESTED
@@ -29,6 +33,15 @@ export const createCourseAction = (course: CourseType) => {
         type: CourseActionTypes.CREATE_COURSE_INIT_SUCCESS,
         payload: course
       })
+      console.log('dispatching change status', status)
+      dispatch({
+        type: CourseActionTypes.CREATE_COURSE_CHANGE_STAGE,
+        payload: status
+      })
+
+      dispatch({
+        type: CourseActionTypes.CREATE_COURSE_RESET_INITIAL
+      })
     } catch (error) {
       const typedError = error as Error
       dispatch({
@@ -41,6 +54,7 @@ export const createCourseAction = (course: CourseType) => {
 
 export const createCourseAddActionAction = (
   course: CourseType,
+  stage: courseCreationStatus,
   submit = false
 ) => {
   return async (dispatch: Dispatch<CourseAction>) => {
@@ -74,6 +88,10 @@ export const createCourseAddActionAction = (
         dispatch({
           type: CourseActionTypes.CREATE_COURSE_RESET
         })
+      dispatch({
+        type: CourseActionTypes.CREATE_COURSE_CHANGE_STAGE,
+        payload: stage
+      })
     } catch (error) {
       const typedError = error as Error
       dispatch({

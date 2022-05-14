@@ -2,7 +2,9 @@ import {
   CourseAction,
   CourseType,
   CourseStateType,
-  CourseActionTypes
+  CourseActionTypes,
+  courseCreationStatus,
+  CourseActionType
 } from './../actions/types/CourseAction.types'
 
 export const defaultState: CourseStateType = {
@@ -16,11 +18,12 @@ export const defaultState: CourseStateType = {
   },
   loading: false,
   error: '',
-  created: false
+  created: false,
+  stage: courseCreationStatus.COURSE_CREATION_STAGE_1
 }
 export const courseReducer = (
   state: CourseStateType = defaultState,
-  action: CourseAction
+  action: CourseActionType
 ): CourseStateType => {
   switch (action.type) {
     case CourseActionTypes.CREATE_COURSE_REQUESTED:
@@ -43,7 +46,7 @@ export const courseReducer = (
         error: ''
       }
     case CourseActionTypes.CREATE_COURSE_ADD_COURSE_CONTENT:
-      const courseData = action.payload as CourseType
+      const courseData = action.payload
       return {
         ...state,
         loading: false,
@@ -54,9 +57,19 @@ export const courseReducer = (
         },
         error: ''
       }
+    case CourseActionTypes.CREATE_COURSE_CHANGE_STAGE:
+      const data = action
+      console.log('data', data)
+      return {
+        ...state,
+        stage: action.payload
+      }
     case CourseActionTypes.CREATE_COURSE_RESET:
       console.log({ ...defaultState, created: true })
       return { ...defaultState, created: true }
+    case CourseActionTypes.CREATE_COURSE_RESET_INITIAL:
+      console.log({ ...defaultState, created: true })
+      return { ...state, created: false }
     default:
       return state
   }

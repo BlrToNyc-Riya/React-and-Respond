@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 // const constructorMethod = require('./routeConstructor');
 const configRoutes = require('./routes');
 const session = require('express-session');
@@ -8,6 +9,9 @@ const app = express();
 app.use(express.json());
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(express.urlencoded({ extended: true }));
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // var multer = require('multer');
 // var upload = multer({dest:'uploads/'});
