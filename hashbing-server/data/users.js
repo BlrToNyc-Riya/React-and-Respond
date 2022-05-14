@@ -52,6 +52,12 @@ module.exports = {
 		if (user === null) throw 'No user with that id';
 		return user;
 	},
+	async userExists(email){
+		const usersCollection = await users();
+		const user = await usersCollection.findOne({ email: email });
+		if (user === null) return false;
+		return true;
+	},
 	async authenticateUser(email) {
 		if (!email) throw 'You must supply both username';
 		if (typeof email !== 'string') throw 'Email is invalid';

@@ -103,6 +103,41 @@ router.post("/signin", async (req, res) => {
   }
 });
 
+router.post("/signinwithgoogle", async (req, res) => {
+  try {
+    const { email,displayname } = req.body;
+    let firstName = displayname.split(' ')[0];
+    let lastName = displayname.split(' ')[1]? displayname.split(' ')[1]: '';
+    if (!email) throw "please login with a valid emailid...";
+    isValidEmail(email);
+    const userExists = await users.userExists(email);
+    console.log(userExists);
+    if(userExists)
+      {
+    const { authenticated, user } = await users.authenticateUser(email);
+    if (authenticated) {
+      req.session.email = user.email;
+      const userInfo = handleUserInfo(user);
+      console.log(req.session);
+      console.log("here after signinwithgoogle");
+      res.json({ user: userInfo, token: req.session.user });
+    }
+  }
+  else{
+    let user = {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+    };
+    const data = await users.createUser(user);
+    console.log("here after signupwithgoogle", data);
+    return res.status(200).json({ data: data }); 
+  }
+  } catch (error) {
+    res.status(400).send(error?.message ?? error); //need to render
+  }
+});
+
 router.put("/profile", decodeIDToken, async (req, res) => {
   try {
     const email = req.session.user.email;
