@@ -5,6 +5,12 @@ import SearchBar from "./SearchBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { createToken } from "../firebase";
 import axios from "axios";
+import {
+  faCircleCheck,
+  faClipboardCheck,
+  faXmarkSquare,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 type courseDet = {
   _id: string;
   title: string;
@@ -14,6 +20,7 @@ type courseDet = {
   courseOutcome2: string;
   courseOutcome3: string;
   courseOutcome4: string;
+  topicsTagged: [string];
 };
 
 function Courses() {
@@ -128,77 +135,100 @@ function Courses() {
             </span>
             <SearchBar />
           </div>
-          <div className="grid w-full h-full md:grid-cols-3 gap-20 pl-20 pr-20 pt-10 pb-10 grid-cols-1">
-            {courses?.map((course) => (
-              <div
-                className="flex bg-white shadow-2xl cursor-pointer"
-                key={course._id}
-              >
-                <div className="flex-col">
-                  {/* Img */}
+          {courses?.length === 0 ? (
+            <div className="flex bg-gray-200 min-h-screen rounded-b-2xl shadow-2xl items-center justify-center h-3/4">
+              <p className="text-xl font-semibold">
+                No Courses available to display. Feel free to add a new course!
+              </p>
+            </div>
+          ) : (
+            <div className="grid w-full h-full md:grid-cols-3 gap-20 pl-20 pr-20 pt-10 pb-10 grid-cols-1">
+              {courses?.map((course) => (
+                <div
+                  className="flex bg-white shadow-2xl cursor-pointer"
+                  key={course._id}
+                >
                   <div className="flex-col">
-                    <img
-                      src={logo}
-                      alt=""
-                      className="h-72 w-screen object-fill"
-                    />
-                  </div>
-                  {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
-                  {/* Topic */}
-                  <div className="">
-                    <div className="flex-col min-h-16">
-                      <p className="text-lg font-sans font-bold text-left pl-2">
-                        {course?.title}
-                      </p>
+                    {/* Img */}
+                    <div className="flex-col">
+                      <img
+                        src={logo}
+                        alt=""
+                        className="h-72 w-screen object-fill"
+                      />
                     </div>
-                    {/* Author */}
-                    <div className="flex-col mt-4">
-                      <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
-                        {`Created By: ${course.author}`}
-                      </p>
-                    </div>
-                    {/* Score */}
-                    {/* <div className='flex-col mt-4'>
-                      <p className='text-xs font-sans font-semibold text-gray-500 pl-2'>
-                        Chapter Progress : 0/30 completed(25%)
-                      </p>
-                      <div className='bg-gray-300 h-2 rounded-3xl m-2'>
-                        <div className='bg-blue-400 w-1/4 h-2 rounded-3xl'></div>
+                    {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
+                    {/* Topic */}
+                    <div className="">
+                      <div className="flex-col min-h-16">
+                        <p className="text-lg font-sans font-bold text-left pl-2">
+                          {course?.title}
+                        </p>
                       </div>
-                    </div> */}
-                    {/* Details Section */}
-                    <div className="flex-col mt-4">
-                      <div className="flex justify-center">
-                        <button
-                          className="bg-blue-400 p-3 w-full text-white"
-                          onClick={() => navigate(`/courses/${course?._id}`)}
-                        >
-                          Go To Details
-                        </button>
+                      {/* Author */}
+                      <div className="flex-col">
+                        <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
+                          Created by :{" "}
+                          <span className="text-black">{course?.author}</span>
+                        </p>
                       </div>
-                      <div className="flex justify-center">
-                        {enrolled?.includes(course._id) ? (
-                          <button
-                            className="text-blue-400 p-3"
-                            onClick={(e) => unregisterCourse(e, course._id)}
+                      {/* Tags */}
+                      <div className="flex-grow mt-4">
+                        {course?.topicsTagged?.map((tag) => (
+                          <span
+                            className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
+                            key={tag}
                           >
-                            Unregister
-                          </button>
-                        ) : (
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      {/* Details Section */}
+                      <div className="flex-col mt-4">
+                        <div className="flex justify-center">
                           <button
-                            className="text-blue-400 p-3"
-                            onClick={(e) => enrollCourse(e, course._id)}
+                            className="bg-blue-400 p-3 w-full text-white"
+                            onClick={() => navigate(`/courses/${course?._id}`)}
                           >
-                            Enroll
+                            Go To Details
                           </button>
-                        )}
+                        </div>
+                        <div className="flex justify-center">
+                          {enrolled?.includes(course._id) ? (
+                            <button
+                              className="text-blue-400 p-3"
+                              onClick={(e) => unregisterCourse(e, course._id)}
+                            >
+                              Unregister&nbsp;
+                              <FontAwesomeIcon
+                                icon={faXmarkSquare}
+                                className="relative"
+                                color={"#60A5FA"}
+                                size={"1x"}
+                              />
+                            </button>
+                          ) : (
+                            <button
+                              className="text-blue-400 p-3"
+                              onClick={(e) => enrollCourse(e, course._id)}
+                            >
+                              Enroll &nbsp;
+                              <FontAwesomeIcon
+                                icon={faClipboardCheck}
+                                className="relative"
+                                color={"#60A5FA"}
+                                size={"1x"}
+                              />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

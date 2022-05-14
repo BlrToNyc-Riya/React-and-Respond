@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import logo from "../Images/course1.png";
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleCheck,
+  faClipboardCheck,
+  faXmarkSquare,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router-dom";
 import { createToken } from "../firebase";
+import { faXingSquare } from "@fortawesome/free-brands-svg-icons";
 
 type courseDetailType = {
   title: string;
   description: string;
-  author: string;
   courseOutcome: { [key: string]: string };
+  author: string;
+  topicsTagged: [string];
 };
 
 function CourseDetails() {
@@ -133,27 +139,29 @@ function CourseDetails() {
                   </p>
                   <br />
                   <p className="text-sm text-white font-sans font-bold pl-10">
-                    Created by
+                    Created by :
                     <span className="text-xs font-sans font-semibold pl-2 text-black">
                       {course?.author}
                     </span>
                   </p>
                   <br />
                   <p className="text-sm text-white font-sans font-bold pl-10">
-                    Last Updated on
+                    Last Updated on :
                     <span className="text-xs font-sans font-semibold pl-2 text-black">
                       15/05/2021
                     </span>
                   </p>
-                  {/* Score */}
-                  {/* <div className='flex-col m-6'>
-                    <p className='text-xs font-sans font-semibold pl-2'>
-                      Chapter Progress : 0/30 completed(25%)
-                    </p>
-                    <div className='bg-gray-300 h-2 rounded-3xl m-2'>
-                      <div className='bg-blue-600 w-1/4 h-2 rounded-3xl'></div>
-                    </div>
-                  </div> */}
+                  {/* Tags */}
+                  <div className="flex-grow mt-4 ml-5 mr-5">
+                    {course?.topicsTagged?.map((tag) => (
+                      <span
+                        className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
+                        key={tag}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -230,6 +238,17 @@ function CourseDetails() {
                       {course?.title}
                     </p>
                   </div>
+                  {/* Tags */}
+                  <div className="flex-grow ml-4">
+                    {course?.topicsTagged?.map((tag) => (
+                      <span
+                        className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
+                        key={tag}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                   {/* Details Section */}
                   <div className="flex-col mt-4 bg-white">
                     <div className="flex justify-center">
@@ -238,7 +257,13 @@ function CourseDetails() {
                           className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
                           onClick={(e) => unregisterCourse(e, cid)}
                         >
-                          Unregister
+                          Unregister &nbsp;
+                          <FontAwesomeIcon
+                            icon={faXmarkSquare}
+                            className="relative"
+                            color={"white"}
+                            size={"1x"}
+                          />
                         </button>
                       ) : (
                         cid != undefined && (
@@ -246,7 +271,13 @@ function CourseDetails() {
                             className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
                             onClick={(e) => enrollCourse(e, cid)}
                           >
-                            Enroll
+                            Enroll &nbsp;
+                            <FontAwesomeIcon
+                              icon={faClipboardCheck}
+                              className="relative"
+                              color={"white"}
+                              size={"1x"}
+                            />
                           </button>
                         )
                       )}

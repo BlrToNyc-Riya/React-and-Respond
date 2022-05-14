@@ -368,15 +368,7 @@ function Signup() {
                   </p>{" "}
                   <Link to="/studentlogin">
                     <span className="text-sm ml-1 font-semibold text-blue-500 cursor-pointer">
-                      Login as Student
-                    </span>
-                  </Link>
-                  <span className="text-sm ml-1 font-semibold text-gray-500 ">
-                    /
-                  </span>
-                  <Link to="/tutorlogin">
-                    <span className="text-sm ml-1 font-semibold text-yellow-500 cursor-pointer">
-                      Login as Tutor
+                      Login
                     </span>
                   </Link>
                 </div>
