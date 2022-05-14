@@ -6,6 +6,7 @@ import { setUser } from '../actions/types/users/Users.actions'
 import { auth } from '../firebase'
 import { Store } from '../store'
 import Header from './Header'
+import ErrorBoundaries from './Utilities/ErrorBoundaries'
 import Loader from './Utilities/Loader'
 
 const PrivateRoute = ({
@@ -17,10 +18,12 @@ const PrivateRoute = ({
 }) => {
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState(true)
+  const location = useLocation()
 
   useEffect(() => {
     auth.onAuthStateChanged(authUser => {
       if (authUser) {
+        const modifiedUser = { ...authUser, first: '', lastName: '' }
         dispatch(setUser('SET_USER', authUser))
         setIsLoading(false)
       } else {
@@ -34,14 +37,16 @@ const PrivateRoute = ({
 
   if (isLoading) return <Loader />
   else if (user?.user === null) {
-    return <Navigate to='/login' replace />
+    return <Navigate to='/login' state={{ from: location }} />
   } else {
     return children ? (
       children
     ) : (
       <>
         <Header selection='' />
-        <Outlet />
+        <ErrorBoundaries>
+          <Outlet />
+        </ErrorBoundaries>
       </>
     )
   }

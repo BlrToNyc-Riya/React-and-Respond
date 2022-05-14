@@ -61,7 +61,9 @@ function NewCourseFeedback ({}: Props) {
         true
       )
     )
-    return navigate('/courses/courseCreateConfirmation')
+    courses.error.length <= 0
+      ? navigate('/courses/courseCreateConfirmation')
+      : navigate('/courses/new')
   }
 
   return (

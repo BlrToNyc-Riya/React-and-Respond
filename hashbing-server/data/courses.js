@@ -27,7 +27,15 @@ module.exports = {
 		isValidStringField(topicsTagged, 1);
 		isValidObject(courseOutcome);
 		let topics = topicsTagged;
-		topics = topicsTagged.split(',');
+		topics = [
+			...new Set(
+				topicsTagged
+					.split(',')
+					.map((topic) =>
+						topic.trim().length > 0 ? topic.trim() : null
+					)
+			),
+		];
 		isValidArray(topics);
 		isValidObject(courseOutcome);
 		const usersCollection = await users();
@@ -64,6 +72,28 @@ module.exports = {
 	async getCourseById(id) {
 		if (!id || typeof id != 'string') throw 'Invalid id passed';
 		const courseId = ObjectID(id);
+		const courseCollection = await courses();
+		const course = await courseCollection.findOne({ _id: courseId });
+		if (!course) throw 'No course found with this id';
+		return course;
+	},
+	async getCourseByIdPerUser(id, email) {
+		if (!id || typeof id != 'string') throw 'Invalid id passed';
+		const courseId = ObjectID(id);
+		const usersCollection = await users();
+		const user = await usersCollection.findOne({ email });
+		console.log('user', user.coursesEnrolled, id);
+		if (!user) throw { message: 'User not found', status: 404 };
+		const isUserEnrolled = user.coursesEnrolled.filter((courseId) => {
+			console.log(id);
+			return id.toString() === courseId.toString();
+		});
+		console.log('isUserEnrolled', isUserEnrolled);
+		if (isUserEnrolled.length <= 0)
+			throw {
+				message: 'User is not enrolled to this course/ Access Denied',
+				status: 403,
+			};
 		const courseCollection = await courses();
 		const course = await courseCollection.findOne({ _id: courseId });
 		if (!course) throw 'No course found with this id';

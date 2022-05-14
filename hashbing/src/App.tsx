@@ -33,6 +33,7 @@ import { UserType } from './actions/types/UserAction.types'
 import PrivateRoute from './Components/PrivateRoute'
 import UnknownPage from './Components/UnknownPage'
 import CourseCreationConfirmation from './courseCreation/CourseCreationConfirmation'
+import NewCourse from './courseCreation/NewCourse'
 
 function App () {
   const [count, setCount] = useState(0)
@@ -54,6 +55,7 @@ function App () {
             <Route path='/authored' element={<Authored />} />
             <Route path='/users' element={<Users />} />
             <Route path='/courses/new' element={<NewCourseContainer />}></Route>
+            <Route path='/course/:id' element={<NewCourse />}></Route>
             <Route path='/course/new/:id' element={<NewCourseWizard />}></Route>
             <Route path='/courses/new/:id/add' element={<CourseForm />}></Route>
             <Route

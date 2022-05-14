@@ -43,9 +43,9 @@ router.get('/', async (req, res) => {
 		res.status(400).send(e?.message ?? e);
 	}
 });
-router.get('/authored', async (req, res) => {
+router.get('/authored', decodeIDToken, async (req, res) => {
 	try {
-		const email = req.session.userid;
+		const email = req.session.user.email;
 		if (!email) throw 'could not fetch authored courses, please login';
 		const data = await courses.getAllAuthoredCourses(email);
 		if (!data) throw 'No Authored courses found';
@@ -114,7 +114,7 @@ router.post('/create', decodeIDToken, async (req, res) => {
 		}
 	} catch (err) {
 		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
-		return res.json({ error: err });
+		return res.status(500).json({ error: err });
 	}
 });
 router.put('/:id/enroll', decodeIDToken, async (req, res) => {
@@ -173,5 +173,24 @@ router.get('/:id', async (req, res) => {
 			return res.status(500).send(error?.message ?? error);
 		}
 	} catch (err) {}
+});
+
+router.get('/user/enrolled/:id', decodeIDToken, async (req, res) => {
+	try {
+		isValidObjectId(req.params.id);
+		console.log('testing');
+		const course = await courses.getCourseByIdPerUser(
+			req.params.id.toString(),
+			req.session.user.email
+		);
+		console.log('course', course);
+		if (!course) {
+			throw { message: 'Invalid course Id', status: 404 };
+		}
+		return res.status(200).json(course);
+	} catch (err) {
+		console.log('err', err);
+		return res.status(err?.status || 500).json(err);
+	}
 });
 module.exports = router;

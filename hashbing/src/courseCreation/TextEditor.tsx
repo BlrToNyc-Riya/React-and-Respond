@@ -1,9 +1,10 @@
 import { Component, createRef, Dispatch, SetStateAction } from 'react'
 import ReactQuill, { Quill } from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { Width, Float, Height, ImageWithStyle } from './ImageWithStyle'
+// import { Width, Float, Height, ImageWithStyle } from './ImageWithStyle'
 import classNames from 'classNames'
 import hljs from 'highlight.js'
+import ImageCompress from 'quill-image-compress'
 import { Video } from '../Components/Utilities/quill-video-resize.js'
 import('../Components/Utilities/quill-video-resize.css')
 
@@ -11,11 +12,12 @@ hljs.configure({
   languages: ['javascript', 'ruby', 'python', 'rust']
 })
 
-Quill.register('formats/float', Float)
-Quill.register('formats/height', Height)
-Quill.register('formats/width', Width)
+// Quill.register('formats/float', Float)
+// Quill.register('formats/height', Height)
+// Quill.register('formats/width', Width)
+// Quill.register('formats/image', ImageWithStyle, true)
+Quill.register('modules/imageCompress', ImageCompress)
 Quill.register({ 'formats/video': Video })
-Quill.register('formats/image', ImageWithStyle, true)
 
 type EditorPropsType = {
   updateDocument: Dispatch<SetStateAction<string>>
@@ -85,6 +87,14 @@ const modules = {
   // VideoResize: {
   //   modules: ['Resize', 'DisplaySize', 'Toolbar']
   // },
+  imageCompress: {
+    quality: 0.7, // default
+    maxWidth: 1000, // default
+    maxHeight: 1000, // default
+    imageType: 'image/jpeg', // default
+    debug: true, // default
+    suppressErrorLogging: false // default
+  },
   syntax: {
     highlight: text => hljs.highlightAuto(text).value
   },

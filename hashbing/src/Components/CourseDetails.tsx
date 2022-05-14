@@ -7,7 +7,7 @@ import {
   faXmarkSquare
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { createToken } from '../firebase'
 import { faXingSquare } from '@fortawesome/free-brands-svg-icons'
 
@@ -17,6 +17,7 @@ type courseDetailType = {
   courseOutcome: { [key: string]: string }
   author: string
   topicsTagged: [string]
+  _id: string
 }
 
 function CourseDetails () {
@@ -24,6 +25,7 @@ function CourseDetails () {
   const params = useParams()
   const [rerender, setRerender] = useState(false)
   const [enrolled, setEnrolled] = useState<String[]>([])
+  const navigate = useNavigate()
   const cid = params.id
 
   useEffect(() => {
@@ -283,9 +285,16 @@ function CourseDetails () {
                       )}
                     </div>
                     <div className='flex justify-center'>
-                      <button className='text-sky-400 p-3'>
-                        Start Learning
-                      </button>
+                      {cid != undefined && enrolled?.includes(cid) && (
+                        <button
+                          className='text-sky-400 p-3'
+                          onClick={() =>
+                            !course ? null : navigate(`/course/${course._id}`)
+                          }
+                        >
+                          Start Learning
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

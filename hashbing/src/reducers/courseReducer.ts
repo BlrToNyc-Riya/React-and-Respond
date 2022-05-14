@@ -59,16 +59,13 @@ export const courseReducer = (
       }
     case CourseActionTypes.CREATE_COURSE_CHANGE_STAGE:
       const data = action
-      console.log('data', data)
       return {
         ...state,
         stage: action.payload
       }
     case CourseActionTypes.CREATE_COURSE_RESET:
-      console.log({ ...defaultState, created: true })
       return { ...defaultState, created: true }
     case CourseActionTypes.CREATE_COURSE_RESET_INITIAL:
-      console.log({ ...defaultState, created: true })
       return { ...state, created: false }
     default:
       return state
