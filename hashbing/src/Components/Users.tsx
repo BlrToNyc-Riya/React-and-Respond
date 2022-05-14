@@ -1,4 +1,4 @@
-import { FontawesomeObject } from "@fortawesome/fontawesome-svg-core";
+import { FontawesomeObject } from '@fortawesome/fontawesome-svg-core';
 import {
   faClipboardCheck,
   faEdit,
@@ -7,13 +7,13 @@ import {
   faTrash,
   faUser,
   faXmarkSquare,
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 import {
   FontAwesomeIcon,
   FontAwesomeIconProps,
-} from "@fortawesome/react-fontawesome";
-import { IconProps } from "@mui/material";
-import axios from "axios";
+} from '@fortawesome/react-fontawesome';
+import { IconProps } from '@mui/material';
+import axios from 'axios';
 import React, {
   FormEventHandler,
   HTMLProps,
@@ -21,12 +21,12 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from "react";
-import { useNavigate } from "react-router-dom";
-import { createToken } from "../firebase";
-import logo from "../Images/course1.png";
-import logo1 from "../public/uploads/IMAGE-1651806371090.jpeg";
-import Header from "./Header";
+} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createToken } from '../firebase';
+import logo from '../Images/course1.png';
+import logo1 from '../public/uploads/IMAGE-1651806371090.jpeg';
+import Header from './Header';
 type courseDet = {
   _id: string;
   title: string;
@@ -39,58 +39,93 @@ type courseDet = {
   author: string;
 };
 
+type userDetail = {
+  _id: string;
+  email: string;
+  coursesEnrolled: [string];
+  courseAuthored: [string];
+  firstName: string;
+  lastName: string;
+};
 function Users() {
   const [images, setImages] = useState<File>();
-  const [profilePic, setProfilePic] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [profilePic, setProfilePic] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const fileInput = useRef<HTMLInputElement>(null);
   const submitBtn = useRef<HTMLButtonElement>(null);
   const [courses, setCourses] = useState<courseDet[]>();
   const navigate = useNavigate();
-  const [selection, setSelection] = useState("Profile");
+  const [selection, setSelection] = useState('Profile');
   const [rerender, setRerender] = useState(false);
   const [toggleEditFirstName, setToggleEditFirstName] = useState(false);
   const [toggleEditLastName, setToggleEditLastName] = useState(false);
   const [authored, setAuthored] = useState<String[]>();
   const [enrolled, setEnrolled] = useState<String[]>([]);
+  const [user, setUser] = useState<userDetail>();
   const profileField = useRef<HTMLDivElement>(null);
   const enrolledField = useRef<HTMLDivElement>(null);
   const authoredField = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (selection === "Profile") {
+    if (selection === 'Profile') {
       if (
         profileField.current != null &&
         enrolledField.current != null &&
         authoredField.current != null
       ) {
-        profileField.current.style.backgroundColor = "#60A5FA";
-        enrolledField.current.style.backgroundColor = "white";
-        authoredField.current.style.backgroundColor = "white";
+        profileField.current.style.backgroundColor = '#60A5FA';
+        enrolledField.current.style.backgroundColor = 'white';
+        authoredField.current.style.backgroundColor = 'white';
       }
-    } else if (selection === "Enrolled") {
+    } else if (selection === 'Enrolled') {
       if (
         profileField.current != null &&
         enrolledField.current != null &&
         authoredField.current != null
       ) {
-        enrolledField.current.style.backgroundColor = "#60A5FA";
-        profileField.current.style.backgroundColor = "white";
-        authoredField.current.style.backgroundColor = "white";
+        enrolledField.current.style.backgroundColor = '#60A5FA';
+        profileField.current.style.backgroundColor = 'white';
+        authoredField.current.style.backgroundColor = 'white';
       }
-    } else if (selection === "Authored") {
+    } else if (selection === 'Authored') {
       if (
         profileField.current != null &&
         enrolledField.current != null &&
         authoredField.current != null
       ) {
-        authoredField.current.style.backgroundColor = "#60A5FA";
-        enrolledField.current.style.backgroundColor = "white";
-        profileField.current.style.backgroundColor = "white";
+        authoredField.current.style.backgroundColor = '#60A5FA';
+        enrolledField.current.style.backgroundColor = 'white';
+        profileField.current.style.backgroundColor = 'white';
       }
     }
   });
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const header = await createToken();
+      const url = `http://localhost:4000/users/profile`;
+      // const requestOptions = {
+      //   method: "GET",
+      //   credentials: "include",
+      // };
+      fetch(url, {
+        method: 'GET',
+        headers: header.headers,
+        credentials: 'include',
+      })
+        .then(async (response) => {
+          const userDetails = await response.json();
+          console.log(userDetails);
+          setUser(userDetails);
+        })
+        .catch((error) => console.log(error.message));
+    };
+    fetchUser();
+    return () => {
+      fetchUser;
+    };
+  }, [rerender]);
   useEffect(() => {
     const fetchCourses = async () => {
       const header = await createToken();
@@ -100,9 +135,9 @@ function Users() {
       //   credentials: "include",
       // };
       fetch(url, {
-        method: "GET",
+        method: 'GET',
         headers: header.headers,
-        credentials: "include",
+        credentials: 'include',
       })
         .then(async (response) => {
           const cou = await response.json();
@@ -125,9 +160,9 @@ function Users() {
       //   method: "GET",
       // };
       fetch(url, {
-        method: "GET",
+        method: 'GET',
         headers: header.headers,
-        credentials: "include",
+        credentials: 'include',
       })
         .then(async (response) => {
           const cou = await response.json();
@@ -155,12 +190,12 @@ function Users() {
     //   credentials: "same-origin",
     // };
     fetch(url, {
-      method: "PUT",
+      method: 'PUT',
       headers: header.headers,
-      credentials: "include",
+      credentials: 'include',
     })
       .then((response) => {
-        console.log("Status Changed Successfully");
+        console.log('Status Changed Successfully');
         setRerender(!rerender);
       })
       .catch((error) => console.log(error.message));
@@ -179,12 +214,12 @@ function Users() {
     //   credentials: "same-origin",
     // };
     fetch(url, {
-      method: "PUT",
+      method: 'PUT',
       headers: header.headers,
-      credentials: "include",
+      credentials: 'include',
     })
       .then((response) => {
-        console.log("Status Changed Successfully");
+        console.log('Status Changed Successfully');
         setRerender(!rerender);
       })
       .catch((error) => console.log(error.message));
@@ -203,12 +238,12 @@ function Users() {
     //   credentials: "same-origin",
     // };
     fetch(url, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: header.headers,
-      credentials: "include",
+      credentials: 'include',
     })
       .then((response) => {
-        console.log("Status Changed Successfully");
+        console.log('Status Changed Successfully');
         setRerender(!rerender);
       })
       .catch((error) => console.log(error.message));
@@ -221,9 +256,9 @@ function Users() {
       //   method: "GET",
       // };
       fetch(url, {
-        method: "GET",
+        method: 'GET',
         headers: header.headers,
-        credentials: "include",
+        credentials: 'include',
       })
         .then(async (response) => {
           const cou = await response.json();
@@ -256,10 +291,10 @@ function Users() {
     const header = await createToken();
     var formData = new FormData();
     if (images != undefined) {
-      formData.append("myImage", images);
+      formData.append('myImage', images);
     }
-    console.log(formData.get("myImage"));
-    const url = "http://localhost:4000/users/upload";
+    console.log(formData.get('myImage'));
+    const url = 'http://localhost:4000/users/upload';
     // const config = {
     //   headers: { "content-Type": "multipart/form-data" },
     // };
@@ -276,12 +311,12 @@ function Users() {
   const onProfileChange = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const header = await createToken();
-    const url = "http://localhost:4000/users/profileUpdate";
+    const url = 'http://localhost:4000/users/profile';
     // const config = {
     //   headers: { "content-Type": "multipart/form-data" },
     // };
     axios
-      .post(url, header)
+      .put(url, header)
       .then((response) => {
         console.log(response);
       })
@@ -309,8 +344,8 @@ function Users() {
                     <div className="bg-white mt-4 p-14 rounded-full">
                       <FontAwesomeIcon
                         icon={faUser}
-                        size={"5x"}
-                        color={"grey"}
+                        size={'5x'}
+                        color={'grey'}
                         className="relative"
                       />
                     </div>
@@ -318,10 +353,10 @@ function Users() {
                   <FontAwesomeIcon
                     icon={faPencilAlt}
                     className="relative bottom-4 left-36"
-                    color={"black"}
+                    color={'black'}
                     id="pencil_icon"
                     onClick={uploadTrigger}
-                  />{" "}
+                  />{' '}
                   <input
                     type="file"
                     id="myfile"
@@ -343,39 +378,41 @@ function Users() {
           <div className="flex w-screen bg-white">
             <div
               className="flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer"
-              onClick={() => setSelection("Profile")}
+              onClick={() => setSelection('Profile')}
               ref={profileField}
             >
               Profile
             </div>
             <div
               className="flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer"
-              onClick={() => setSelection("Enrolled")}
+              onClick={() => setSelection('Enrolled')}
               ref={enrolledField}
             >
               Enrolled
             </div>
             <div
               className="flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer"
-              onClick={() => setSelection("Authored")}
+              onClick={() => setSelection('Authored')}
               ref={authoredField}
             >
               Authored
             </div>
           </div>
-          {selection === "Profile" ? (
+          {selection === 'Profile' ? (
             <div className="flex p-20 justify-left ml-10 h-screen">
               <form onSubmit={onProfileChange}>
                 <p className="font-bold text-lg">
                   First Name:
                   {toggleEditFirstName == false ? (
                     <span>
-                      <span className="font-semibold ml-1 mr-1">John</span>
+                      <span className="font-semibold ml-1 mr-1">
+                        {user?.firstName}
+                      </span>
                       <FontAwesomeIcon
                         icon={faPencilAlt}
                         className="relative"
-                        color={"black"}
-                        size={"1x"}
+                        color={'black'}
+                        size={'1x'}
                         id="pencil_icon_1"
                         onClick={() =>
                           setToggleEditFirstName(!toggleEditFirstName)
@@ -390,7 +427,7 @@ function Users() {
                         required
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                      />{" "}
+                      />{' '}
                       &nbsp;
                       <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
                         Submit
@@ -398,8 +435,8 @@ function Users() {
                       <FontAwesomeIcon
                         icon={faPencilAlt}
                         className="relative"
-                        color={"black"}
-                        size={"1x"}
+                        color={'black'}
+                        size={'1x'}
                         id="pencil_icon_1"
                         onClick={() =>
                           setToggleEditFirstName(!toggleEditFirstName)
@@ -413,12 +450,14 @@ function Users() {
                   Last Name:
                   {toggleEditLastName == false ? (
                     <span>
-                      <span className="font-semibold ml-1 mr-1">Wick</span>
+                      <span className="font-semibold ml-1 mr-1">
+                        {user?.lastName}
+                      </span>
                       <FontAwesomeIcon
                         icon={faPencilAlt}
                         className="relative"
-                        color={"black"}
-                        size={"1x"}
+                        color={'black'}
+                        size={'1x'}
                         onClick={() =>
                           setToggleEditLastName(!toggleEditLastName)
                         }
@@ -432,7 +471,7 @@ function Users() {
                         required
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                      />{" "}
+                      />{' '}
                       &nbsp;
                       <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
                         Submit
@@ -440,8 +479,8 @@ function Users() {
                       <FontAwesomeIcon
                         icon={faPencilAlt}
                         className="relative"
-                        color={"black"}
-                        size={"1x"}
+                        color={'black'}
+                        size={'1x'}
                         onClick={() =>
                           setToggleEditLastName(!toggleEditLastName)
                         }
@@ -452,13 +491,11 @@ function Users() {
                 <br />
                 <p className="font-bold text-lg">
                   Email:
-                  <span className="font-semibold ml-2">
-                    Johnwick@hotmail.com
-                  </span>
+                  <span className="font-semibold ml-2">{user?.email}</span>
                 </p>
               </form>
             </div>
-          ) : selection === "Enrolled" ? (
+          ) : selection === 'Enrolled' ? (
             <div className="flex flex-col justify-left ml-4 mb-10 h-screen">
               {enrolled?.length === 0 ? (
                 <div className="flex bg-gray-200 min-h-screen rounded-b-2xl p-20 shadow-2xl items-start justify-center h-3/4">
@@ -495,7 +532,7 @@ function Users() {
                               </div>
                               <div className="flex-col">
                                 <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
-                                  Created by:{" "}
+                                  Created by:{' '}
                                   <span className="text-black">
                                     {course?.author}
                                   </span>
@@ -526,8 +563,8 @@ function Users() {
                                       <FontAwesomeIcon
                                         icon={faXmarkSquare}
                                         className="relative"
-                                        color={"white"}
-                                        size={"1x"}
+                                        color={'white'}
+                                        size={'1x'}
                                       />
                                     </button>
                                   ) : (
@@ -541,8 +578,8 @@ function Users() {
                                       <FontAwesomeIcon
                                         icon={faClipboardCheck}
                                         className="relative"
-                                        color={"white"}
-                                        size={"1x"}
+                                        color={'white'}
+                                        size={'1x'}
                                       />
                                     </button>
                                   )}
@@ -556,7 +593,7 @@ function Users() {
                 </div>
               )}
             </div>
-          ) : selection === "Authored" ? (
+          ) : selection === 'Authored' ? (
             <div className="flex flex-col justify-left ml-4 h-screen">
               {authored?.length === 0 ? (
                 <div className="flex bg-gray-200 min-h-screen rounded-b-2xl p-20 shadow-2xl items-start justify-center h-3/4">
@@ -593,7 +630,7 @@ function Users() {
                               </div>
                               <div className="flex-col">
                                 <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
-                                  Created by:{" "}
+                                  Created by:{' '}
                                   <span className="text-black">
                                     {course?.author}
                                   </span>
@@ -621,8 +658,8 @@ function Users() {
                                     <FontAwesomeIcon
                                       icon={faTrash}
                                       className="relative"
-                                      color={"white"}
-                                      size={"1x"}
+                                      color={'white'}
+                                      size={'1x'}
                                     />
                                   </button>
                                 </div>

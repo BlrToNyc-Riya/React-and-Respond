@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import Header from "./Header";
-import logo from "../Images/course1.png";
-import { useNavigate } from "react-router-dom";
-import { createToken } from "../firebase";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useState } from 'react';
+import Header from './Header';
+import logo from '../Images/course1.png';
+import { useNavigate } from 'react-router-dom';
+import { createToken } from '../firebase';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 type courseDet = {
   _id: string;
   title: string;
@@ -33,9 +34,9 @@ function Authored() {
       //   credentials: "include",
       // };
       fetch(url, {
-        method: "GET",
+        method: 'GET',
         headers: header.headers,
-        credentials: "include",
+        credentials: 'include',
       })
         .then(async (response) => {
           const cou = await response.json();
@@ -58,9 +59,9 @@ function Authored() {
       //   method: "GET",
       // };
       fetch(url, {
-        method: "GET",
+        method: 'GET',
         headers: header.headers,
-        credentials: "include",
+        credentials: 'include',
       })
         .then(async (response) => {
           const cou = await response.json();
@@ -79,24 +80,34 @@ function Authored() {
     e: React.MouseEvent<HTMLButtonElement>,
     id: string
   ) => {
+    console.log('entered');
     const header = await createToken();
-    const url = `http://localhost:4000/courses/${id}/delete`;
+    const url = `http://localhost:4000/courses/${id}`;
     // const requestOptions = {
     //   method: "PUT",
     //   headers: { "Content-Type": "application/json" },
     //   body: JSON.stringify({ email }),
     //   credentials: "same-origin",
     // };
-    fetch(url, {
-      method: "DELETE",
-      headers: header.headers,
-      credentials: "include",
-    })
+    axios
+      .delete(url, header)
       .then((response) => {
-        console.log("Status Changed Successfully");
+        console.log(response);
         setRerender(!rerender);
       })
-      .catch((error) => console.log(error.message));
+      .catch((error) => {
+        console.log(error);
+      });
+    // fetch(url, {
+    //   method: 'DELETE',
+    //   headers: header.headers,
+    //   credentials: 'include',
+    // })
+    //   .then((response) => {
+    //     console.log('Status Changed Successfully');
+    //     setRerender(!rerender);
+    //   })
+    //   .catch((error) => console.log(error.message));
   };
 
   useEffect(() => {
@@ -107,9 +118,9 @@ function Authored() {
       //   method: "GET",
       // };
       fetch(url, {
-        method: "GET",
+        method: 'GET',
         headers: header.headers,
-        credentials: "include",
+        credentials: 'include',
       })
         .then(async (response) => {
           const cou = await response.json();
@@ -164,7 +175,7 @@ function Authored() {
                           {/* Author */}
                           <div className="flex-col">
                             <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
-                              Created by{" "}
+                              Created by{' '}
                               <span className="text-black">
                                 {course?.author}
                               </span>
@@ -202,8 +213,8 @@ function Authored() {
                                 <FontAwesomeIcon
                                   icon={faTrash}
                                   className="relative"
-                                  color={"#60A5FA"}
-                                  size={"1x"}
+                                  color={'#60A5FA'}
+                                  size={'1x'}
                                 />
                               </button>
                             </div>
