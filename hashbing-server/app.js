@@ -41,7 +41,7 @@ app.use('/', (req, res, next) => {
 		'Req URL',
 		req.url,
 		'Auth Status :',
-		!!req?.session?.user
+		!!req?.session?.email
 			? 'User is authenticated'
 			: 'User is not authenticated'
 	);
