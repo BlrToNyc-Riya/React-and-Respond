@@ -106,9 +106,15 @@ router.post("/signin", async (req, res) => {
 router.post("/signinwithgoogle", async (req, res) => {
   try {
     const { email,displayname } = req.body;
-    let firstName = displayname.split(' ')[0];
+    if(!displayname){
+      firstName = email;
+      lastName = "";
+    }
+    else{
+    let firstName = displayname.split(' ')[0]? displayname.split(' ')[0]:email;
     let lastName = displayname.split(' ')[1]? displayname.split(' ')[1]: '';
     if (!email) throw "please login with a valid emailid...";
+    }
     isValidEmail(email);
     const userExists = await users.userExists(email);
     console.log(userExists);
