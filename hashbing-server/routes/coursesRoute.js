@@ -153,7 +153,7 @@ router.put('/:id/unregister', decodeIDToken, async (req, res) => {
 		return res.json({ error: err });
 	}
 });
-router.get('/:id', async (req, res) => {
+router.get('/:id',decodeIDToken, async (req, res) => {
 	try {
 		try {
 			isValidObjectId(req.params.id);

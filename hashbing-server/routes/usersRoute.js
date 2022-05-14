@@ -29,7 +29,7 @@ const upload = multer({
   },
 }).single("myImage");
 
-router.post("/upload", async (req, res)=> {
+router.post("/upload",decodeIDToken, async (req, res)=> {
   try{
   console.log("File is", req.file);
   upload(req, res, async function (err) {
@@ -138,5 +138,14 @@ router.put("/profile", decodeIDToken,  async (req, res) => {
       res.status(400).send(error?.message ?? error); //need to render
     }
     });
-
+    router.post("/logout", async (req, res) => {
+      try {
+        req.session.destroy();
+	      res.clearCookie('AuthCookie');
+	      res.status(200).send('You have logged out')
+        }
+       catch (error) {
+        res.status(400).send(error?.message ?? error); //need to render
+      }
+    });
 module.exports = router;
