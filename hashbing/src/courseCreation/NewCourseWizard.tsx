@@ -6,6 +6,7 @@ import Button from '../Components/Button'
 import { createCourseAddActionAction } from '../actions/types/courses/Courses.actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { Store } from '../store'
+import { courseCreationStatus } from '../actions/types/CourseAction.types'
 
 type Props = {}
 
@@ -14,17 +15,21 @@ function NewCourseWizard ({}: Props) {
   const dispatch = useDispatch()
   const { courses } = useSelector((state: Store) => state)
   const { data } = courses
+
   const submitDocument = () => {
     if (document.length === 0) return alert('Please enter valid course data')
     dispatch(
-      createCourseAddActionAction({
-        name: data.name,
-        authorId: data.authorId,
-        details: data.details,
-        tags: data.tags,
-        courseOutcome: data.courseOutcome,
-        courseContent: document
-      })
+      createCourseAddActionAction(
+        {
+          name: data.name,
+          authorId: data.authorId,
+          details: data.details,
+          tags: data.tags,
+          courseOutcome: data.courseOutcome,
+          courseContent: document
+        },
+        courseCreationStatus.COURSE_CREATION_STAGE_3
+      )
     )
   }
   return (

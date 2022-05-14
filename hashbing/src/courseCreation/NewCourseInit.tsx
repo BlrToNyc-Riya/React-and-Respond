@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Store } from '../store'
 import { createCourseAction } from '../actions/types/courses/Courses.actions'
 import _ from 'lodash'
+import { courseCreationStatus } from '../actions/types/CourseAction.types'
 
 type Props = {}
 
@@ -54,14 +55,17 @@ function NewCourseInit ({}: Props) {
       errors.description === ''
     ) {
       dispatch(
-        createCourseAction({
-          name: courseName as string,
-          authorId: users?.user?.uid,
-          details: courseDetails as string,
-          tags: courseTags as string,
-          courseContent: '',
-          courseOutcome: {}
-        })
+        createCourseAction(
+          {
+            name: courseName as string,
+            authorId: users?.user?.uid,
+            details: courseDetails as string,
+            tags: courseTags as string,
+            courseContent: '',
+            courseOutcome: {}
+          },
+          courseCreationStatus.COURSE_CREATION_STAGE_2
+        )
       )
     }
     return setErrorStateList(errors)

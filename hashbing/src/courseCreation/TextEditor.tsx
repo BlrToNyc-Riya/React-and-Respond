@@ -4,10 +4,17 @@ import 'react-quill/dist/quill.snow.css'
 import { Width, Float, Height, ImageWithStyle } from './ImageWithStyle'
 import classNames from 'classNames'
 import hljs from 'highlight.js'
+import { Video } from '../Components/Utilities/quill-video-resize.js'
+import('../Components/Utilities/quill-video-resize.css')
+
+hljs.configure({
+  languages: ['javascript', 'ruby', 'python', 'rust']
+})
 
 Quill.register('formats/float', Float)
 Quill.register('formats/height', Height)
 Quill.register('formats/width', Width)
+Quill.register({ 'formats/video': Video })
 Quill.register('formats/image', ImageWithStyle, true)
 
 type EditorPropsType = {
@@ -33,7 +40,7 @@ class TextEditor extends Component<EditorPropsType, {}> {
 
   componentWillUnmount () {
     window.removeEventListener('beforeunload', function (event) {
-      event.returnValue = ''
+      if (this.state.editorHtml.length > 0) event.returnValue = ''
     })
   }
 
@@ -75,6 +82,12 @@ class TextEditor extends Component<EditorPropsType, {}> {
 }
 
 const modules = {
+  // VideoResize: {
+  //   modules: ['Resize', 'DisplaySize', 'Toolbar']
+  // },
+  syntax: {
+    highlight: text => hljs.highlightAuto(text).value
+  },
   toolbar: [
     [{ header: '1' }, { header: '2' }, { font: [] }],
     [{ size: [] }],
