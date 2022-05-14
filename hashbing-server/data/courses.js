@@ -10,31 +10,39 @@ const {
 } = require("../utils/utils");
 const users = mongoCollections.users;
 module.exports = {
-  async createCourse(
-    title,
-    body,
-    description,
-    author,
-    topicsTagged,
-    courseOutcome
-  ) {
-    // errorCheckingCourse(title,body,author);
-    // const id = ObjectID(author);
-    // const user = await userData.getUserByEmail(author);
-    isValidStringField(title, 3);
-    isValidStringField(body, 3);
-    isValidStringField(description, 10);
-    isValidStringField(topicsTagged, 1);
-    isValidObject(courseOutcome);
-    let topics = topicsTagged;
-    topics = topicsTagged.split(",");
-    isValidArray(topics);
-    isValidObject(courseOutcome);
-    const usersCollection = await users();
-    const user = await usersCollection.findOne({ email: author });
-    if (user === null) throw "No user with that id";
-    console.log(user);
-    if (!user) throw "Author not found";
+	async createCourse(
+		title,
+		body,
+		description,
+		author,
+		topicsTagged,
+		courseOutcome
+	) {
+		// errorCheckingCourse(title,body,author);
+		// const id = ObjectID(author);
+		// const user = await userData.getUserByEmail(author);
+		isValidStringField(title, 3);
+		isValidStringField(body, 3);
+		isValidStringField(description, 10);
+		isValidStringField(topicsTagged, 1);
+		isValidObject(courseOutcome);
+		let topics = topicsTagged;
+		topics = [
+			...new Set(
+				topicsTagged
+					.split(',')
+					.map((topic) =>
+						topic.trim().length > 0 ? topic.trim() : null
+					)
+			),
+		];
+		isValidArray(topics);
+		isValidObject(courseOutcome);
+		const usersCollection = await users();
+		const user = await usersCollection.findOne({ email: author });
+		if (user === null) throw 'No user with that id';
+		console.log(user);
+		if (!user) throw 'Author not found';
 
     const courseCollection = await courses();
     const course = {
@@ -47,28 +55,50 @@ module.exports = {
       metaData: { timeStamp: new Date().getTime(), published: true },
     };
 
-    const newCourseInfo = await courseCollection.insertOne(course);
-    if (newCourseInfo.insertedCount === 0) throw "Insert failed!";
-    console.log(newCourseInfo.insertedId);
-    user.courseAuthored.push(objectIdToString(newCourseInfo.insertedId));
-    const userCollection = await users();
-    const updateInfo = await userCollection.updateOne(
-      { _id: user._id },
-      { $set: user }
-    );
-    if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
-      throw "Update failed";
-    console.log(user);
-    return "Insertion successful";
-  },
-  async getCourseById(id) {
-    if (!id || typeof id != "string") throw "Invalid id passed";
-    const courseId = ObjectID(id);
-    const courseCollection = await courses();
-    const course = await courseCollection.findOne({ _id: courseId });
-    if (!course) throw "No course found with this id";
-    return course;
-  },
+		const newCourseInfo = await courseCollection.insertOne(course);
+		if (newCourseInfo.insertedCount === 0) throw 'Insert failed!';
+		console.log(newCourseInfo.insertedId);
+		user.courseAuthored.push(objectIdToString(newCourseInfo.insertedId));
+		const userCollection = await users();
+		const updateInfo = await userCollection.updateOne(
+			{ _id: user._id },
+			{ $set: user }
+		);
+		if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
+			throw 'Update failed';
+		console.log(user);
+		return 'Insertion successful';
+	},
+	async getCourseById(id) {
+		if (!id || typeof id != 'string') throw 'Invalid id passed';
+		const courseId = ObjectID(id);
+		const courseCollection = await courses();
+		const course = await courseCollection.findOne({ _id: courseId });
+		if (!course) throw 'No course found with this id';
+		return course;
+	},
+	async getCourseByIdPerUser(id, email) {
+		if (!id || typeof id != 'string') throw 'Invalid id passed';
+		const courseId = ObjectID(id);
+		const usersCollection = await users();
+		const user = await usersCollection.findOne({ email });
+		console.log('user', user.coursesEnrolled, id);
+		if (!user) throw { message: 'User not found', status: 404 };
+		const isUserEnrolled = user.coursesEnrolled.filter((courseId) => {
+			console.log(id);
+			return id.toString() === courseId.toString();
+		});
+		console.log('isUserEnrolled', isUserEnrolled);
+		if (isUserEnrolled.length <= 0)
+			throw {
+				message: 'User is not enrolled to this course/ Access Denied',
+				status: 403,
+			};
+		const courseCollection = await courses();
+		const course = await courseCollection.findOne({ _id: courseId });
+		if (!course) throw 'No course found with this id';
+		return course;
+	},
 
   async enrollToCourse(email, courseId) {
     if (!email || !courseId)

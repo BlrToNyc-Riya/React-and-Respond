@@ -51,7 +51,7 @@ class ImageWithStyle extends Image {
     )
 
     node.appendChild(image)
-    node.appendChild(captionLabel)
+    // node.appendChild(captionLabel)
 
     return node
   }

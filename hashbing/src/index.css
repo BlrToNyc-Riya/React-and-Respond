@@ -2,8 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+h1 {
+  @apply text-2xl !important;
+}
+h2 {
+  @apply text-xl !important;
+}
+h3 {
+  @apply text-lg !important;
+}
+a {
+  @apply text-blue-600 underline;
+}
+pre {
+  @apply bg-black text-white
+  p-4
+  text-xl
+  rounded break-words;
+}
 .btn {
-  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full;
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full;
 }
 
 .formElements {
@@ -47,15 +65,15 @@ a,
   pointer-events: none;
 } */
 
-.ql-editor .td-video .td-align-left:after {
+/* .ql-editor .td-video .td-align-left:after {
   content: '\ \21E4';
-}
-.ql-editor .td-video .td-align-center:after {
+} */
+/* .ql-editor .td-video .td-align-center:after {
   content: '\ \2194';
   position: relative;
   left: -2px;
   top: -1px;
-}
-.ql-editor .td-video .td-align-right:after {
+} */
+/* .ql-editor .td-video .td-align-right:after {
   content: '\ \21E5';
-}
+} */

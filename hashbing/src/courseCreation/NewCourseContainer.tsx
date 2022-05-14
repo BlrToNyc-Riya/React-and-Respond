@@ -6,7 +6,13 @@ import { useSelector } from 'react-redux'
 import { Store } from '../store'
 import { defaultState } from '../reducers/courseReducer'
 import NewCourseWizard from './NewCourseWizard'
-import { Navigate, useNavigate } from 'react-router-dom'
+import {
+  Link,
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams
+} from 'react-router-dom'
 import NewCourseFeedback from './NewCourseFeedback'
 import { isEmpty } from 'lodash'
 import CourseCreationConfirmation from './CourseCreationConfirmation'
@@ -21,6 +27,9 @@ type Props = {}
 function NewCourseContainer ({}: Props): React.ReactElement {
   const { courses } = useSelector((state: Store) => state)
   const navigate = useNavigate()
+  const params = useLocation()
+
+  console.log('navigate', params)
 
   const renderLoader = (): React.ReactNode => {
     if (courses.loading) {
@@ -33,10 +42,15 @@ function NewCourseContainer ({}: Props): React.ReactElement {
       return null
     } else if (courses.error)
       return (
-        <p>
-          OOPS an error occured while creating the course. Please try again
-          later
-        </p>
+        <>
+          <p>
+            OOPS an error occured while creating the course. Please try again
+            later
+          </p>
+          <Link to='/'>
+            <Button name='Navigate to home page'></Button>{' '}
+          </Link>
+        </>
       )
     else if (
       (courses.stage === courseCreationStatus.COURSE_CREATION_STAGE_1 ||

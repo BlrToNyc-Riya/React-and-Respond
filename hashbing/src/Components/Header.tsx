@@ -13,7 +13,6 @@ function Header (props: { selection: string }) {
   const navigate = useNavigate()
   const [profilePic, setProfilePic] = useState('')
   const { pathname } = useLocation()
-  console.log('location', pathname)
 
   const handleLogout = () => {
     if (userDetail) {
@@ -76,7 +75,7 @@ function Header (props: { selection: string }) {
       </div>
       <div className='flex w-1/2 justify-end'>
         <Link to='/'>
-          {pathname.includes('courses') || pathname === '/' ? (
+          {pathname === 'courses' || pathname === '/' ? (
             <div
               id='courses'
               className='text-md font-bold text-blue-400 p-5 cursor-pointer'

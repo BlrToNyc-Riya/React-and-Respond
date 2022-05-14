@@ -34,7 +34,7 @@ function NewCourseInit ({}: Props) {
       description: '',
       tags: ''
     }
-    if (!courseName || courseName.length < 2) {
+    if (!courseName || courseName.length < 3) {
       errors.title = courseCreationErrors.TITLE
     } else {
       errors.title = ''
@@ -44,7 +44,7 @@ function NewCourseInit ({}: Props) {
     } else {
       errors.description = ''
     }
-    if (!courseTags || courseTags.length < 2) {
+    if (!courseTags || courseTags.length < 3) {
       errors.tags = courseCreationErrors.TITLE
     } else {
       errors.tags = ''
@@ -78,7 +78,7 @@ function NewCourseInit ({}: Props) {
     }
     return <div></div>
   }
-  const isRequired = (val: string | null, length: number = 2): boolean => {
+  const isRequired = (val: string | null, length: number = 3): boolean => {
     if (val === null) return false
     return isValidString(val, length) ? false : true
   }

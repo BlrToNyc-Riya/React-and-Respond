@@ -10,8 +10,8 @@ app.use(express.json());
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(express.urlencoded({ extended: true }));
 
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({ limit: '250mb' }));
+app.use(bodyParser.urlencoded({ limit: '250mb', extended: true }));
 
 // var multer = require('multer');
 // var upload = multer({dest:'uploads/'});
@@ -35,16 +35,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // });
 
 app.use('/', (req, res, next) => {
-	console.log(
-		'request',
-		req.body,
-		'Req URL',
-		req.url,
-		'Auth Status :',
-		!!req?.session?.email
-			? 'User is authenticated'
-			: 'User is not authenticated'
-	);
+	console.log('request', req.body, 'Req URL', req.url);
 	req.url = req.url.trim();
 	next();
 });
