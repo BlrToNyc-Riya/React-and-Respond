@@ -368,11 +368,11 @@ function Users() {
             <div className="flex flex-col">
               <div className="flex items-center">
                 <form id="myForm" onSubmit={onFormSubmit}>
-                  {user?.profilePic !== "" ? (
+                  {user?.profilePic !== "" || user?.profilePic !== undefined ? (
                     <img
                       className="relative mt-4 h-48 w-48 rounded-full object-fill"
                       src={"src/public/uploads/" + user?.profilePic}
-                      alt=""
+                      alt={user?.firstName}
                     />
                   ) : (
                     <div className="bg-white mt-4 p-14 rounded-full">
@@ -605,7 +605,7 @@ function Users() {
                                     ? `/src/Images/${course.fileName}`
                                     : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
                                 }
-                                alt=""
+                                alt={course?.title}
                                 className="h-40 w-full object-fill"
                               />
                             </div>
@@ -722,7 +722,7 @@ function Users() {
                                     ? `/src/Images/${course.fileName}`
                                     : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
                                 }
-                                alt=""
+                                alt={course?.title}
                                 className="h-40 w-full object-fill"
                               />
                             </div>

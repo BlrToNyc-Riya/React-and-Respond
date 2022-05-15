@@ -336,11 +336,11 @@ function CourseDetails() {
                           <div className="flex-col">
                             <img
                               src={
-                                course?.fileName
+                                course1?.fileName
                                   ? `/src/Images/${course1.fileName}`
                                   : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
                               }
-                              alt=""
+                              alt={course1.title}
                               className="h-50 w-screen object-fill"
                             />
                           </div>
@@ -490,7 +490,7 @@ function CourseDetails() {
                         ? `/src/Images/${course.fileName}`
                         : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
                     }
-                    alt=""
+                    alt={course?.title}
                     className="h-40 w-full object-fill"
                   />
                 </div>
@@ -506,7 +506,7 @@ function CourseDetails() {
                   <div className="flex-grow ml-4">
                     {course?.topicsTagged?.map((tag) => (
                       <span
-                        className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-600 uppercase m-4 break-all text-white"
+                        className="text-xs font-semibold text-center py-1 px-2 rounded bg-blue-600 uppercase m-4 break-all text-white"
                         key={tag}
                       >
                         {tag}
