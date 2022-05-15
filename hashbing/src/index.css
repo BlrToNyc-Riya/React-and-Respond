@@ -56,7 +56,14 @@ a,
   border-radius: 4px;
   position: relative;
 }
-
+button:disabled,
+button[disabled],
+button[disabled]:hover {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
 /* .ql-container.ql-snow {
   border: none !important;
 }
