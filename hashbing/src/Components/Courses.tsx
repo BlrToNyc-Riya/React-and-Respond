@@ -28,6 +28,7 @@ type courseDet = {
 function Courses () {
   const [rerender, setRerender] = useState(false);
   const [courses, setCourses] = useState<courseDet[]>();
+  const [coursesRef, setCoursesRef] = useState<courseDet[]>();
   const [authored, setAuthored] = useState<string[]>([]);
   const [enrolled, setEnrolled] = useState<string[]>([]);
   const [error, setError] = useState<null | string>(null);
@@ -50,6 +51,7 @@ function Courses () {
           const cou = await response.json();
           console.log(cou);
           setCourses(cou.courses);
+          setCoursesRef(cou.courses);
         })
         .catch(error => console.log(error.message));
     };
@@ -187,6 +189,16 @@ function Courses () {
     //   .catch((error) => console.log(error.message));
   };
 
+  const onSearch = (search: string) => {
+    if (search === "") {
+      return setCourses(coursesRef);
+    }
+    const filteredCourses = coursesRef?.filter(course => {
+      return course.title.toLowerCase().includes(search.toLowerCase());
+    });
+    setCourses(filteredCourses);
+  };
+
   return (
     <div className='flex bg-white w-screen rounded-2xl'>
       <div className='flex flex-col w-full h-full rounded-2xl'>
@@ -196,7 +208,7 @@ function Courses () {
             <span className='flex font-bold text-lg items-center'>
               Search Courses:
             </span>
-            <SearchBar />
+            <SearchBar onSearch={onSearch} />
           </div>
           {courses?.length === 0 ? (
             <div className='flex bg-gray-200 min-h-screen rounded-b-2xl shadow-2xl items-center justify-center h-3/4'>
@@ -208,10 +220,10 @@ function Courses () {
             <div className='grid w-full h-full md:grid-cols-3 gap-20 pl-20 pr-20 pt-10 pb-10 grid-cols-1'>
               {courses?.map(course => (
                 <div
-                  className='flex bg-white shadow-2xl cursor-pointer'
+                  className='flex bg-white shadow-2xl cursor-pointer max-w-full'
                   key={course._id}
                 >
-                  <div className='flex-col'>
+                  <div className='flex-col max-w-full'>
                     {/* Img */}
                     <div className='flex-col'>
                       <img
@@ -244,7 +256,7 @@ function Courses () {
                         {course?.topicsTagged?.map(tag => (
                           <span
                             className='text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4 break-all'
-                            key={tag}
+                            key={`tag-${course._id}`}
                           >
                             {tag}
                           </span>
