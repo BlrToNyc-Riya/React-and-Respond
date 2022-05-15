@@ -89,9 +89,6 @@ router.post('/uploadPic', decodeIDToken, function (req, res) {
 });
 router.post('/create', decodeIDToken, async (req, res) => {
 	try {
-		// console.log(chalk.blue('req.session.userid', !!req.session.user));
-		// if (!req.session.userid || !req.session.user)
-		// 	throw 'You need to signin to be able to create courses';
 		let {
 			title,
 			body,
@@ -117,7 +114,7 @@ router.post('/create', decodeIDToken, async (req, res) => {
 				title,
 				body,
 				description,
-				req.session.user.email,
+				req.session.user,
 				topicsTagged,
 				courseOutcome,
 				fileName
@@ -146,7 +143,7 @@ router.put('/:id/enroll', decodeIDToken, async (req, res) => {
 		return res.status(200).json({ data: data });
 	} catch (err) {
 		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
-		return res.json({ error: err });
+		return res.status(err.code || 400).json({ error: err });
 	}
 });
 router.put('/:id/unregister', decodeIDToken, async (req, res) => {
@@ -172,7 +169,7 @@ router.get('/:id', decodeIDToken, async (req, res) => {
 		try {
 			isValidObjectId(req.params.id);
 		} catch (error) {
-			res.status(400).send(error?.message ?? error);
+			res.status(error?.code || 400).send(error?.message ?? error);
 			return;
 		}
 		try {
@@ -184,7 +181,7 @@ router.get('/:id', decodeIDToken, async (req, res) => {
 			}
 			return res.status(200).json(course);
 		} catch (error) {
-			return res.status(500).send(error?.message ?? error);
+			return res.status(error?.code || 500).send(error?.message ?? error);
 		}
 	} catch (err) {}
 });
@@ -203,7 +200,7 @@ router.delete('/:id', decodeIDToken, async (req, res) => {
 		}
 	} catch (err) {
 		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
-		return res.json({ error: err });
+		return res.status(error.code || 400).json({ error: err });
 	}
 });
 
@@ -226,17 +223,24 @@ router.get('/user/enrolled/:id', decodeIDToken, async (req, res) => {
 	}
 });
 router.post('/bannerUpload', async (req, res) => {
-	upload(req, res, function (err) {
-		if (err instanceof multer.MulterError) {
-			return res.status(500).json(err);
-		} else if (err) {
-			return res.status(500).json(err);
-		} else if (req.file.size > 1024 * 1024 * 10)
-			return res.status(500).json({ message: 'File size is too large' });
-		var options = {
-			root: path.join(__dirname),
-		};
-		return res.status(200).send(req.file);
-	});
+	try {
+		upload(req, res, function (err) {
+			if (err instanceof multer.MulterError) {
+				return res.status(500).json(err);
+			} else if (err) {
+				return res.status(500).json(err);
+			} else if (req.file.size > 1024 * 1024 * 10)
+				return res
+					.status(500)
+					.json({ message: 'File size is too large' });
+			var options = {
+				root: path.join(__dirname),
+			};
+			return res.status(200).send(req.file);
+		});
+	} catch (err) {
+		console.log('err', err);
+		return res.status(err?.status || 500).json(err);
+	}
 });
 module.exports = router;

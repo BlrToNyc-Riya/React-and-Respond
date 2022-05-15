@@ -2,6 +2,7 @@ const { ObjectID } = require('bson');
 const mongoCollections = require('../config/mongoCollection');
 const courses = mongoCollections.courses;
 const userData = require('./users');
+const { v4: uuidv4 } = require('uuid');
 const {
 	objectIdToString,
 	isValidStringField,
@@ -53,6 +54,7 @@ module.exports = {
 			description,
 			author: author,
 			topicsTagged: topics,
+			courseId: uuidv4(),
 			courseOutcome,
 			fileName: file,
 			metaData: { timeStamp: new Date().getTime(), published: true },

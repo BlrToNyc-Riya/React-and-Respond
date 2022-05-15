@@ -408,23 +408,23 @@ function Users() {
           </div>
           <br />
           <br />
-          <div className="flex w-screen bg-white">
+          <div className="flex w-screen bg-white shadow-2xl">
             <div
-              className="flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer"
+              className="flex justify-center border-r-2 border-black w-1/3 p-2 text-xl font-semibold shadow-2xl cursor-pointer"
               onClick={() => setSelection("Profile")}
               ref={profileField}
             >
               Profile
             </div>
             <div
-              className="flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer"
+              className="flex justify-center border-r-2 border-black w-1/3 p-2 text-xl font-semibold shadow-2xl cursor-pointer"
               onClick={() => setSelection("Enrolled")}
               ref={enrolledField}
             >
               Enrolled
             </div>
             <div
-              className="flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer"
+              className="flex justify-center w-1/3 p-2 text-xl font-semibold cursor-pointer shadow-2xl"
               onClick={() => setSelection("Authored")}
               ref={authoredField}
             >
@@ -615,7 +615,7 @@ function Users() {
                               <div className="flex-grow mt-4">
                                 {course?.topicsTagged?.map((tag) => (
                                   <span
-                                    className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
+                                    className="break-all text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
                                     key={tag}
                                   >
                                     {tag}
@@ -728,7 +728,7 @@ function Users() {
                               <div className="flex-grow mt-4">
                                 {course?.topicsTagged?.map((tag) => (
                                   <span
-                                    className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
+                                    className="break-all text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
                                     key={tag}
                                   >
                                     {tag}
