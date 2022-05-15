@@ -371,7 +371,11 @@ function Users() {
                   {user?.profilePic !== "" || user?.profilePic !== undefined ? (
                     <img
                       className="relative mt-4 h-48 w-48 rounded-full object-fill"
-                      src={"src/public/uploads/" + user?.profilePic}
+                      src={
+                        user?.profilePic
+                          ? `src/public/uploads/${user?.profilePic}`
+                          : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
+                      }
                       alt={user?.firstName}
                     />
                   ) : (
