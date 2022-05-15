@@ -152,8 +152,10 @@ const Login: React.FunctionComponent = () => {
           credentials: "include",
         })
           .then((response) => {
-            if (response.ok == true) navigate("/");
-            else {
+            if (response.ok == true) {
+              navigate("/");
+              window.location.reload();
+            } else {
               if (password_err2 !== null) {
                 password_err2.style.display = "flex";
                 response.text().then((text) => {

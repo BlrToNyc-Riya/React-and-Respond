@@ -33,17 +33,18 @@ router.post("/upload", decodeIDToken, async (req, res) => {
   try {
     console.log("File is", req.file);
     upload(req, res, async function (err) {
-      try{
-      console.log("Request ---", req.body);
-      console.log("Request file ---", req.file); //Here you get file.
+      try {
+        console.log("Request ---", req.body);
+        console.log("Request file ---", req.file); //Here you get file.
 
-      const path = await users.uploadPic(req.session.user.email, '../public/uploads/'+req.file.filename);
-      if(!path)
-          throw "Error in uploading profile pic";
-      console.log({profilePic:path})
-      res.json({profilePic:path});
-      }
-      catch(e) {
+        const path = await users.uploadPic(
+          req.session.user,
+          "../public/uploads/" + req.file.filename
+        );
+        if (!path) throw "Error in uploading profile pic";
+        console.log({ profilePic: path });
+        res.json({ profilePic: path });
+      } catch (e) {
         console.log("err>>>>>>>>>>>>>>>>>>>>>>", e);
         return res.json({ error: e });
       }
@@ -95,14 +96,13 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/signin", decodeIDToken, async (req, res) => {
+router.post("/signin", async (req, res) => {
   try {
     const { email } = req.body;
     isValidEmail(email);
     const { authenticated, user } = await users.authenticateUser(email);
     if (authenticated) {
-      req.session.user.email = user.email;
-      req.session.email = user.email;
+      req.session.user = user.email;
       const userInfo = handleUserInfo(user);
       console.log(req.session);
       res.json({ user: userInfo, token: req.session.user });
@@ -114,40 +114,39 @@ router.post("/signin", decodeIDToken, async (req, res) => {
 
 router.post("/signinwithgoogle", async (req, res) => {
   try {
-    const { email,displayname } = req.body;
-    if(!displayname){
+    const { email, displayname } = req.body;
+    if (!displayname) {
       firstName = email;
       lastName = "";
-    }
-    else{
-    let firstName = displayname.split(' ')[0]? displayname.split(' ')[0]:email;
-    let lastName = displayname.split(' ')[1]? displayname.split(' ')[1]: '';
-    if (!email) throw "please login with a valid emailid...";
+    } else {
+      let firstName = displayname.split(" ")[0]
+        ? displayname.split(" ")[0]
+        : email;
+      let lastName = displayname.split(" ")[1] ? displayname.split(" ")[1] : "";
+      if (!email) throw "please login with a valid emailid...";
     }
     isValidEmail(email);
     const userExists = await users.userExists(email);
     console.log(userExists);
-    if(userExists)
-      {
-    const { authenticated, user } = await users.authenticateUser(email);
-    if (authenticated) {
-      req.session.email = user.email;
-      const userInfo = handleUserInfo(user);
-      console.log(req.session);
-      console.log("here after signinwithgoogle");
-      res.json({ user: userInfo, token: req.session.user });
+    if (userExists) {
+      const { authenticated, user } = await users.authenticateUser(email);
+      if (authenticated) {
+        req.session.user = user.email;
+        const userInfo = handleUserInfo(user);
+        console.log(req.session);
+        console.log("here after signinwithgoogle");
+        res.json({ user: userInfo, token: req.session.user });
+      }
+    } else {
+      let user = {
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+      };
+      const data = await users.createUser(user);
+      console.log("here after signupwithgoogle", data);
+      return res.status(200).json({ data: data });
     }
-  }
-  else{
-    let user = {
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-    };
-    const data = await users.createUser(user);
-    console.log("here after signupwithgoogle", data);
-    return res.status(200).json({ data: data }); 
-  }
   } catch (error) {
     res.status(400).send(error?.message ?? error); //need to render
   }
@@ -155,14 +154,19 @@ router.post("/signinwithgoogle", async (req, res) => {
 
 router.put("/profile", decodeIDToken, async (req, res) => {
   try {
-    const email = req.session.user.email;
+    const email = req.session.user;
     const { firstName, lastName, bio } = req.body;
     if (!email) throw "please login first to update your profile...";
     const user = await users.getUserByEmail(email);
     if (!firstName && !bio && !lastName) res.json(user);
     else {
       if (!user) throw "Invalid login, try again";
-      const updatedUser = await users.updateUser(firstName, lastName, bio, email);
+      const updatedUser = await users.updateUser(
+        firstName,
+        lastName,
+        bio,
+        email
+      );
       if (!updatedUser) throw "Could not update the user";
       res.json(updatedUser);
     }
@@ -172,7 +176,7 @@ router.put("/profile", decodeIDToken, async (req, res) => {
 });
 router.get("/profile", decodeIDToken, async (req, res) => {
   try {
-    const email = req.session.user.email;
+    const email = req.session.user;
     if (!email) throw "please login first to view your profile...";
     const user = await users.getUserByEmail(email);
     if (!user) throw "Invalid login, try again";
