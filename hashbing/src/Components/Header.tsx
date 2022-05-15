@@ -1,71 +1,120 @@
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
-import { RootStateOrAny, useDispatch, useSelector } from 'react-redux'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { auth } from '../firebase'
-import SearchBar from './SearchBar'
-import logo1 from '../public/uploads/IMAGE-1651806371090.jpeg'
+import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useState } from "react";
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { auth, createToken } from "../firebase";
+import SearchBar from "./SearchBar";
+import logo1 from "../public/uploads/IMAGE-1651806371090.jpeg";
+import axios from "axios";
 
-function Header (props: { selection: string }) {
-  const dispatch = useDispatch()
-  const userDetail = useSelector((state: RootStateOrAny) => state.users)
-  const navigate = useNavigate()
-  const [profilePic, setProfilePic] = useState('')
-  const { pathname } = useLocation()
+type userDetail = {
+  _id: string;
+  email: string;
+  coursesEnrolled: [string];
+  courseAuthored: [string];
+  firstName: string;
+  lastName: string;
+  bio: string;
+  phoneNumber: string;
+  profilePic: string;
+};
+function Header(props: { selection: string }) {
+  const dispatch = useDispatch();
+  const userDetail = useSelector((state: RootStateOrAny) => state.users);
+  const navigate = useNavigate();
+  const [profilePic, setProfilePic] = useState("");
+  const [user, setUser] = useState<userDetail>();
+  const [rerender, setRerender] = useState(false);
+  const { pathname } = useLocation();
 
-  const handleLogout = () => {
+  useEffect(() => {
+    const fetchUser = async () => {
+      const header = await createToken();
+      const url = `http://localhost:4000/users/profile`;
+      // const requestOptions = {
+      //   method: "GET",
+      //   credentials: "include",
+      // };
+      fetch(url, {
+        method: "GET",
+        headers: header.headers,
+        credentials: "include",
+      })
+        .then(async (response) => {
+          const userDetails = await response.json();
+          console.log(userDetails);
+          setUser(userDetails);
+        })
+        .catch((error) => console.log(error.message));
+    };
+    fetchUser();
+    return () => {
+      fetchUser;
+    };
+  }, [rerender]);
+
+  const handleLogout = async () => {
     if (userDetail) {
-      console.log('logout')
-      auth.signOut()
-      navigate('/login')
+      console.log("logout");
+      auth.signOut();
+      const url = `http://localhost:4000/users/logout`;
+
+      const header = await createToken();
+      axios
+        .post(url, header)
+        .then((response) => {
+          console.log("Logged out Successfully!");
+          navigate("/login");
+        })
+        .catch((error) => console.log(error.message));
     }
-  }
+  };
   return (
-    <div className='flex w-full shadow-2xl'>
-      <div className='flex w-1/2 justify-start'>
-        <div className='flex ml-4'>
-          <div className='dropdown dropdown-hover'>
-            <label tabIndex={0} className=''>
-              {profilePic ? (
+    <div className="flex w-full shadow-2xl">
+      <div className="flex w-1/2 justify-start">
+        <div className="flex ml-4">
+          <div className="dropdown dropdown-hover">
+            <label tabIndex={0} className="">
+              {user?.profilePic ? (
                 <img
-                  className='relative mt-3 h-10 w-10 rounded-full object-fill'
-                  src={logo1}
-                  alt=''
+                  className="relative mt-3 h-10 w-10 rounded-full object-fill"
+                  src={"src/public/uploads/" + user?.profilePic}
+                  alt=""
                 />
               ) : (
                 <FontAwesomeIcon
                   icon={faUserCircle}
-                  size={'2x'}
-                  color={'grey'}
-                  className='cursor-pointer relative mt-4'
+                  size={"2x"}
+                  color={"grey"}
+                  className="cursor-pointer relative mt-4"
                 />
               )}
             </label>
             <ul
               tabIndex={0}
-              className='dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40 '
+              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40 "
             >
               <li>
                 <Link
-                  className='hover:bg-sky-400 hover:text-black'
-                  to='/courses/new'
+                  className="hover:bg-sky-400 hover:text-black"
+                  to="/courses/new"
                 >
                   Create Course
                 </Link>
               </li>
               <li>
-                <Link className='hover:bg-sky-400 hover:text-black' to='/'>
+                <Link className="hover:bg-sky-400 hover:text-black" to="/">
                   Courses
                 </Link>
               </li>
               <li>
-                <Link className='hover:bg-sky-400 hover:text-black' to='/users'>
+                <Link className="hover:bg-sky-400 hover:text-black" to="/users">
                   {userDetail?.user?.displayName}
                 </Link>
               </li>
               <li>
-                <div className='hover:bg-sky-400' onClick={handleLogout}>
+                <div className="hover:bg-sky-400" onClick={handleLogout}>
                   Logout
                 </div>
               </li>
@@ -73,86 +122,86 @@ function Header (props: { selection: string }) {
           </div>
         </div>
       </div>
-      <div className='flex w-1/2 justify-end'>
-        <Link to='/'>
-          {pathname === 'courses' || pathname === '/' ? (
+      <div className="flex w-1/2 justify-end">
+        <Link to="/">
+          {pathname === "courses" || pathname === "/" ? (
             <div
-              id='courses'
-              className='text-md font-bold text-blue-400 p-5 cursor-pointer'
+              id="courses"
+              className="text-md font-bold text-blue-400 p-5 cursor-pointer"
             >
               Courses
             </div>
           ) : (
-            <div id='courses' className='text-md font-bold p-5 cursor-pointer'>
+            <div id="courses" className="text-md font-bold p-5 cursor-pointer">
               Courses
             </div>
           )}
         </Link>
-        <Link to='/enrolled'>
-          {pathname.includes('enrolled') ? (
+        <Link to="/enrolled">
+          {pathname.includes("enrolled") ? (
             <div
-              id='enrolled'
-              className='text-md font-bold text-blue-400 p-5 cursor-pointer'
+              id="enrolled"
+              className="text-md font-bold text-blue-400 p-5 cursor-pointer"
             >
               Enrolled
             </div>
           ) : (
-            <div id='enrolled' className='text-md font-bold p-5 cursor-pointer'>
+            <div id="enrolled" className="text-md font-bold p-5 cursor-pointer">
               Enrolled
             </div>
           )}
         </Link>
-        <Link to='/authored'>
-          {pathname.includes('authored') ? (
+        <Link to="/authored">
+          {pathname.includes("authored") ? (
             <div
-              id='authored'
-              className='text-md font-bold text-blue-400 p-5 cursor-pointer'
+              id="authored"
+              className="text-md font-bold text-blue-400 p-5 cursor-pointer"
             >
               Authored
             </div>
           ) : (
-            <div id='authored' className='text-md font-bold p-5 cursor-pointer'>
+            <div id="authored" className="text-md font-bold p-5 cursor-pointer">
               Authored
             </div>
           )}
         </Link>
-        <Link to='/courses/new'>
-          {pathname.includes('/courses/new') ? (
+        <Link to="/courses/new">
+          {pathname.includes("/courses/new") ? (
             <div
-              id='authored'
-              className='text-md font-bold text-blue-400 p-5 cursor-pointer'
+              id="authored"
+              className="text-md font-bold text-blue-400 p-5 cursor-pointer"
             >
               Create Course
             </div>
           ) : (
-            <div id='authored' className='text-md font-bold p-5 cursor-pointer'>
+            <div id="authored" className="text-md font-bold p-5 cursor-pointer">
               Create Course
             </div>
           )}
         </Link>
-        <Link to='/users'>
-          {pathname.includes('users') ? (
+        <Link to="/users">
+          {pathname.includes("users") ? (
             <div
-              id='users'
-              className='text-md font-bold text-blue-400 p-5 cursor-pointer'
+              id="users"
+              className="text-md font-bold text-blue-400 p-5 cursor-pointer"
             >
               {userDetail.user.displayName}
             </div>
           ) : (
-            <div id='users' className='text-md font-bold p-5 cursor-pointer'>
+            <div id="users" className="text-md font-bold p-5 cursor-pointer">
               {userDetail.user?.displayName}
             </div>
           )}
         </Link>
         <div
-          className='text-md font-bold p-5 cursor-pointer'
+          className="text-md font-bold p-5 cursor-pointer"
           onClick={handleLogout}
         >
           Logout
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Header
+export default Header;
