@@ -232,7 +232,7 @@ function Courses() {
                             ? `/src/Images/${course.fileName}`
                             : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
                         }
-                        alt=""
+                        alt={course?.title}
                         className="h-72 w-screen object-fill"
                       />
                     </div>
