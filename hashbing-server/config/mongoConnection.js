@@ -1,23 +1,21 @@
-const settings = require('./settings.json');
-const mongoClient = require('mongodb').MongoClient;
+const MongoClient = require('mongodb').MongoClient;
 
-const { serverUrl, dbName } = settings.mongoConfig;
+const mongoConfig = {
+  serverUrl: 'mongodb://localhost:27017/',
+  database: 'React-and-respond'
+};
 
 let _connection = undefined;
 let _db = undefined;
 
-module.exports = {
-	connecttoDB: async function () {
-		if (!_connection) {
-			_connection = await mongoClient.connect(serverUrl);
-			_db = await _connection.db(dbName);
-		}
+module.exports = async () => {
+  if (!_connection) {
+    _connection = await MongoClient.connect(mongoConfig.serverUrl, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    _db = await _connection.db(mongoConfig.database);
+  }
 
-		return _db;
-	},
-	closeConnection: function () {
-		if (_connection) {
-			_connection.close();
-		}
-	},
+  return _db;
 };

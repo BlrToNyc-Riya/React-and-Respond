@@ -99,6 +99,6 @@ module.exports = {
 		user.profilePic = path;
 		const updatedInfo = await userCollection.updateOne({_id: user._id},{$set: user});
 		if (!updatedInfo.matchedCount && !updatedInfo.modifiedCount) throw 'Update failed';
-		return user;
+		return user.profilePic;
 	}
 };

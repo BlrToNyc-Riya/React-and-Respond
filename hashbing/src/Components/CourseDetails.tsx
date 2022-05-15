@@ -93,7 +93,7 @@ function CourseDetails() {
 
   useEffect(() => {
     const fetchEnrolled = async () => {
-      const url = `http://localhost:4000/courses/Enrolled/`;
+      const url = `http://localhost:4000/courses/enrolled/`;
       // const requestOptions = {
       //   method: "GET",
       // };

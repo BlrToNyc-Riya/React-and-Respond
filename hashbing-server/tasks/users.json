@@ -1,0 +1,23 @@
+[
+    {  
+    "email": "dummy@outlook.com",  
+    "bio": "",  
+    "profilePic": "",  
+    "role": "Learner",  
+    "coursesEnrolled": [],  
+    "courseAuthored": [],  
+    "firstName": "Dummy",  
+    "lastName": "user",  
+    "phoneNumber": ""},
+    {  
+        "email": "test123@gmail.com",  
+        "bio": "",  
+        "profilePic": "",  
+        "role": "Both",  
+        "coursesEnrolled": [],  
+        "courseAuthored": [],  
+        "firstName": "test",  
+        "lastName": "123",  
+        "phoneNumber": ""}
+
+]

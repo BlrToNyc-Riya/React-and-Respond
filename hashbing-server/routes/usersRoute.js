@@ -33,11 +33,19 @@ router.post("/upload", decodeIDToken, async (req, res) => {
   try {
     console.log("File is", req.file);
     upload(req, res, async function (err) {
+      try{
       console.log("Request ---", req.body);
       console.log("Request file ---", req.file); //Here you get file.
-      await users.uploadPic(req.session.email, req.file);
-      if (!err) {
-        return res.sendStatus(200).send(err);
+
+      const path = await users.uploadPic(req.session.user.email, '../public/uploads/'+req.file.filename);
+      if(!path)
+          throw "Error in uploading profile pic";
+      console.log({profilePic:path})
+      res.json({profilePic:path});
+      }
+      catch(e) {
+        console.log("err>>>>>>>>>>>>>>>>>>>>>>", e);
+        return res.json({ error: e });
       }
     });
   } catch (e) {
@@ -87,12 +95,13 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/signin", async (req, res) => {
+router.post("/signin", decodeIDToken, async (req, res) => {
   try {
     const { email } = req.body;
     isValidEmail(email);
     const { authenticated, user } = await users.authenticateUser(email);
     if (authenticated) {
+      req.session.user.email = user.email;
       req.session.email = user.email;
       const userInfo = handleUserInfo(user);
       console.log(req.session);

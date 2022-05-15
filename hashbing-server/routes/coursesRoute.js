@@ -59,6 +59,7 @@ router.get("/enrolled", decodeIDToken, async (req, res) => {
   console.log("enrolling");
   try {
     const email = req.session.user.email;
+	console.log(email);
     if (!email) throw "could not fetch enrolled courses, please login";
     const data = await courses.getAllEnrolledCourses(email);
     if (!data) throw "No Enrolled courses found";
