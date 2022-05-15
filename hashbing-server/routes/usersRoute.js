@@ -31,17 +31,17 @@ const upload = multer({
 
 router.post("/upload", decodeIDToken, async (req, res) => {
   try {
-    if(!req.file)
-      throw "Invalid file path, try again";
-    if(!req.session.user)
-      throw "user session expired, login again & try"
     console.log("File is", req.file);
     upload(req, res, async function (err) {
       try {
+        if(!req.file)
+            throw "Invalid file path, try again";
+        if(!req.session.user)
+            throw "user session expired, login again & try"
         console.log("Request ---", req.body);
         console.log("Request file ---", req.file); //Here you get file.
 
-        const path = await users.uploadPic(xss(req.session.user), xss(req.file.filename));
+        const path = await users.uploadPic(req.session.user, xss(req.file.filename));
         if (!path) throw "Error in uploading profile pic";
         console.log({ profilePic: path });
         res.json({ profilePic: path });
@@ -145,7 +145,7 @@ router.put("/profile", decodeIDToken, async (req, res) => {
     const email = req.session.user;
     const { firstName, lastName, bio } = req.body;
     if (!email) throw "please login first to update your profile...";
-    const user = await users.getUserByEmail(xss(email));
+    const user = await users.getUserByEmail(email);
     if (!firstName && !bio && !lastName) res.json(user);
     else {
       if (!user) throw "Invalid login, try again";
@@ -166,7 +166,7 @@ router.get("/profile", decodeIDToken, async (req, res) => {
   try {
     const email = req.session.user;
     if (!email) throw "please login first to view your profile...";
-    const user = await users.getUserByEmail(xss(email));
+    const user = await users.getUserByEmail(email);
     if (!user) throw "Invalid login, try again";
     res.json(user);
   } catch (error) {
