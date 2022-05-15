@@ -19,6 +19,7 @@ export default () => {
   console.log('here in confirmation page', courses)
   if (!courses.created && courses.data.name.length === 0)
     return <Navigate to='/' replace />
+  if (courses.error) return <Navigate to='/courses/new' replace />
   if (courses.loading || !courses.created) return <Loader />
 
   return (

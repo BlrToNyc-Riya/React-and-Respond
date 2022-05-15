@@ -52,6 +52,14 @@ export const createCourseAction = (
   };
 };
 
+export const createCourseActionResetError = () => {
+  return async (dispatch: Dispatch<CourseAction>) => {
+    dispatch({
+      type: CourseActionTypes.CREATE_COURSE_RESET_ERROR
+    });
+  };
+};
+
 export const createCourseAddActionAction = (
   course: CourseType,
   stage: courseCreationStatus,

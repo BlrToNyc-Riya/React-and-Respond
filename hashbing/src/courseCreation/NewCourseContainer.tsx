@@ -21,6 +21,7 @@ import {
   CourseActionTypes,
   courseCreationStatus
 } from '../actions/types/CourseAction.types'
+import CourseCreationError from './CourseCreationError'
 
 type Props = {}
 
@@ -40,18 +41,7 @@ function NewCourseContainer ({}: Props): React.ReactElement {
     console.log('course', courses.created)
     if (courses.loading) {
       return null
-    } else if (courses.error)
-      return (
-        <>
-          <p>
-            OOPS an error occured while creating the course. Please try again
-            later
-          </p>
-          <Link to='/'>
-            <Button name='Navigate to home page'></Button>{' '}
-          </Link>
-        </>
-      )
+    } else if (courses.error) return <CourseCreationError />
     else if (
       (courses.stage === courseCreationStatus.COURSE_CREATION_STAGE_1 ||
         courses.created) &&
