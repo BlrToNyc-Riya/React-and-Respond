@@ -3,66 +3,65 @@ import {
   faLock,
   faLockOpen,
   faUserAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FormControl,
   FormControlLabel,
   FormLabel,
   Radio,
   RadioGroup,
-} from '@mui/material';
-import { auth, createToken } from '../firebase';
-import logo1 from '../Images/google-logo.png';
-import firebase from 'firebase';
+} from "@mui/material";
+import { auth, createToken } from "../firebase";
+import logo1 from "../Images/google-logo.png";
+import firebase from "firebase";
 
 function Signup() {
   const navigate = useNavigate();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [repassword, setRepassword] = useState('');
-  const [error, setError] = useState('');
-  const [role, setRole] = useState('student');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repassword, setRepassword] = useState("");
+  const [error, setError] = useState("");
   const provider = new firebase.auth.GoogleAuthProvider();
 
   const register = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Entered inside');
-    let email_err = document.getElementById('email__err');
-    let first_name_err = document.getElementById('first__name__err');
-    let last_name_err = document.getElementById('last__name__err');
-    let password_err = document.getElementById('password__err');
-    let password_err1 = document.getElementById('password__err1');
-    let password_err2 = document.getElementById('password__err2');
+    console.log("Entered inside");
+    let email_err = document.getElementById("email__err");
+    let first_name_err = document.getElementById("first__name__err");
+    let last_name_err = document.getElementById("last__name__err");
+    let password_err = document.getElementById("password__err");
+    let password_err1 = document.getElementById("password__err1");
+    let password_err2 = document.getElementById("password__err2");
     let validEmail = true;
     let validPassword = true;
     let validReenterPassword = true;
     let validCredentials = true;
     if (email !== undefined && email_err !== null) {
-      if (email === '') {
-        email_err.innerText = 'Email cannot be null!';
-        email_err.style.display = 'flex';
+      if (email === "") {
+        email_err.innerText = "Email cannot be null!";
+        email_err.style.display = "flex";
         validEmail = false;
       } else if (!validateEmail(email)) {
-        email_err.innerText = 'Email is of incorrect format!';
-        email_err.style.display = 'flex';
+        email_err.innerText = "Email is of incorrect format!";
+        email_err.style.display = "flex";
         validEmail = false;
       } else {
-        email_err.style.display = 'none';
+        email_err.style.display = "none";
         validEmail = true;
       }
     }
 
     if (password !== undefined && password_err !== null) {
       if (password.length < 8) {
-        password_err.style.display = 'flex';
+        password_err.style.display = "flex";
         validPassword = false;
       } else {
-        password_err.style.display = 'none';
+        password_err.style.display = "none";
         validPassword = true;
       }
     }
@@ -73,36 +72,36 @@ function Signup() {
       password_err1 !== null
     ) {
       if (password !== repassword) {
-        password_err1.innerText = 'Passwords do not match!';
-        password_err1.style.display = 'flex';
+        password_err1.innerText = "Passwords do not match!";
+        password_err1.style.display = "flex";
         validReenterPassword = false;
       } else {
-        password_err1.style.display = 'none';
+        password_err1.style.display = "none";
         validReenterPassword = true;
       }
     }
 
     if (first_name_err !== null) {
-      if (firstName === '') {
-        first_name_err.style.display = 'flex';
+      if (firstName === "") {
+        first_name_err.style.display = "flex";
         validCredentials = false;
       } else {
-        first_name_err.style.display = 'none';
+        first_name_err.style.display = "none";
         validCredentials = true;
       }
     }
 
     if (last_name_err !== null) {
-      if (lastName === '') {
-        last_name_err.style.display = 'flex';
+      if (lastName === "") {
+        last_name_err.style.display = "flex";
         validCredentials = false;
       } else {
-        last_name_err.style.display = 'none';
+        last_name_err.style.display = "none";
         validCredentials = true;
       }
     }
     if (password_err2 !== null) {
-      password_err2.style.display = 'none';
+      password_err2.style.display = "none";
     }
     if (
       validEmail &&
@@ -117,7 +116,7 @@ function Signup() {
           auth.user?.updateProfile({ displayName: firstName });
           console.log(firstName);
           if (auth) {
-            const url = 'http://localhost:4000/users/signup';
+            const url = "http://localhost:4000/users/signup";
             const header = await createToken();
             // const requestOptions = {
             //   method: "POST",
@@ -125,18 +124,18 @@ function Signup() {
             //   body: JSON.stringify({ firstName, lastName, email }),
             // };
             fetch(url, {
-              method: 'POST',
+              method: "POST",
               headers: header.headers,
               body: JSON.stringify({ firstName, lastName, email }),
-              credentials: 'include',
+              credentials: "include",
             })
               .then((response) => {
                 if (response.ok == true) {
-                  alert('User has signed up successfully!');
-                  navigate('/login');
+                  alert("User has signed up successfully!");
+                  navigate("/login");
                 } else {
                   if (password_err2 !== null) {
-                    password_err2.style.display = 'flex';
+                    password_err2.style.display = "flex";
                     response.text().then((text) => {
                       setError(text);
                     });
@@ -146,14 +145,14 @@ function Signup() {
               .catch((error) => {
                 setError(error.message);
                 if (password_err2 !== null) {
-                  password_err2.style.display = 'flex';
+                  password_err2.style.display = "flex";
                 }
               });
           }
         })
         .catch((error) => {
           if (password_err2 !== null) {
-            password_err2.style.display = 'flex';
+            password_err2.style.display = "flex";
           }
           setError(error.message);
         });
@@ -166,9 +165,9 @@ function Signup() {
     return re.test(email);
   };
   const signInWithGoogle = (e: React.MouseEvent<HTMLButtonElement>) => {
-    let password_err2 = document.getElementById('password__err2');
+    let password_err2 = document.getElementById("password__err2");
     if (password_err2 !== null) {
-      password_err2.style.display = 'none';
+      password_err2.style.display = "none";
     }
     e.preventDefault();
     firebase
@@ -176,7 +175,7 @@ function Signup() {
       .signInWithPopup(provider)
       .then(async (auth) => {
         if (auth) {
-          const url = 'http://localhost:4000/users/signinwithgoogle';
+          const url = "http://localhost:4000/users/signinwithgoogle";
           const header = await createToken();
           // const requestOptions = {
           //   method: "POST",
@@ -184,19 +183,19 @@ function Signup() {
           //   body: JSON.stringify({ firstName, lastName, email }),
           // };
           fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: header.headers,
             body: JSON.stringify({
               email,
               displayname: auth.user?.displayName,
             }),
-            credentials: 'include',
+            credentials: "include",
           })
             .then((response) => {
-              if (response.ok == true) navigate('/');
+              if (response.ok == true) navigate("/");
               else {
                 if (password_err2 !== null) {
-                  password_err2.style.display = 'flex';
+                  password_err2.style.display = "flex";
                   response.text().then((text) => {
                     setError(text);
                   });
@@ -206,14 +205,14 @@ function Signup() {
             .catch((error) => {
               setError(error.message);
               if (password_err2 !== null) {
-                password_err2.style.display = 'flex';
+                password_err2.style.display = "flex";
               }
             });
         }
       })
       .catch((error) => {
         if (password_err2 !== null) {
-          password_err2.style.display = 'flex';
+          password_err2.style.display = "flex";
         }
         setError(error.message);
       });
@@ -243,8 +242,8 @@ function Signup() {
                   <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
                     <FontAwesomeIcon
                       icon={faUserAlt}
-                      size={'1x'}
-                      color={'grey'}
+                      size={"1x"}
+                      color={"grey"}
                     />
                   </div>
                   <input
@@ -264,8 +263,8 @@ function Signup() {
                   <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
                     <FontAwesomeIcon
                       icon={faUserAlt}
-                      size={'1x'}
-                      color={'grey'}
+                      size={"1x"}
+                      color={"grey"}
                     />
                   </div>
                   <input
@@ -283,8 +282,8 @@ function Signup() {
                   <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
                     <FontAwesomeIcon
                       icon={faEnvelope}
-                      size={'1x'}
-                      color={'grey'}
+                      size={"1x"}
+                      color={"grey"}
                     />
                   </div>
                   <input
@@ -302,7 +301,7 @@ function Signup() {
                 </div>
                 <div className="flex justify-center rounded-md border-2 mb-8">
                   <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
-                    <FontAwesomeIcon icon={faLock} size={'1x'} color={'grey'} />
+                    <FontAwesomeIcon icon={faLock} size={"1x"} color={"grey"} />
                   </div>
                   <input
                     type="password"
@@ -319,8 +318,8 @@ function Signup() {
                   <div className="flex justify-center items-center w-10 border-r-2 bg-green-300">
                     <FontAwesomeIcon
                       icon={faLockOpen}
-                      size={'1x'}
-                      color={'grey'}
+                      size={"1x"}
+                      color={"grey"}
                     />
                   </div>
                   <input
@@ -336,35 +335,6 @@ function Signup() {
                 <div id="password__err1" className="text-red-600 hidden">
                   Passwords do not match!
                 </div>
-                <FormControl>
-                  <FormLabel id="demo-radio-buttons-group-label">
-                    <span className="text-green-500">Role</span>
-                  </FormLabel>
-                  <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    defaultValue="student"
-                    name="radio-buttons-group"
-                    row={true}
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                  >
-                    <FormControlLabel
-                      value="student"
-                      control={<Radio color="success" />}
-                      label="Student"
-                    />
-                    <FormControlLabel
-                      value="tutor"
-                      control={<Radio color="success" />}
-                      label="Tutor"
-                    />
-                    <FormControlLabel
-                      value="both"
-                      control={<Radio color="success" />}
-                      label="Both"
-                    />
-                  </RadioGroup>
-                </FormControl>
               </div>
               <div
                 id="password__err2"
@@ -385,7 +355,7 @@ function Signup() {
               <div className="flex-col">
                 <p className="flex justify-center text-sm font-semibold">OR</p>
                 <div className="flex justify-center text-sm text-green-500 font-semibold">
-                  Continue with{' '}
+                  Continue with{" "}
                 </div>
                 <span
                   className="flex justify-center border-2 border-gray-500 cursor-pointer"
@@ -396,12 +366,12 @@ function Signup() {
                   </span>
                   <span className="text-sm font-semibold text-black flex items-center">
                     Google
-                  </span>{' '}
+                  </span>{" "}
                 </span>
                 <div className="flex justify-center">
                   <p className="text-sm font-semibold text-green-500">
                     Already have an account?
-                  </p>{' '}
+                  </p>{" "}
                   <Link to="/login">
                     <span className="text-sm ml-1 font-semibold text-blue-500 cursor-pointer">
                       Login
