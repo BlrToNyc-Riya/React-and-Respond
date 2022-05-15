@@ -256,7 +256,7 @@ function Courses() {
                         {course?.topicsTagged?.map((tag) => (
                           <span
                             className="text-xs font-semibold text-center py-1 px-2 rounded text-white bg-blue-600 uppercase m-4 break-all"
-                            key={`tag-${course._id}`}
+                            key={`tag-${tag}`}
                           >
                             {tag}
                           </span>
