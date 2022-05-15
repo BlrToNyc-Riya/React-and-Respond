@@ -20,6 +20,7 @@ type courseDetailType = {
   author: string;
   topicsTagged: [string];
   _id: string;
+  fileName: string;
   metaData: { timeStamp: number };
 };
 
@@ -257,7 +258,7 @@ function CourseDetails() {
         <div className="flex bg-gray-200 h-full rounded-b-2xl">
           <div className="flex flex-col basis-3/4 h-full">
             <div className="flex-col w-full h-full">
-              <div className="flex m-10 p-6 align-middle items-center rounded-2xl h-full bg-sky-400 shadow-2xl">
+              <div className="flex m-10 p-6 align-middle items-center rounded-2xl h-full bg-blue-600 shadow-2xl">
                 <div className="flex-col">
                   <br />
                   <p className="text-4xl text-white font-sans font-bold text-left pl-10">
@@ -270,14 +271,14 @@ function CourseDetails() {
                   <br />
                   <p className="text-sm text-white font-sans font-bold pl-10">
                     Created by :
-                    <span className="text-sm font-sans font-semibold pl-2 text-black">
+                    <span className="text-sm font-sans font-semibold pl-2">
                       {course?.author}
                     </span>
                   </p>
                   <br />
                   <p className="text-sm text-white font-sans font-bold pl-10">
                     Last Updated on :
-                    <span className="text-sm font-sans font-semibold pl-2 text-black">
+                    <span className="text-sm font-sans font-semibold pl-2">
                       {dateCreated?.toString()}
                     </span>
                   </p>
@@ -285,7 +286,7 @@ function CourseDetails() {
                   <div className="flex-grow mt-4 ml-5 mr-5">
                     {course?.topicsTagged?.map((tag) => (
                       <span
-                        className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4 break-all"
+                        className="text-xs font-semibold text-center py-1 px-2 rounded bg-white uppercase m-4 break-all text-blue-600 border"
                         key={tag}
                       >
                         {tag}
@@ -334,7 +335,11 @@ function CourseDetails() {
                           {/* Img */}
                           <div className="flex-col">
                             <img
-                              src={logo}
+                              src={
+                                course?.fileName
+                                  ? `/src/Images/${course1.fileName}`
+                                  : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
+                              }
                               alt=""
                               className="h-50 w-screen object-fill"
                             />
@@ -360,7 +365,7 @@ function CourseDetails() {
                             <div className="flex-grow mt-4">
                               {course1?.topicsTagged?.map((tag) => (
                                 <span
-                                  className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
+                                  className="text-xs font-semibold text-center py-1 px-2 rounded text-white bg-blue-600 uppercase m-4"
                                   key={tag}
                                 >
                                   {tag}
@@ -371,7 +376,7 @@ function CourseDetails() {
                             <div className="flex-col mt-4">
                               <div className="flex justify-center">
                                 <button
-                                  className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                  className="bg-blue-600 p-3 w-4/5 mb-4 text-white"
                                   onClick={() => {
                                     navigate(`/courses/${course1?._id}`);
                                     window.location.reload();
@@ -380,10 +385,10 @@ function CourseDetails() {
                                   Go To Details
                                 </button>
                               </div>
-                              <div className="flex justify-center">
+                              <div className="flex justify-center mb-2">
                                 {authored?.includes(course1._id) ? (
                                   <button
-                                    className="text-blue-400 p-3"
+                                    className="bg-red-600 text-white p-3"
                                     onClick={(e) =>
                                       deleteCourse(e, course1._id)
                                     }
@@ -392,13 +397,13 @@ function CourseDetails() {
                                     <FontAwesomeIcon
                                       icon={faTrash}
                                       className="relative"
-                                      color={"#60A5FA"}
+                                      color={"white"}
                                       size={"1x"}
                                     />
                                   </button>
                                 ) : enrolled?.includes(course1._id) ? (
                                   <button
-                                    className="text-blue-400 p-3"
+                                    className="text-blue-600 p-3"
                                     onClick={(e) =>
                                       unregisterCourse(e, course1._id)
                                     }
@@ -407,13 +412,13 @@ function CourseDetails() {
                                     <FontAwesomeIcon
                                       icon={faXmarkSquare}
                                       className="relative"
-                                      color={"#60A5FA"}
+                                      color={"#2563EB"}
                                       size={"1x"}
                                     />
                                   </button>
                                 ) : (
                                   <button
-                                    className="text-blue-400 p-3"
+                                    className="text-blue-600 p-3"
                                     onClick={(e) =>
                                       enrollCourse(e, course1._id)
                                     }
@@ -422,7 +427,7 @@ function CourseDetails() {
                                     <FontAwesomeIcon
                                       icon={faClipboardCheck}
                                       className="relative"
-                                      color={"#60A5FA"}
+                                      color={"#2563EB"}
                                       size={"1x"}
                                     />
                                   </button>
@@ -479,7 +484,15 @@ function CourseDetails() {
               <div className="flex-col h-full mr-20 mt-10 bg-white shadow-2xl">
                 {/* Img */}
                 <div className="flex justify-center">
-                  <img src={logo} alt="" className="h-40 w-full object-fill" />
+                  <img
+                    src={
+                      course?.fileName
+                        ? `/src/Images/${course.fileName}`
+                        : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
+                    }
+                    alt=""
+                    className="h-40 w-full object-fill"
+                  />
                 </div>
                 {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
                 {/* Topic */}
@@ -493,7 +506,7 @@ function CourseDetails() {
                   <div className="flex-grow ml-4">
                     {course?.topicsTagged?.map((tag) => (
                       <span
-                        className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4 break-all"
+                        className="text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-600 uppercase m-4 break-all text-white"
                         key={tag}
                       >
                         {tag}
@@ -505,7 +518,7 @@ function CourseDetails() {
                     <div className="flex justify-center">
                       {cid != undefined && authored?.includes(cid) ? (
                         <button
-                          className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                          className="bg-red-600 p-3 w-4/5 mb-4 text-white"
                           onClick={(e) => deleteCourse(e, cid)}
                         >
                           Delete Course &nbsp;
@@ -518,7 +531,7 @@ function CourseDetails() {
                         </button>
                       ) : cid != undefined && enrolled?.includes(cid) ? (
                         <button
-                          className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                          className="bg-blue-600 p-3 w-4/5 mb-4 text-white"
                           onClick={(e) => unregisterCourse(e, cid)}
                         >
                           Unregister &nbsp;
@@ -532,7 +545,7 @@ function CourseDetails() {
                       ) : (
                         cid != undefined && (
                           <button
-                            className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                            className="bg-blue-600 p-3 w-4/5 mb-4 text-white"
                             onClick={(e) => enrollCourse(e, cid)}
                           >
                             Enroll &nbsp;
@@ -549,7 +562,7 @@ function CourseDetails() {
                     <div className="flex justify-center">
                       {cid != undefined && enrolled?.includes(cid) && (
                         <button
-                          className="text-sky-400 p-3"
+                          className="text-blue-600 p-3"
                           onClick={() =>
                             !course ? null : navigate(`/course/${course._id}`)
                           }

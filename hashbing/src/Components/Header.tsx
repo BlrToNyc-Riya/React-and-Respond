@@ -1,4 +1,8 @@
-import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faHamburger,
+  faUserCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
@@ -76,9 +80,9 @@ function Header(props: { selection: string }) {
           <div className="dropdown dropdown-hover">
             <label tabIndex={0} className="">
               <FontAwesomeIcon
-                icon={faUserCircle}
+                icon={faBars}
                 size={"2x"}
-                color={"grey"}
+                color={"black"}
                 className="cursor-pointer relative mt-4"
               />
             </label>
@@ -118,54 +122,48 @@ function Header(props: { selection: string }) {
           {pathname === "courses" || pathname === "/" ? (
             <div
               id="courses"
-              className="text-md font-bold text-blue-400 p-5 cursor-pointer"
+              className="text-md font-bold text-blue-600 p-5 cursor-pointer"
             >
               Courses
             </div>
           ) : (
-            <div id="courses" className="text-md font-bold p-5 cursor-pointer">
-              Courses
-            </div>
+            <div className="text-md font-bold p-5 cursor-pointer">Courses</div>
           )}
         </Link>
         <Link to="/enrolled">
           {pathname.includes("enrolled") ? (
             <div
               id="enrolled"
-              className="text-md font-bold text-blue-400 p-5 cursor-pointer"
+              className="text-md font-bold text-blue-600 p-5 cursor-pointer"
             >
               Enrolled
             </div>
           ) : (
-            <div id="enrolled" className="text-md font-bold p-5 cursor-pointer">
-              Enrolled
-            </div>
+            <div className="text-md font-bold p-5 cursor-pointer">Enrolled</div>
           )}
         </Link>
         <Link to="/authored">
           {pathname.includes("authored") ? (
             <div
               id="authored"
-              className="text-md font-bold text-blue-400 p-5 cursor-pointer"
+              className="text-md font-bold text-blue-600 p-5 cursor-pointer"
             >
               Authored
             </div>
           ) : (
-            <div id="authored" className="text-md font-bold p-5 cursor-pointer">
-              Authored
-            </div>
+            <div className="text-md font-bold p-5 cursor-pointer">Authored</div>
           )}
         </Link>
         <Link to="/courses/new">
           {pathname.includes("/courses/new") ? (
             <div
               id="authored"
-              className="text-md font-bold text-blue-400 p-5 cursor-pointer"
+              className="text-md font-bold text-blue-600 p-5 cursor-pointer"
             >
               Create Course
             </div>
           ) : (
-            <div id="authored" className="text-md font-bold p-5 cursor-pointer">
+            <div className="text-md font-bold p-5 cursor-pointer">
               Create Course
             </div>
           )}
@@ -174,12 +172,12 @@ function Header(props: { selection: string }) {
           {pathname.includes("users") ? (
             <div
               id="users"
-              className="text-md font-bold text-blue-400 p-5 cursor-pointer"
+              className="text-md font-bold text-blue-600 p-5 cursor-pointer"
             >
               {userDetail.user.displayName}
             </div>
           ) : (
-            <div id="users" className="text-md font-bold p-5 cursor-pointer">
+            <div className="text-md font-bold p-5 cursor-pointer">
               {userDetail.user?.displayName}
             </div>
           )}
