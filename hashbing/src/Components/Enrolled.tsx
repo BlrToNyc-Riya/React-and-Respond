@@ -35,7 +35,7 @@ function Enrolled () {
       fetch(url, {
         method: "GET",
         headers: header.headers,
-        credentials: "include",
+        credentials: "include"
       })
         .then(async response => {
           const cou = await response.json();
@@ -60,7 +60,7 @@ function Enrolled () {
       fetch(url, {
         method: "GET",
         headers: header.headers,
-        credentials: "include",
+        credentials: "include"
       })
         .then(async response => {
           const cou = await response.json();
@@ -90,7 +90,7 @@ function Enrolled () {
     fetch(url, {
       method: "PUT",
       headers: header.headers,
-      credentials: "include",
+      credentials: "include"
     })
       .then(response => {
         console.log("Status Changed Successfully");
@@ -116,10 +116,10 @@ function Enrolled () {
                 course =>
                   enrolled.includes(course._id) && (
                     <div
-                      className='flex bg-white shadow-2xl cursor-pointer'
+                      className='flex bg-white shadow-2xl cursor-pointer max-w-full'
                       key={course._id}
                     >
-                      <div className='flex-col'>
+                      <div className='flex-col max-w-full'>
                         {/* Img */}
                         <div className='flex-col'>
                           <img
