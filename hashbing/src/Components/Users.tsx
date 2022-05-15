@@ -24,9 +24,10 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { createToken } from "../firebase";
-import logo from "../Images/course1.png";
-import logo1 from "../public/uploads/IMAGE-1651806371090.jpeg";
+import logo1 from "../public/uploads/IMAGE-1652585305898.png";
 import Header from "./Header";
+import logo from "../Images/course1.png";
+
 type courseDet = {
   _id: string;
   title: string;
@@ -48,11 +49,12 @@ type userDetail = {
   lastName: string;
   bio: string;
   phoneNumber: string;
+  profilePic: string;
 };
 
 function Users() {
   const [images, setImages] = useState<File>();
-  const [profilePic, setProfilePic] = useState("");
+  const [profilePic, setProfilePic] = useState<string | undefined>();
   const [firstName, setFirstName] = useState<string | undefined>();
   const [lastName, setLastName] = useState<string | undefined>();
   const [bio, setBio] = useState<string | undefined>();
@@ -72,6 +74,8 @@ function Users() {
   const enrolledField = useRef<HTMLDivElement>(null);
   const authoredField = useRef<HTMLDivElement>(null);
   const error = useRef<HTMLDivElement>(null);
+
+  console.log("profile pic", user?.profilePic);
 
   useEffect(() => {
     if (selection === "Profile") {
@@ -321,6 +325,7 @@ function Users() {
       .post(url, formData, header)
       .then((response) => {
         console.log(response);
+        setRerender(!rerender);
       })
       .catch((error) => {
         console.log(error);
@@ -362,10 +367,10 @@ function Users() {
             <div className="flex flex-col">
               <div className="flex items-center">
                 <form id="myForm" onSubmit={onFormSubmit}>
-                  {profilePic ? (
+                  {user?.profilePic !== "" ? (
                     <img
                       className="relative mt-4 h-48 w-48 rounded-full object-fill"
-                      src={logo1}
+                      src={"src/public/uploads/" + user?.profilePic}
                       alt=""
                     />
                   ) : (
