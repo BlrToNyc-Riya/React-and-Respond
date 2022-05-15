@@ -38,6 +38,7 @@ type courseDet = {
   courseOutcome4: string;
   topicsTagged: [string];
   author: string;
+  fileName: string;
 };
 
 type userDetail = {
@@ -454,15 +455,18 @@ function Users() {
                     </span>
                   ) : (
                     <span>
-                      <input
-                        type="text"
-                        className=" bg-sky-200 placeholder-black"
-                        required
-                        defaultValue={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                      />{" "}
+                      <label htmlFor="first">
+                        <input
+                          id="first"
+                          type="text"
+                          className="placeholder-black"
+                          required
+                          defaultValue={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                        />
+                      </label>{" "}
                       &nbsp;
-                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
+                      <button className="bg-blue-600 p-1 mb-4 text-white text-sm">
                         Submit
                       </button>
                       <FontAwesomeIcon
@@ -498,15 +502,18 @@ function Users() {
                     </span>
                   ) : (
                     <span>
-                      <input
-                        type="text"
-                        className=" bg-sky-200 placeholder-black"
-                        required
-                        defaultValue={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                      />{" "}
+                      <label htmlFor="last">
+                        <input
+                          id="last"
+                          type="text"
+                          className="placeholder-black"
+                          required
+                          defaultValue={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                        />
+                      </label>{" "}
                       &nbsp;
-                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
+                      <button className="bg-blue-600 p-1 mb-4 text-white text-sm">
                         Submit
                       </button>
                       <FontAwesomeIcon
@@ -544,14 +551,17 @@ function Users() {
                     </span>
                   ) : (
                     <span>
-                      <input
-                        type="text"
-                        className=" bg-sky-200 placeholder-black"
-                        defaultValue={bio}
-                        onChange={(e) => setBio(e.target.value)}
-                      />{" "}
+                      <label htmlFor="bio">
+                        <input
+                          id="bio"
+                          type="text"
+                          className="placeholder-black"
+                          defaultValue={bio}
+                          onChange={(e) => setBio(e.target.value)}
+                        />
+                      </label>{" "}
                       &nbsp;
-                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
+                      <button className="bg-blue-600 p-1 mb-4 text-white text-sm">
                         Submit
                       </button>
                       <FontAwesomeIcon
@@ -590,7 +600,11 @@ function Users() {
                             {/* Img */}
                             <div className="flex justify-center">
                               <img
-                                src={logo}
+                                src={
+                                  course?.fileName
+                                    ? `/src/Images/${course.fileName}`
+                                    : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
+                                }
                                 alt=""
                                 className="h-40 w-full object-fill"
                               />
@@ -604,7 +618,7 @@ function Users() {
                                 </p>
                               </div>
                               <div className="flex-col">
-                                <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
+                                <p className="text-xs font-sans font-semibold pl-2">
                                   Created by:{" "}
                                   <span className="text-black">
                                     {course?.author}
@@ -615,7 +629,7 @@ function Users() {
                               <div className="flex-grow mt-4">
                                 {course?.topicsTagged?.map((tag) => (
                                   <span
-                                    className="break-all text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
+                                    className="break-all text-xs font-semibold text-center py-1 px-2 rounded text-white bg-blue-600 uppercase m-4"
                                     key={tag}
                                   >
                                     {tag}
@@ -642,7 +656,7 @@ function Users() {
                                     </button>
                                   ) : enrolled?.includes(course._id) ? (
                                     <button
-                                      className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                      className="bg-blue-600 p-3 w-4/5 mb-4 text-white"
                                       onClick={(e) =>
                                         unregisterCourse(e, course._id)
                                       }
@@ -657,7 +671,7 @@ function Users() {
                                     </button>
                                   ) : (
                                     <button
-                                      className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                      className="bg-blue-600 p-3 w-4/5 mb-4 text-white"
                                       onClick={(e) =>
                                         enrollCourse(e, course._id)
                                       }
@@ -703,7 +717,11 @@ function Users() {
                             {/* Img */}
                             <div className="flex justify-center">
                               <img
-                                src={logo}
+                                src={
+                                  course?.fileName
+                                    ? `/src/Images/${course.fileName}`
+                                    : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
+                                }
                                 alt=""
                                 className="h-40 w-full object-fill"
                               />
@@ -728,7 +746,7 @@ function Users() {
                               <div className="flex-grow mt-4">
                                 {course?.topicsTagged?.map((tag) => (
                                   <span
-                                    className="break-all text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
+                                    className="break-all text-xs font-semibold text-center py-1 px-2 rounded text-white bg-blue-600 uppercase m-4"
                                     key={tag}
                                   >
                                     {tag}
@@ -739,7 +757,7 @@ function Users() {
                               <div className="flex-col mt-4 bg-white">
                                 <div className="flex justify-center">
                                   <button
-                                    className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                    className="bg-red-600 p-3 w-4/5 mb-4 text-white"
                                     onClick={(e) => deleteCourse(e, course._id)}
                                   >
                                     Delete Course &nbsp;

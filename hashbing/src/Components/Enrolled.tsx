@@ -16,9 +16,10 @@ type courseDet = {
   courseOutcome4: string;
   topicsTagged: [string];
   author: string;
+  fileName: string;
 };
 
-function Enrolled () {
+function Enrolled() {
   const [rerender, setRerender] = useState(false);
   const [courses, setCourses] = useState<courseDet[]>();
   const [enrolled, setEnrolled] = useState<String[]>([]);
@@ -35,14 +36,14 @@ function Enrolled () {
       fetch(url, {
         method: "GET",
         headers: header.headers,
-        credentials: "include"
+        credentials: "include",
       })
-        .then(async response => {
+        .then(async (response) => {
           const cou = await response.json();
           console.log(cou);
           setCourses(cou.courses);
         })
-        .catch(error => console.log(error.message));
+        .catch((error) => console.log(error.message));
     };
     fetchData();
     return () => {
@@ -60,14 +61,14 @@ function Enrolled () {
       fetch(url, {
         method: "GET",
         headers: header.headers,
-        credentials: "include"
+        credentials: "include",
       })
-        .then(async response => {
+        .then(async (response) => {
           const cou = await response.json();
           console.log(cou);
           setEnrolled(cou.Enrolled);
         })
-        .catch(error => console.log(error.message));
+        .catch((error) => console.log(error.message));
     };
     fetchToken();
     return () => {
@@ -90,66 +91,70 @@ function Enrolled () {
     fetch(url, {
       method: "PUT",
       headers: header.headers,
-      credentials: "include"
+      credentials: "include",
     })
-      .then(response => {
+      .then((response) => {
         console.log("Status Changed Successfully");
         setRerender(!rerender);
       })
-      .catch(error => console.log(error.message));
+      .catch((error) => console.log(error.message));
   };
   return (
-    <div className='flex bg-white w-screen  rounded-2xl'>
-      <div className='flex flex-col w-full h-full rounded-2xl'>
+    <div className="flex bg-white w-screen  rounded-2xl">
+      <div className="flex flex-col w-full h-full rounded-2xl">
         {/* <Header selection="enrolled" /> */}
         {enrolled?.length === 0 ? (
-          <div className='flex bg-gray-200 min-h-screen rounded-b-2xl shadow-2xl items-center justify-center h-3/4'>
-            <p className='text-xl font-semibold'>
+          <div className="flex bg-gray-200 min-h-screen rounded-b-2xl shadow-2xl items-center justify-center h-3/4">
+            <p className="text-xl font-semibold">
               No Courses enrolled by the user. Enroll for a course and come
               back!
             </p>
           </div>
         ) : (
-          <div className='flex bg-gray-200 w-full h-full min-h-screen rounded-b-2xl shadow-2xl'>
-            <div className='grid w-full h-full md:grid-cols-3 gap-20 p-20 grid-cols-1'>
+          <div className="flex bg-gray-200 w-full h-full min-h-screen rounded-b-2xl shadow-2xl">
+            <div className="grid w-full h-full md:grid-cols-3 gap-20 p-20 grid-cols-1">
               {courses?.map(
-                course =>
+                (course) =>
                   enrolled.includes(course._id) && (
                     <div
-                      className='flex bg-white shadow-2xl cursor-pointer max-w-full'
+                      className="flex bg-white shadow-2xl cursor-pointer max-w-full"
                       key={course._id}
                     >
-                      <div className='flex-col max-w-full'>
+                      <div className="flex-col max-w-full">
                         {/* Img */}
-                        <div className='flex-col'>
+                        <div className="flex-col">
                           <img
-                            src={logo}
-                            alt=''
-                            className='h-72 w-screen object-fill'
+                            src={
+                              course?.fileName
+                                ? `/src/Images/${course.fileName}`
+                                : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
+                            }
+                            alt=""
+                            className="h-72 w-screen object-fill"
                           />
                         </div>
                         {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
                         {/* Topic */}
-                        <div className=''>
-                          <div className='flex-col min-h-16'>
-                            <p className='break-all text-lg font-sans font-bold text-left pl-2'>
+                        <div className="">
+                          <div className="flex-col min-h-16">
+                            <p className="break-all text-lg font-sans font-bold text-left pl-2">
                               {course?.title}
                             </p>
                           </div>
                           {/* Author */}
-                          <div className='flex-col'>
-                            <p className='text-xs font-sans font-semibold pl-2 text-gray-500'>
-                              Created by{" "}
-                              <span className='text-black'>
+                          <div className="flex-col">
+                            <p className="text-xs font-sans font-semibold pl-2">
+                              Created by:{" "}
+                              <span className="text-black">
                                 {course?.author}
                               </span>
                             </p>
                           </div>
                           {/* Tags */}
-                          <div className='flex-grow mt-4'>
-                            {course?.topicsTagged?.map(tag => (
+                          <div className="flex-grow mt-4">
+                            {course?.topicsTagged?.map((tag) => (
                               <span
-                                className='break-all text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4'
+                                className="break-all text-xs font-semibold text-center py-1 px-2 rounded text-white bg-blue-600 uppercase m-4"
                                 key={tag}
                               >
                                 {tag}
@@ -157,10 +162,10 @@ function Enrolled () {
                             ))}
                           </div>
                           {/* Details Section */}
-                          <div className='flex-col mt-4'>
-                            <div className='flex justify-center'>
+                          <div className="flex-col mt-4">
+                            <div className="flex justify-center">
                               <button
-                                className='bg-blue-400 p-3 w-full text-white'
+                                className="bg-blue-600 p-3 w-full text-white"
                                 onClick={() =>
                                   navigate(`/courses/${course?._id}`)
                                 }
@@ -168,16 +173,16 @@ function Enrolled () {
                                 Go To Details
                               </button>
                             </div>
-                            <div className='flex justify-center'>
+                            <div className="flex justify-center">
                               <button
-                                className='text-blue-400 p-3'
-                                onClick={e => unregisterCourse(e, course._id)}
+                                className="text-blue-600 p-3"
+                                onClick={(e) => unregisterCourse(e, course._id)}
                               >
                                 Unregister&nbsp;
                                 <FontAwesomeIcon
                                   icon={faXmarkSquare}
-                                  className='relative'
-                                  color={"#60A5FA"}
+                                  className="relative"
+                                  color={"#2563EB"}
                                   size={"1x"}
                                 />
                               </button>
