@@ -5,7 +5,6 @@ import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth, createToken } from "../firebase";
 import SearchBar from "./SearchBar";
-import logo1 from "../public/uploads/IMAGE-1651806371090.jpeg";
 import axios from "axios";
 
 type userDetail = {
@@ -52,7 +51,7 @@ function Header(props: { selection: string }) {
     return () => {
       fetchUser;
     };
-  }, [rerender]);
+  }, []);
 
   const handleLogout = async () => {
     if (userDetail) {
@@ -76,20 +75,12 @@ function Header(props: { selection: string }) {
         <div className="flex ml-4">
           <div className="dropdown dropdown-hover">
             <label tabIndex={0} className="">
-              {user?.profilePic ? (
-                <img
-                  className="relative mt-3 h-10 w-10 rounded-full object-fill"
-                  src={"src/public/uploads/" + user?.profilePic}
-                  alt=""
-                />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faUserCircle}
-                  size={"2x"}
-                  color={"grey"}
-                  className="cursor-pointer relative mt-4"
-                />
-              )}
+              <FontAwesomeIcon
+                icon={faUserCircle}
+                size={"2x"}
+                color={"grey"}
+                className="cursor-pointer relative mt-4"
+              />
             </label>
             <ul
               tabIndex={0}
