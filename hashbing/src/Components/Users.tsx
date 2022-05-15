@@ -353,6 +353,7 @@ function Users() {
         setToggleEditLastName(false);
         setToggleEditBio(false);
         setRerender(!rerender);
+        window.location.reload();
       })
       .catch((error) => {
         console.log(error);
