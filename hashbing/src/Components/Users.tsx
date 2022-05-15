@@ -52,7 +52,7 @@ type userDetail = {
   profilePic: string;
 };
 
-function Users () {
+function Users() {
   const [images, setImages] = useState<File>();
   const [profilePic, setProfilePic] = useState<string | undefined>();
   const [firstName, setFirstName] = useState<string | undefined>();
@@ -124,7 +124,7 @@ function Users () {
         headers: header.headers,
         credentials: "include",
       })
-        .then(async response => {
+        .then(async (response) => {
           const userDetails = await response.json();
           console.log(userDetails);
           setUser(userDetails);
@@ -132,7 +132,7 @@ function Users () {
           setLastName(user?.lastName);
           setBio(user?.bio);
         })
-        .catch(error => console.log(error.message));
+        .catch((error) => console.log(error.message));
     };
     fetchUser();
     return () => {
@@ -152,12 +152,12 @@ function Users () {
         headers: header.headers,
         credentials: "include",
       })
-        .then(async response => {
+        .then(async (response) => {
           const cou = await response.json();
           console.log(cou);
           setCourses(cou.courses);
         })
-        .catch(error => console.log(error.message));
+        .catch((error) => console.log(error.message));
     };
     fetchCourses();
     return () => {
@@ -177,12 +177,12 @@ function Users () {
         headers: header.headers,
         credentials: "include",
       })
-        .then(async response => {
+        .then(async (response) => {
           const cou = await response.json();
           console.log(cou);
           setEnrolled(cou.Enrolled);
         })
-        .catch(error => console.log(error.message));
+        .catch((error) => console.log(error.message));
     };
     fetchEnrolled();
     return () => {
@@ -207,11 +207,11 @@ function Users () {
       headers: header.headers,
       credentials: "include",
     })
-      .then(response => {
+      .then((response) => {
         console.log("Status Changed Successfully");
         setRerender(!rerender);
       })
-      .catch(error => console.log(error.message));
+      .catch((error) => console.log(error.message));
   };
 
   const unregisterCourse = async (
@@ -231,11 +231,11 @@ function Users () {
       headers: header.headers,
       credentials: "include",
     })
-      .then(response => {
+      .then((response) => {
         console.log("Status Changed Successfully");
         setRerender(!rerender);
       })
-      .catch(error => console.log(error.message));
+      .catch((error) => console.log(error.message));
   };
 
   const deleteCourse = async (
@@ -253,11 +253,11 @@ function Users () {
     // };
     axios
       .delete(url, header)
-      .then(response => {
+      .then((response) => {
         console.log(response);
         setRerender(!rerender);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
     // fetch(url, {
@@ -283,12 +283,12 @@ function Users () {
         headers: header.headers,
         credentials: "include",
       })
-        .then(async response => {
+        .then(async (response) => {
           const cou = await response.json();
           console.log(cou);
           setAuthored(cou.Authored);
         })
-        .catch(error => console.log(error.message));
+        .catch((error) => console.log(error.message));
     };
     fetchToken();
     return () => {
@@ -323,11 +323,11 @@ function Users () {
     // };
     axios
       .post(url, formData, header)
-      .then(response => {
+      .then((response) => {
         console.log(response);
         setRerender(!rerender);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -346,60 +346,60 @@ function Users () {
     // };
     axios
       .put(url, { firstName, lastName, bio }, header)
-      .then(response => {
+      .then((response) => {
         console.log(response);
         setToggleEditFirstName(false);
         setToggleEditLastName(false);
         setToggleEditBio(false);
         setRerender(!rerender);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
 
   return (
-    <div className='flex bg-white w-screen rounded-2xl'>
-      <div className='flex flex-col w-full h-full rounded-2xl'>
+    <div className="flex bg-white w-screen rounded-2xl">
+      <div className="flex flex-col w-full h-full rounded-2xl">
         {/* <Header selection="users" /> */}
-        <div className='flex flex-col bg-gray-200 w-full h-full rounded-b-2xl shadow-2xl'>
-          <div className='flex w-full justify-center'>
-            <div className='flex flex-col'>
-              <div className='flex items-center'>
-                <form id='myForm' onSubmit={onFormSubmit}>
+        <div className="flex flex-col bg-gray-200 w-full h-full rounded-b-2xl shadow-2xl">
+          <div className="flex w-full justify-center">
+            <div className="flex flex-col">
+              <div className="flex items-center">
+                <form id="myForm" onSubmit={onFormSubmit}>
                   {user?.profilePic !== "" ? (
                     <img
-                      className='relative mt-4 h-48 w-48 rounded-full object-fill'
+                      className="relative mt-4 h-48 w-48 rounded-full object-fill"
                       src={"src/public/uploads/" + user?.profilePic}
-                      alt=''
+                      alt=""
                     />
                   ) : (
-                    <div className='bg-white mt-4 p-14 rounded-full'>
+                    <div className="bg-white mt-4 p-14 rounded-full">
                       <FontAwesomeIcon
                         icon={faUser}
                         size={"5x"}
                         color={"grey"}
-                        className='relative'
+                        className="relative"
                       />
                     </div>
                   )}
                   <FontAwesomeIcon
                     icon={faPencilAlt}
-                    className='relative bottom-4 left-36'
+                    className="relative bottom-4 left-36"
                     color={"black"}
-                    id='pencil_icon'
+                    id="pencil_icon"
                     onClick={uploadTrigger}
                   />{" "}
                   <input
-                    type='file'
-                    id='myfile'
-                    className='hidden'
-                    name='profile-file'
+                    type="file"
+                    id="myfile"
+                    className="hidden"
+                    name="profile-file"
                     onChange={onImageChange}
                     ref={fileInput}
                     required
                   />
-                  <button type='submit' className='hidden' ref={submitBtn}>
+                  <button type="submit" className="hidden" ref={submitBtn}>
                     Submit
                   </button>
                 </form>
@@ -408,23 +408,23 @@ function Users () {
           </div>
           <br />
           <br />
-          <div className='flex w-screen bg-white'>
+          <div className="flex w-screen bg-white shadow-2xl">
             <div
-              className='flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer'
+              className="flex justify-center border-r-2 border-black w-1/3 p-2 text-xl font-semibold shadow-2xl cursor-pointer"
               onClick={() => setSelection("Profile")}
               ref={profileField}
             >
               Profile
             </div>
             <div
-              className='flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer'
+              className="flex justify-center border-r-2 border-black w-1/3 p-2 text-xl font-semibold shadow-2xl cursor-pointer"
               onClick={() => setSelection("Enrolled")}
               ref={enrolledField}
             >
               Enrolled
             </div>
             <div
-              className='flex justify-center border-2 border-black w-1/3 p-2 text-xl font-semibold cursor-pointer'
+              className="flex justify-center w-1/3 p-2 text-xl font-semibold cursor-pointer shadow-2xl"
               onClick={() => setSelection("Authored")}
               ref={authoredField}
             >
@@ -432,21 +432,21 @@ function Users () {
             </div>
           </div>
           {selection === "Profile" ? (
-            <div className='flex p-20 justify-left ml-10 h-screen'>
+            <div className="flex p-20 justify-left ml-10 h-screen">
               <form onSubmit={onProfileChange}>
-                <p className='font-bold text-lg'>
+                <p className="font-bold text-lg">
                   First Name:
                   {toggleEditFirstName == false ? (
                     <span>
-                      <span className='font-semibold ml-1 mr-1'>
+                      <span className="font-semibold ml-1 mr-1">
                         {user?.firstName}
                       </span>
                       <FontAwesomeIcon
                         icon={faPencilAlt}
-                        className='relative'
+                        className="relative"
                         color={"black"}
                         size={"1x"}
-                        id='pencil_icon_1'
+                        id="pencil_icon_1"
                         onClick={() =>
                           setToggleEditFirstName(!toggleEditFirstName)
                         }
@@ -455,22 +455,22 @@ function Users () {
                   ) : (
                     <span>
                       <input
-                        type='text'
-                        className=' bg-sky-200 placeholder-black'
+                        type="text"
+                        className=" bg-sky-200 placeholder-black"
                         required
                         defaultValue={firstName}
-                        onChange={e => setFirstName(e.target.value)}
+                        onChange={(e) => setFirstName(e.target.value)}
                       />{" "}
                       &nbsp;
-                      <button className='bg-sky-400 p-1 mb-4 text-white text-sm'>
+                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
                         Submit
                       </button>
                       <FontAwesomeIcon
                         icon={faPencilAlt}
-                        className='relative'
+                        className="relative"
                         color={"black"}
                         size={"1x"}
-                        id='pencil_icon_1'
+                        id="pencil_icon_1"
                         onClick={() =>
                           setToggleEditFirstName(!toggleEditFirstName)
                         }
@@ -479,16 +479,16 @@ function Users () {
                   )}
                 </p>
                 <br />
-                <p className='font-bold text-lg'>
+                <p className="font-bold text-lg">
                   Last Name:
                   {toggleEditLastName == false ? (
                     <span>
-                      <span className='font-semibold ml-1 mr-1'>
+                      <span className="font-semibold ml-1 mr-1">
                         {user?.lastName}
                       </span>
                       <FontAwesomeIcon
                         icon={faPencilAlt}
-                        className='relative'
+                        className="relative"
                         color={"black"}
                         size={"1x"}
                         onClick={() =>
@@ -499,19 +499,19 @@ function Users () {
                   ) : (
                     <span>
                       <input
-                        type='text'
-                        className=' bg-sky-200 placeholder-black'
+                        type="text"
+                        className=" bg-sky-200 placeholder-black"
                         required
                         defaultValue={lastName}
-                        onChange={e => setLastName(e.target.value)}
+                        onChange={(e) => setLastName(e.target.value)}
                       />{" "}
                       &nbsp;
-                      <button className='bg-sky-400 p-1 mb-4 text-white text-sm'>
+                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
                         Submit
                       </button>
                       <FontAwesomeIcon
                         icon={faPencilAlt}
-                        className='relative'
+                        className="relative"
                         color={"black"}
                         size={"1x"}
                         onClick={() =>
@@ -522,21 +522,21 @@ function Users () {
                   )}
                 </p>
                 <br />
-                <p className='font-bold text-lg'>
+                <p className="font-bold text-lg">
                   Email:
-                  <span className='font-semibold ml-2'>{user?.email}</span>
+                  <span className="font-semibold ml-2">{user?.email}</span>
                 </p>
                 <br />
-                <p className='font-bold text-lg'>
+                <p className="font-bold text-lg">
                   Bio:
                   {toggleEditBio == false ? (
                     <span>
-                      <span className='font-semibold ml-1 mr-1'>
+                      <span className="font-semibold ml-1 mr-1">
                         {user?.bio}
                       </span>
                       <FontAwesomeIcon
                         icon={faPencilAlt}
-                        className='relative'
+                        className="relative"
                         color={"black"}
                         size={"1x"}
                         onClick={() => setToggleEditBio(!toggleEditBio)}
@@ -545,18 +545,18 @@ function Users () {
                   ) : (
                     <span>
                       <input
-                        type='text'
-                        className=' bg-sky-200 placeholder-black'
+                        type="text"
+                        className=" bg-sky-200 placeholder-black"
                         defaultValue={bio}
-                        onChange={e => setBio(e.target.value)}
+                        onChange={(e) => setBio(e.target.value)}
                       />{" "}
                       &nbsp;
-                      <button className='bg-sky-400 p-1 mb-4 text-white text-sm'>
+                      <button className="bg-sky-400 p-1 mb-4 text-white text-sm">
                         Submit
                       </button>
                       <FontAwesomeIcon
                         icon={faPencilAlt}
-                        className='relative'
+                        className="relative"
                         color={"black"}
                         size={"1x"}
                         onClick={() => setToggleEditBio(!toggleEditBio)}
@@ -565,57 +565,57 @@ function Users () {
                   )}
                 </p>
                 <br />
-                <div className='hidden text-red-500' ref={error}></div>
+                <div className="hidden text-red-500" ref={error}></div>
               </form>
             </div>
           ) : selection === "Enrolled" ? (
-            <div className='flex flex-col justify-left ml-4 mb-10 h-screen'>
+            <div className="flex flex-col justify-left ml-4 mb-10 h-screen">
               {enrolled?.length === 0 ? (
-                <div className='flex bg-gray-200 min-h-screen rounded-b-2xl p-20 shadow-2xl items-start justify-center h-3/4'>
-                  <p className='text-xl font-semibold'>
+                <div className="flex bg-gray-200 min-h-screen rounded-b-2xl p-20 shadow-2xl items-start justify-center h-3/4">
+                  <p className="text-xl font-semibold">
                     No Courses enrolled by the user. Enroll for a course and
                     come back!
                   </p>
                 </div>
               ) : (
-                <div className='grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1'>
+                <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
                   {courses?.map(
-                    course =>
+                    (course) =>
                       enrolled.includes(course._id) && (
                         <div
-                          className='flex cursor-pointer h-80 top-10'
+                          className="flex cursor-pointer h-80 top-10"
                           key={course._id}
                         >
-                          <div className='flex-col h-full bg-white shadow-2xl'>
+                          <div className="flex-col h-full bg-white shadow-2xl">
                             {/* Img */}
-                            <div className='flex justify-center'>
+                            <div className="flex justify-center">
                               <img
                                 src={logo}
-                                alt=''
-                                className='h-40 w-full object-fill'
+                                alt=""
+                                className="h-40 w-full object-fill"
                               />
                             </div>
                             {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
                             {/* Topic */}
-                            <div className='flex-col'>
-                              <div className='flex-col min-h-16'>
-                                <p className='text-lg font-sans font-bold text-center pl-2'>
+                            <div className="flex-col">
+                              <div className="flex-col min-h-16">
+                                <p className="text-lg font-sans font-bold text-center pl-2">
                                   {course?.title}
                                 </p>
                               </div>
-                              <div className='flex-col'>
-                                <p className='text-xs font-sans font-semibold pl-2 text-gray-500'>
+                              <div className="flex-col">
+                                <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
                                   Created by:{" "}
-                                  <span className='text-black'>
+                                  <span className="text-black">
                                     {course?.author}
                                   </span>
                                 </p>
                               </div>
                               {/* Tags */}
-                              <div className='flex-grow mt-4'>
-                                {course?.topicsTagged?.map(tag => (
+                              <div className="flex-grow mt-4">
+                                {course?.topicsTagged?.map((tag) => (
                                   <span
-                                    className='break-all text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4'
+                                    className="break-all text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
                                     key={tag}
                                   >
                                     {tag}
@@ -623,45 +623,49 @@ function Users () {
                                 ))}
                               </div>
                               {/* Details Section */}
-                              <div className='flex-col mt-4 bg-white'>
-                                <div className='flex justify-center'>
+                              <div className="flex-col mt-4 bg-white">
+                                <div className="flex justify-center">
                                   {authored?.includes(course._id) ? (
                                     <button
-                                      className='text-blue-400 p-3'
-                                      onClick={e => deleteCourse(e, course._id)}
+                                      className="text-blue-400 p-3"
+                                      onClick={(e) =>
+                                        deleteCourse(e, course._id)
+                                      }
                                     >
                                       Delete Course &nbsp;
                                       <FontAwesomeIcon
                                         icon={faTrash}
-                                        className='relative'
+                                        className="relative"
                                         color={"#60A5FA"}
                                         size={"1x"}
                                       />
                                     </button>
                                   ) : enrolled?.includes(course._id) ? (
                                     <button
-                                      className='bg-sky-400 p-3 w-4/5 mb-4 text-white'
-                                      onClick={e =>
+                                      className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                      onClick={(e) =>
                                         unregisterCourse(e, course._id)
                                       }
                                     >
                                       Unregister &nbsp;
                                       <FontAwesomeIcon
                                         icon={faXmarkSquare}
-                                        className='relative'
+                                        className="relative"
                                         color={"white"}
                                         size={"1x"}
                                       />
                                     </button>
                                   ) : (
                                     <button
-                                      className='bg-sky-400 p-3 w-4/5 mb-4 text-white'
-                                      onClick={e => enrollCourse(e, course._id)}
+                                      className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                      onClick={(e) =>
+                                        enrollCourse(e, course._id)
+                                      }
                                     >
                                       Enroll &nbsp;
                                       <FontAwesomeIcon
                                         icon={faClipboardCheck}
-                                        className='relative'
+                                        className="relative"
                                         color={"white"}
                                         size={"1x"}
                                       />
@@ -678,53 +682,53 @@ function Users () {
               )}
             </div>
           ) : selection === "Authored" ? (
-            <div className='flex flex-col justify-left ml-4 h-screen'>
+            <div className="flex flex-col justify-left ml-4 h-screen">
               {authored?.length === 0 ? (
-                <div className='flex bg-gray-200 min-h-screen rounded-b-2xl p-20 shadow-2xl items-start justify-center h-3/4'>
-                  <p className='text-xl font-semibold'>
+                <div className="flex bg-gray-200 min-h-screen rounded-b-2xl p-20 shadow-2xl items-start justify-center h-3/4">
+                  <p className="text-xl font-semibold">
                     The user has not authored any Courses! Feel free to add a
                     new course!
                   </p>
                 </div>
               ) : (
-                <div className='grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1'>
+                <div className="grid w-full h-full md:grid-cols-4 gap-20 p-10 grid-cols-1">
                   {courses?.map(
-                    course =>
+                    (course) =>
                       authored?.includes(course._id) && (
                         <div
-                          className='flex cursor-pointer h-80 top-10'
+                          className="flex cursor-pointer h-80 top-10"
                           key={course._id}
                         >
-                          <div className='flex-col h-full bg-white shadow-2xl'>
+                          <div className="flex-col h-full bg-white shadow-2xl">
                             {/* Img */}
-                            <div className='flex justify-center'>
+                            <div className="flex justify-center">
                               <img
                                 src={logo}
-                                alt=''
-                                className='h-40 w-full object-fill'
+                                alt=""
+                                className="h-40 w-full object-fill"
                               />
                             </div>
                             {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
                             {/* Topic */}
-                            <div className='flex-col'>
-                              <div className='flex-col min-h-16'>
-                                <p className='text-lg font-sans font-bold text-center pl-2'>
+                            <div className="flex-col">
+                              <div className="flex-col min-h-16">
+                                <p className="text-lg font-sans font-bold text-center pl-2">
                                   {course?.title}
                                 </p>
                               </div>
-                              <div className='flex-col'>
-                                <p className='text-xs font-sans font-semibold pl-2 text-gray-500'>
+                              <div className="flex-col">
+                                <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
                                   Created by:{" "}
-                                  <span className='text-black'>
+                                  <span className="text-black">
                                     {course?.author}
                                   </span>
                                 </p>
                               </div>
                               {/* Tags */}
-                              <div className='flex-grow mt-4'>
-                                {course?.topicsTagged?.map(tag => (
+                              <div className="flex-grow mt-4">
+                                {course?.topicsTagged?.map((tag) => (
                                   <span
-                                    className='break-all text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4'
+                                    className="break-all text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4"
                                     key={tag}
                                   >
                                     {tag}
@@ -732,16 +736,16 @@ function Users () {
                                 ))}
                               </div>
                               {/* Details Section */}
-                              <div className='flex-col mt-4 bg-white'>
-                                <div className='flex justify-center'>
+                              <div className="flex-col mt-4 bg-white">
+                                <div className="flex justify-center">
                                   <button
-                                    className='bg-sky-400 p-3 w-4/5 mb-4 text-white'
-                                    onClick={e => deleteCourse(e, course._id)}
+                                    className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                                    onClick={(e) => deleteCourse(e, course._id)}
                                   >
                                     Delete Course &nbsp;
                                     <FontAwesomeIcon
                                       icon={faTrash}
-                                      className='relative'
+                                      className="relative"
                                       color={"white"}
                                       size={"1x"}
                                     />
