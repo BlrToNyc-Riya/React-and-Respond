@@ -228,7 +228,7 @@ function Courses () {
                     {/* Topic */}
                     <div className=''>
                       <div className='flex-col min-h-16'>
-                        <p className='text-lg font-sans font-bold text-left pl-2'>
+                        <p className='text-lg font-sans font-bold text-left pl-2 break-all'>
                           {course?.title}
                         </p>
                       </div>
@@ -243,7 +243,7 @@ function Courses () {
                       <div className='flex-grow mt-4'>
                         {course?.topicsTagged?.map(tag => (
                           <span
-                            className='text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4'
+                            className='text-xs font-semibold text-center py-1 px-2 rounded text-cyan-600 bg-blue-200 uppercase m-4 break-all'
                             key={tag}
                           >
                             {tag}
