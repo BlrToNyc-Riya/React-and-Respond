@@ -67,6 +67,8 @@ export const courseReducer = (
       return { ...defaultState, created: true }
     case CourseActionTypes.CREATE_COURSE_RESET_INITIAL:
       return { ...state, created: false }
+    case CourseActionTypes.CREATE_COURSE_RESET_ERROR:
+      return { ...defaultState }
     default:
       return state
   }
