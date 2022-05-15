@@ -4,12 +4,14 @@ import logo from "../Images/course1.png";
 import {
   faCircleCheck,
   faClipboardCheck,
+  faTrash,
   faXmarkSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
 import { createToken } from "../firebase";
 import { faXingSquare } from "@fortawesome/free-brands-svg-icons";
+import axios from "axios";
 
 type courseDetailType = {
   title: string;
@@ -27,6 +29,7 @@ function CourseDetails() {
   const params = useParams();
   const [rerender, setRerender] = useState(false);
   const [enrolled, setEnrolled] = useState<String[]>([]);
+  const [authored, setAuthored] = useState<String[]>([]);
   const navigate = useNavigate();
   const [dateCreated, setDateCreated] = useState<String>();
   const cid = params.id;
@@ -112,6 +115,32 @@ function CourseDetails() {
       fetchEnrolled;
     };
   }, [rerender]);
+
+  useEffect(() => {
+    const fetchAuthored = async () => {
+      const header = await createToken();
+      const url = `http://localhost:4000/courses/authored/`;
+      // const requestOptions = {
+      //   method: "GET",
+      // };
+      fetch(url, {
+        method: "GET",
+        headers: header.headers,
+        credentials: "include",
+      })
+        .then(async (response) => {
+          const cou = await response.json();
+          console.log(cou);
+          setAuthored(cou.Authored);
+        })
+        .catch((error) => console.log(error.message));
+    };
+    fetchAuthored();
+    return () => {
+      fetchAuthored;
+    };
+  }, [rerender]);
+
   const enrollCourse = async (
     e: React.MouseEvent<HTMLButtonElement>,
     id: string
@@ -159,6 +188,40 @@ function CourseDetails() {
         setRerender(!rerender);
       })
       .catch((error) => console.log(error.message));
+  };
+
+  const deleteCourse = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    id: string
+  ) => {
+    console.log("entered");
+    const header = await createToken();
+    const url = `http://localhost:4000/courses/${id}`;
+    // const requestOptions = {
+    //   method: "PUT",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ email }),
+    //   credentials: "same-origin",
+    // };
+    axios
+      .delete(url, header)
+      .then((response) => {
+        console.log(response);
+        setRerender(!rerender);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // fetch(url, {
+    //   method: 'DELETE',
+    //   headers: header.headers,
+    //   credentials: 'include',
+    // })
+    //   .then((response) => {
+    //     console.log('Status Changed Successfully');
+    //     setRerender(!rerender);
+    //   })
+    //   .catch((error) => console.log(error.message));
   };
 
   return (
@@ -296,7 +359,20 @@ function CourseDetails() {
                   {/* Details Section */}
                   <div className="flex-col mt-4 bg-white">
                     <div className="flex justify-center">
-                      {cid != undefined && enrolled?.includes(cid) ? (
+                      {cid != undefined && authored?.includes(cid) ? (
+                        <button
+                          className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
+                          onClick={(e) => deleteCourse(e, cid)}
+                        >
+                          Delete Course &nbsp;
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            className="relative"
+                            color={"white"}
+                            size={"1x"}
+                          />
+                        </button>
+                      ) : cid != undefined && enrolled?.includes(cid) ? (
                         <button
                           className="bg-sky-400 p-3 w-4/5 mb-4 text-white"
                           onClick={(e) => unregisterCourse(e, cid)}

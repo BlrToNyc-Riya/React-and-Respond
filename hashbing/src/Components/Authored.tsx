@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import Header from './Header';
-import logo from '../Images/course1.png';
-import { useNavigate } from 'react-router-dom';
-import { createToken } from '../firebase';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import Header from "./Header";
+import logo from "../Images/course1.png";
+import { useNavigate } from "react-router-dom";
+import { createToken } from "../firebase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 type courseDet = {
   _id: string;
   title: string;
@@ -34,9 +34,9 @@ function Authored() {
       //   credentials: "include",
       // };
       fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: header.headers,
-        credentials: 'include',
+        credentials: "include",
       })
         .then(async (response) => {
           const cou = await response.json();
@@ -59,9 +59,9 @@ function Authored() {
       //   method: "GET",
       // };
       fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: header.headers,
-        credentials: 'include',
+        credentials: "include",
       })
         .then(async (response) => {
           const cou = await response.json();
@@ -80,7 +80,7 @@ function Authored() {
     e: React.MouseEvent<HTMLButtonElement>,
     id: string
   ) => {
-    console.log('entered');
+    console.log("entered");
     const header = await createToken();
     const url = `http://localhost:4000/courses/${id}`;
     // const requestOptions = {
@@ -118,9 +118,9 @@ function Authored() {
       //   method: "GET",
       // };
       fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: header.headers,
-        credentials: 'include',
+        credentials: "include",
       })
         .then(async (response) => {
           const cou = await response.json();
@@ -138,7 +138,7 @@ function Authored() {
     <div className="flex bg-white w-screen rounded-2xl">
       <div className="flex flex-col w-full h-full rounded-2xl">
         {/* <Header selection="authored" /> */}
-        {courses?.length === 0 ? (
+        {authored?.length === 0 ? (
           <div className="flex bg-gray-200 min-h-screen rounded-b-2xl shadow-2xl items-center justify-center h-3/4">
             <p className="text-xl font-semibold">
               The user has not authored any Courses! Feel free to add a new
@@ -175,7 +175,7 @@ function Authored() {
                           {/* Author */}
                           <div className="flex-col">
                             <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
-                              Created by{' '}
+                              Created by{" "}
                               <span className="text-black">
                                 {course?.author}
                               </span>
@@ -213,8 +213,8 @@ function Authored() {
                                 <FontAwesomeIcon
                                   icon={faTrash}
                                   className="relative"
-                                  color={'#60A5FA'}
-                                  size={'1x'}
+                                  color={"#60A5FA"}
+                                  size={"1x"}
                                 />
                               </button>
                             </div>
