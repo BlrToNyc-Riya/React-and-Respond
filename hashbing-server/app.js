@@ -46,6 +46,10 @@ app.use(
 		secret: 'some secret string!',
 		resave: false,
 		saveUninitialized: false,
+		cookie: {
+			httpOnly: true,
+			secure: true
+		}
 	})
 );
 // constructorMethod(app);

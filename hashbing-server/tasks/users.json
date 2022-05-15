@@ -7,8 +7,7 @@
     "coursesEnrolled": [],  
     "courseAuthored": [],  
     "firstName": "Dummy",  
-    "lastName": "user",  
-    "phoneNumber": ""},
+    "lastName": "user"},
     {  
         "email": "test123@gmail.com",  
         "bio": "",  
@@ -17,7 +16,6 @@
         "coursesEnrolled": [],  
         "courseAuthored": [],  
         "firstName": "test",  
-        "lastName": "123",  
-        "phoneNumber": ""}
+        "lastName": "123"}
 
 ]

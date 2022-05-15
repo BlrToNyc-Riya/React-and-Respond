@@ -31,13 +31,17 @@ const upload = multer({
 
 router.post("/upload", decodeIDToken, async (req, res) => {
   try {
+    if(!req.file)
+      throw "Invalid file path, try again";
+    if(!req.session.user)
+      throw "user session expired, login again & try"
     console.log("File is", req.file);
     upload(req, res, async function (err) {
       try {
         console.log("Request ---", req.body);
         console.log("Request file ---", req.file); //Here you get file.
 
-        const path = await users.uploadPic(req.session.user, req.file.filename);
+        const path = await users.uploadPic(xss(req.session.user), xss(req.file.filename));
         if (!path) throw "Error in uploading profile pic";
         console.log({ profilePic: path });
         res.json({ profilePic: path });
@@ -52,33 +56,20 @@ router.post("/upload", decodeIDToken, async (req, res) => {
   }
 });
 
-// router.get("/profilePic", async (req, res)=> {
-//   console.log("File is", req.file);
-//   upload(req, res, async function (err) {
-//     console.log("Request ---", req.body);
-//     console.log("Request file ---", req.file); //Here you get file.
-//     /*Now do where ever you want to do*/
-
-//     if (!err) {
-//       return res.sendStatus(200).send(err);
-//     }
-//   });
-// });
-
-router.get("/test", async (req, res) => {
-  return res.json({ test: "test" });
-});
-
 router.post("/signup", async (req, res) => {
   try {
     let { email, firstName, lastName } = req.body;
     if (!email || !firstName || !lastName) {
-      return res.sendStatus(400).send("Missing required fields");
-    } else {
+      throw "Missing required fields";
+    }
+    if(typeof email != 'string' || typeof firstName != 'string' || typeof lastName != 'string') {
+      throw "type error: input should of string type";
+    } 
+    isValidEmail(email);
       let user = {
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
+        email: xss(email),
+        firstName: xss(firstName),
+        lastName: xss(lastName),
       };
       console.log("here");
       // return res.sendStatus(200).json({ data: 1 });
@@ -86,7 +77,7 @@ router.post("/signup", async (req, res) => {
       console.log("here after", data);
       return res.status(200).json({ data: data });
       // console.log("here after again");
-    }
+    
   } catch (err) {
     console.log("err>>>>>>>>>>>>>>>>>>>>>>", err);
     return res.json({ error: err });
@@ -97,7 +88,7 @@ router.post("/signin", async (req, res) => {
   try {
     const { email } = req.body;
     isValidEmail(email);
-    const { authenticated, user } = await users.authenticateUser(email);
+    const { authenticated, user } = await users.authenticateUser(xss(email));
     if (authenticated) {
       req.session.user = user.email;
       const userInfo = handleUserInfo(user);
@@ -123,10 +114,10 @@ router.post("/signinwithgoogle", async (req, res) => {
       if (!email) throw "please login with a valid emailid...";
     }
     isValidEmail(email);
-    const userExists = await users.userExists(email);
+    const userExists = await users.userExists(xss(email));
     console.log(userExists);
     if (userExists) {
-      const { authenticated, user } = await users.authenticateUser(email);
+      const { authenticated, user } = await users.authenticateUser(xss(email));
       if (authenticated) {
         req.session.user = user.email;
         const userInfo = handleUserInfo(user);
@@ -140,7 +131,7 @@ router.post("/signinwithgoogle", async (req, res) => {
         firstName: firstName,
         lastName: lastName,
       };
-      const data = await users.createUser(user);
+      const data = await users.createUser(xss(user));
       console.log("here after signupwithgoogle", data);
       return res.status(200).json({ data: data });
     }
@@ -154,7 +145,7 @@ router.put("/profile", decodeIDToken, async (req, res) => {
     const email = req.session.user;
     const { firstName, lastName, bio } = req.body;
     if (!email) throw "please login first to update your profile...";
-    const user = await users.getUserByEmail(email);
+    const user = await users.getUserByEmail(xss(email));
     if (!firstName && !bio && !lastName) res.json(user);
     else {
       if (!user) throw "Invalid login, try again";
@@ -175,7 +166,7 @@ router.get("/profile", decodeIDToken, async (req, res) => {
   try {
     const email = req.session.user;
     if (!email) throw "please login first to view your profile...";
-    const user = await users.getUserByEmail(email);
+    const user = await users.getUserByEmail(xss(email));
     if (!user) throw "Invalid login, try again";
     res.json(user);
   } catch (error) {

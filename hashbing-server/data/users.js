@@ -15,6 +15,8 @@ const saltRounds = 10;
 module.exports = {
 	async createUser({ email, firstName, lastName  }) {	
 		email = email.toLowerCase().trim();
+		if(typeof email != 'string' || typeof firstName != 'string' || typeof lastName != 'string') 
+			throw "type error: input should of string type";
 		isValidEmail(email);
 		const userCollection = await users();
 		const userData = await userCollection.findOne({ email });
@@ -47,6 +49,9 @@ module.exports = {
 		return user;
 	},
 	async getUserByEmail(email) {
+		if(!email)
+			throw "can't fetch the user, please login and try agin";
+		isValidEmail(email);
 		const usersCollection = await users();
 		const user = await usersCollection.findOne({ email: email });
 		if (user === null) throw 'No user with that id';

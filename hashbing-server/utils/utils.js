@@ -161,7 +161,6 @@ exports.handleUserInfo = (userInfo) => {
 		'role',
 		'coursesEnrolled',
 		'courseAuthored',
-		'phoneNumber',
 	];
 	return props.reduce((pre, cur) => {
 		pre[cur] = userInfo[cur];
