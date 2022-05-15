@@ -103,16 +103,9 @@ router.post("/signin", async (req, res) => {
 router.post("/signinwithgoogle", async (req, res) => {
   try {
     const { email, displayname } = req.body;
-    if (!displayname) {
-      firstName = email;
-      lastName = "";
-    } else {
-      let firstName = displayname.split(" ")[0]
-        ? displayname.split(" ")[0]
-        : email;
+      let firstName = displayname.split(" ")[0]? displayname.split(" ")[0]: email;
       let lastName = displayname.split(" ")[1] ? displayname.split(" ")[1] : "";
       if (!email) throw "please login with a valid emailid...";
-    }
     isValidEmail(email);
     const userExists = await users.userExists(xss(email));
     console.log(userExists);
@@ -127,11 +120,11 @@ router.post("/signinwithgoogle", async (req, res) => {
       }
     } else {
       let user = {
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
+        email: xss(email),
+        firstName: xss(firstName),
+        lastName: xss(lastName),
       };
-      const data = await users.createUser(xss(user));
+      const data = await users.createUser(user);
       console.log("here after signupwithgoogle", data);
       return res.status(200).json({ data: data });
     }

@@ -138,7 +138,7 @@ const Login: React.FunctionComponent = () => {
       .then(async (auth) => {
         navigate("/");
         const header = await createToken();
-        const url = "http://localhost:4000/users/signin";
+        const url = "http://localhost:4000/users/signinwithgoogle";
         // const requestOptions = {
         //   method: "POST",
         //   headers: { "Content-Type": "application/json" },
