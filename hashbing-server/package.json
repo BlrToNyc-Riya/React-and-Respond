@@ -13,6 +13,7 @@
   "author": "Leo",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1135.0",
     "axios": "^0.25.0",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.7.2",

@@ -1,58 +1,59 @@
-import { ClipboardCheckIcon, CheckCircleIcon } from '@heroicons/react/solid'
-import React, { useCallback, useState } from 'react'
-import Button from '../Components/Button'
+import { ClipboardCheckIcon, CheckCircleIcon } from "@heroicons/react/solid";
+import React, { useCallback, useState } from "react";
+import Button from "../Components/Button";
+import.meta.env.VITE_SOME_VALUE;
 import {
   courseCreationErrors,
   isValidString
-} from '../Components/Utilities/Validations'
-import { useDispatch, useSelector } from 'react-redux'
-import { Store } from '../store'
-import { createCourseAction } from '../actions/types/courses/Courses.actions'
-import _ from 'lodash'
-import { courseCreationStatus } from '../actions/types/CourseAction.types'
+} from "../Components/Utilities/Validations";
+import { useDispatch, useSelector } from "react-redux";
+import { Store } from "../store";
+import { createCourseAction } from "../actions/types/courses/Courses.actions";
+import _ from "lodash";
+import { courseCreationStatus } from "../actions/types/CourseAction.types";
 
-type Props = {}
+type Props = {};
 
-type errorStateType = 'title' | 'description' | 'tags'
+type errorStateType = "title" | "description" | "tags";
 
 function NewCourseInit ({}: Props) {
-  const dispatch = useDispatch()
-  const { users } = useSelector((state: Store) => state)
+  const dispatch = useDispatch();
+  const { users } = useSelector((state: Store) => state);
   //states
-  const [courseName, setCourseName] = React.useState<string | null>(null)
-  const [courseDetails, setcourseDetails] = React.useState<string | null>(null)
-  const [courseTags, setCourseTags] = React.useState<string | null>(null)
+  const [courseName, setCourseName] = React.useState<string | null>(null);
+  const [courseDetails, setcourseDetails] = React.useState<string | null>(null);
+  const [courseTags, setCourseTags] = React.useState<string | null>(null);
   const [errorStateList, setErrorStateList] = useState({
-    title: '',
-    description: '',
-    tags: ''
-  })
+    title: "",
+    description: "",
+    tags: ""
+  });
   const createCourse = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     let errors = {
-      title: '',
-      description: '',
-      tags: ''
-    }
+      title: "",
+      description: "",
+      tags: ""
+    };
     if (!courseName || courseName.length < 3) {
-      errors.title = courseCreationErrors.TITLE
+      errors.title = courseCreationErrors.TITLE;
     } else {
-      errors.title = ''
+      errors.title = "";
     }
     if (!courseDetails || courseDetails.length < 10) {
-      errors.description = courseCreationErrors.DESCRIPTION
+      errors.description = courseCreationErrors.DESCRIPTION;
     } else {
-      errors.description = ''
+      errors.description = "";
     }
     if (!courseTags || courseTags.length < 3) {
-      errors.tags = courseCreationErrors.TITLE
+      errors.tags = courseCreationErrors.TITLE;
     } else {
-      errors.tags = ''
+      errors.tags = "";
     }
     if (
-      errors.title === '' &&
-      errors.tags === '' &&
-      errors.description === ''
+      errors.title === "" &&
+      errors.tags === "" &&
+      errors.description === ""
     ) {
       dispatch(
         createCourseAction(
@@ -61,27 +62,29 @@ function NewCourseInit ({}: Props) {
             authorId: users?.user?.uid,
             details: courseDetails as string,
             tags: courseTags as string,
-            courseContent: '',
+            courseContent: "",
             courseOutcome: {}
           },
           courseCreationStatus.COURSE_CREATION_STAGE_2
         )
-      )
+      );
     }
-    return setErrorStateList(errors)
-  }
+    return setErrorStateList(errors);
+  };
+
+  console.log("env", import.meta.env.VITE_SOME_VALUE);
 
   const renderCheckIcon = (val: string | null): React.ReactNode => {
-    if (val === null) return null
+    if (val === null) return null;
     if (!isRequired(val)) {
-      return <CheckCircleIcon className='h-5 w-5 text-green-500' />
+      return <CheckCircleIcon className='h-5 w-5 text-green-500' />;
     }
-    return <div></div>
-  }
+    return <div></div>;
+  };
   const isRequired = (val: string | null, length: number = 3): boolean => {
-    if (val === null) return false
-    return isValidString(val, length) ? false : true
-  }
+    if (val === null) return false;
+    return isValidString(val, length) ? false : true;
+  };
 
   return (
     <div>
@@ -112,10 +115,10 @@ function NewCourseInit ({}: Props) {
                     />
                     <p
                       className={`block mt-2 text-sm text-red-600 dark:text-red-500 ${
-                        isRequired(courseName) ? '' : 'hidden'
+                        isRequired(courseName) ? "" : "hidden"
                       }`}
                     >
-                      <span className='font-medium'>OOPS!</span>{' '}
+                      <span className='font-medium'>OOPS!</span>{" "}
                       {courseCreationErrors.TITLE}
                     </p>
                   </div>
@@ -137,10 +140,10 @@ function NewCourseInit ({}: Props) {
                     />
                     <p
                       className={`block mt-2 text-sm text-red-600 dark:text-red-500 ${
-                        isRequired(courseDetails, 10) ? '' : 'hidden'
+                        isRequired(courseDetails, 10) ? "" : "hidden"
                       }`}
                     >
-                      <span className='font-medium'>OOPS!</span>{' '}
+                      <span className='font-medium'>OOPS!</span>{" "}
                       {courseCreationErrors.DESCRIPTION}
                     </p>
                   </div>
@@ -162,10 +165,10 @@ function NewCourseInit ({}: Props) {
 
                     <p
                       className={`block mt-2 text-sm text-red-600 dark:text-red-500 ${
-                        isRequired(courseTags) ? '' : 'hidden'
+                        isRequired(courseTags) ? "" : "hidden"
                       }`}
                     >
-                      <span className='font-medium'>OOPS!</span>{' '}
+                      <span className='font-medium'>OOPS!</span>{" "}
                       {courseCreationErrors.TAGS}
                     </p>
                   </div>
@@ -200,7 +203,7 @@ function NewCourseInit ({}: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default NewCourseInit
+export default NewCourseInit;
