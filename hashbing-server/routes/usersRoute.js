@@ -37,10 +37,7 @@ router.post("/upload", decodeIDToken, async (req, res) => {
         console.log("Request ---", req.body);
         console.log("Request file ---", req.file); //Here you get file.
 
-        const path = await users.uploadPic(
-          req.session.user,
-          "../public/uploads/" + req.file.filename
-        );
+        const path = await users.uploadPic(req.session.user, req.file.filename);
         if (!path) throw "Error in uploading profile pic";
         console.log({ profilePic: path });
         res.json({ profilePic: path });
