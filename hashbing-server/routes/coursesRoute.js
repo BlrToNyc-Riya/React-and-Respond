@@ -112,7 +112,7 @@ router.post('/create', decodeIDToken, async (req, res) => {
 			let author = req.session.user;
 			const data = await courses.createCourse(
 				xss(title),
-				xss(body),
+				body,
 				xss(description),
 				xss(req.session.user),
 				xss(topicsTagged),
