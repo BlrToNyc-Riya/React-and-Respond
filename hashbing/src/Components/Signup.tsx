@@ -5,7 +5,7 @@ import {
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FormControl,
@@ -27,6 +27,14 @@ function Signup() {
   const [repassword, setRepassword] = useState("");
   const [error, setError] = useState("");
   const provider = new firebase.auth.GoogleAuthProvider();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        navigate("/");
+      }
+    });
+  }, []);
 
   const register = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -2,7 +2,7 @@ import { faLock, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../Images/flame.gif";
 import logo1 from "../Images/google-logo.png";
-import React, { EventHandler, useReducer, useState } from "react";
+import React, { EventHandler, useEffect, useReducer, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import firebase from "firebase";
 import { auth, createToken } from "../firebase";
@@ -15,6 +15,13 @@ const Login: React.FunctionComponent = () => {
   const [error, setError] = useState("");
   const provider = new firebase.auth.GoogleAuthProvider();
 
+  useEffect(() => {
+    auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        navigate("/");
+      }
+    });
+  }, []);
   const validateEmail = (email: string) => {
     const re =
       /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
