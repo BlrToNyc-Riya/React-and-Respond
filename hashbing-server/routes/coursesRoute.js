@@ -9,6 +9,8 @@ const path = require('path');
 const decodeIDToken = require('../middlewares/authMiddleware');
 const lodash = require('lodash');
 const chalk = require('chalk');
+const xss = require("xss");
+
 require('dotenv').config();
 const {
 	objectIdToString,
@@ -50,7 +52,7 @@ router.get('/authored', decodeIDToken, async (req, res) => {
 	try {
 		const email = req.session.user;
 		if (!email) throw 'could not fetch authored courses, please login';
-		const data = await courses.getAllAuthoredCourses(email);
+		const data = await courses.getAllAuthoredCourses(xss(email));
 		if (!data) throw 'No Authored courses found';
 		res.json({ Authored: data });
 	} catch (error) {
@@ -63,7 +65,7 @@ router.get('/enrolled', decodeIDToken, async (req, res) => {
 	try {
 		const email = req.session.user;
 		if (!email) throw 'could not fetch enrolled courses, please login';
-		const data = await courses.getAllEnrolledCourses(email);
+		const data = await courses.getAllEnrolledCourses(xss(email));
 		if (!data) throw 'No Enrolled courses found';
 		return res.json({ Enrolled: data });
 	} catch (error) {
@@ -126,7 +128,7 @@ router.post('/create', decodeIDToken, async (req, res) => {
 		}
 	} catch (err) {
 		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
-		return res.status(error.code || 500).json({ error: err });
+		return res.status(err.code || 500).json({ error: err });
 	}
 });
 router.put('/:id/enroll', decodeIDToken, async (req, res) => {
@@ -137,7 +139,7 @@ router.put('/:id/enroll', decodeIDToken, async (req, res) => {
 
 		console.log('here');
 		// return res.sendStatus(200).json({ data: 1 });
-		const data = await courses.enrollToCourse(email, courseId);
+		const data = await courses.enrollToCourse(xss(email), xss(courseId));
 		console.log('here after', data);
 		if (!data)
 			throw 'Error while enrolling you into the course, please try again';
@@ -154,7 +156,7 @@ router.put('/:id/unregister', decodeIDToken, async (req, res) => {
 		if (!email) {
 			throw 'User not logged in';
 		} else {
-			const data = await courses.unregisterCourse(email, courseId);
+			const data = await courses.unregisterCourse(xss(email), xss(courseId));
 			if (!data)
 				throw 'Error while unregistering the course, please try again';
 			if (!data) throw 'Error in creating the new course';
@@ -175,7 +177,7 @@ router.get('/:id', decodeIDToken, async (req, res) => {
 		}
 		try {
 			const course = await courses.getCourseById(
-				req.params.id.toString()
+				xss(req.params.id.toString())
 			);
 			if (!course) {
 				throw 'Invalid course Id';
@@ -194,7 +196,7 @@ router.delete('/:id', decodeIDToken, async (req, res) => {
 		if (!email) {
 			throw 'User not logged in';
 		} else {
-			const data = await courses.deleteCourse(email, courseId);
+			const data = await courses.deleteCourse(xss(email), xss(courseId));
 			if (!data)
 				throw 'Error while deleting the course, please try again';
 			return res.status(200).json({ data: data });
