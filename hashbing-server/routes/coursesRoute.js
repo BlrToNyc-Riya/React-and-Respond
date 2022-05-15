@@ -3,7 +3,7 @@ const { ObjectID } = require('mongodb');
 const router = express.Router();
 const courses = require('../data/courses');
 const users = require('../data/users');
-const { isValidObjectId } = require('../utils/utils');
+const { isValidObjectId, isValidEmail } = require('../utils/utils');
 const multer = require('multer');
 const path = require('path');
 const decodeIDToken = require('../middlewares/authMiddleware');
@@ -33,14 +33,12 @@ const upload = multer({
 	},
 }).single('file');
 
-router.get('/test', async (req, res) => {
-	return res.json({ test: 'test' });
-});
 
 router.get('/', decodeIDToken, async (req, res) => {
 	try {
 		const email = req.session.user;
 		if (!email) throw 'could not fetch authored courses, please login';
+		isValidEmail(email);
 		const allCourses = await courses.getAllCourses();
 		if (!allCourses) throw 'error in fetching the courses';
 		res.json({ courses: allCourses });
@@ -52,6 +50,7 @@ router.get('/authored', decodeIDToken, async (req, res) => {
 	try {
 		const email = req.session.user;
 		if (!email) throw 'could not fetch authored courses, please login';
+		isValidEmail(email);
 		const data = await courses.getAllAuthoredCourses(xss(email));
 		if (!data) throw 'No Authored courses found';
 		res.json({ Authored: data });
@@ -65,6 +64,7 @@ router.get('/enrolled', decodeIDToken, async (req, res) => {
 	try {
 		const email = req.session.user;
 		if (!email) throw 'could not fetch enrolled courses, please login';
+		isValidEmail(email);
 		const data = await courses.getAllEnrolledCourses(xss(email));
 		if (!data) throw 'No Enrolled courses found';
 		return res.json({ Enrolled: data });
@@ -111,11 +111,11 @@ router.post('/create', decodeIDToken, async (req, res) => {
 			if (!topicsTagged) throw 'Course needs to be linked with a tag';
 			let author = req.session.user;
 			const data = await courses.createCourse(
-				title,
-				body,
-				description,
-				req.session.user,
-				topicsTagged,
+				xss(title),
+				xss(body),
+				xss(description),
+				xss(req.session.user),
+				xss(topicsTagged),
 				courseOutcome,
 				fileName
 			);
