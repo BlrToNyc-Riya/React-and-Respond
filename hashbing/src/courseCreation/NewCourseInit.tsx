@@ -1,5 +1,5 @@
 import { ClipboardCheckIcon, CheckCircleIcon } from "@heroicons/react/solid";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button from "../Components/Button";
 import.meta.env.VITE_SOME_VALUE;
 import {
@@ -8,7 +8,10 @@ import {
 } from "../Components/Utilities/Validations";
 import { useDispatch, useSelector } from "react-redux";
 import { Store } from "../store";
-import { createCourseAction } from "../actions/types/courses/Courses.actions";
+import {
+  createCourseAction,
+  createCourseActionResetError
+} from "../actions/types/courses/Courses.actions";
 import _ from "lodash";
 import { courseCreationStatus } from "../actions/types/CourseAction.types";
 
@@ -19,6 +22,7 @@ type errorStateType = "title" | "description" | "tags";
 function NewCourseInit ({}: Props) {
   const dispatch = useDispatch();
   const { users } = useSelector((state: Store) => state);
+
   //states
   const [courseName, setCourseName] = React.useState<string | null>(null);
   const [courseDetails, setcourseDetails] = React.useState<string | null>(null);
@@ -35,18 +39,18 @@ function NewCourseInit ({}: Props) {
       description: "",
       tags: ""
     };
-    if (!courseName || courseName.length < 3) {
+    if (!courseName || courseName.trim().length < 3) {
       errors.title = courseCreationErrors.TITLE;
     } else {
       errors.title = "";
     }
-    if (!courseDetails || courseDetails.length < 10) {
+    if (!courseDetails || courseDetails.trim().length < 10) {
       errors.description = courseCreationErrors.DESCRIPTION;
     } else {
       errors.description = "";
     }
-    if (!courseTags || courseTags.length < 3) {
-      errors.tags = courseCreationErrors.TITLE;
+    if (!courseTags || courseTags.trim().length < 3) {
+      errors.tags = courseCreationErrors.TAGS;
     } else {
       errors.tags = "";
     }
