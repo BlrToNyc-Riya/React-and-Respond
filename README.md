@@ -10,5 +10,6 @@ CS554 Spring'22 Final Project.
 * Run `npm run dev` to start the front end application.
 * Change directory to hashbing-server and run `npm i` to install the node packages.
 * Run `npm run seed` to seed the database with the sample data.
+
 * Run `npm run start` to start the server (Make sure you have nodemon installed properly if on Windows) https://dev.to/gabbyj/install-nodemon-and-how-to-deal-with-potential-issues-2og1.
 * 🚀 Now you're ready to start the application.
