@@ -9,7 +9,7 @@ const path = require('path');
 const decodeIDToken = require('../middlewares/authMiddleware');
 const lodash = require('lodash');
 const chalk = require('chalk');
-const xss = require("xss");
+const xss = require('xss');
 
 require('dotenv').config();
 const {
@@ -33,29 +33,37 @@ const upload = multer({
 	},
 }).single('file');
 
-
 router.get('/', decodeIDToken, async (req, res) => {
 	try {
 		const email = req.session.user;
-		if (!email) throw 'could not fetch authored courses, please login';
+		if (!email)
+			throw {
+				message: 'could not fetch authored courses, please login',
+				code: 401,
+			};
 		isValidEmail(email);
 		const allCourses = await courses.getAllCourses();
-		if (!allCourses) throw 'error in fetching the courses';
+		if (!allCourses)
+			throw { message: 'error in fetching the courses', code: 401 };
 		res.json({ courses: allCourses });
 	} catch (e) {
-		res.status(400).send(e?.message ?? e);
+		res.status(e.code || 500).send(e?.message ?? e);
 	}
 });
 router.get('/authored', decodeIDToken, async (req, res) => {
 	try {
 		const email = req.session.user;
-		if (!email) throw 'could not fetch authored courses, please login';
+		if (!email)
+			throw {
+				message: 'could not fetch authored courses, please login',
+				code: 403,
+			};
 		isValidEmail(email);
 		const data = await courses.getAllAuthoredCourses(xss(email));
-		if (!data) throw 'No Authored courses found';
+		if (!data) throw { message: 'No Authored courses found', code: 404 };
 		res.json({ Authored: data });
 	} catch (error) {
-		res.status(400).send(error?.message ?? error);
+		res.status(error.code || 500).send(error?.message ?? error);
 		return;
 	}
 });
@@ -63,14 +71,18 @@ router.get('/enrolled', decodeIDToken, async (req, res) => {
 	console.log('enrolling');
 	try {
 		const email = req.session.user;
-		if (!email) throw 'could not fetch enrolled courses, please login';
+		if (!email)
+			throw {
+				message: 'could not fetch enrolled courses, please login',
+				code: 403,
+			};
 		isValidEmail(email);
 		const data = await courses.getAllEnrolledCourses(xss(email));
-		if (!data) throw 'No Enrolled courses found';
+		if (!data) throw { message: 'No Enrolled courses found', code: 404 };
 		return res.json({ Enrolled: data });
 	} catch (error) {
 		console.log('error', error);
-		res.status(400).send(error?.message ?? error);
+		res.status(error.code || 500).send(error?.message ?? error);
 		return;
 	}
 });
@@ -97,18 +109,21 @@ router.post('/create', decodeIDToken, async (req, res) => {
 			courseOutcome,
 			fileName,
 		} = req.body;
-		console.log('req.body', req.body);
 		if (!title || !body || !description) {
-			throw 'Missing required fields';
+			throw { message: 'Missing required fields', code: 400 };
 		} else {
 			isValidStringField(title, 3);
 			isValidStringField(fileName, 3);
 			isValidStringField(body, 3);
 			isValidStringField(description, 10);
 			if (lodash.isEmpty(courseOutcome))
-				throw 'Course Outcome is required';
+				throw { message: 'Course Outcome is required', code: 400 };
 
-			if (!topicsTagged) throw 'Course needs to be linked with a tag';
+			if (!topicsTagged)
+				throw {
+					message: 'Course needs to be linked with a tag',
+					code: 400,
+				};
 			let author = req.session.user;
 			const data = await courses.createCourse(
 				xss(title),
@@ -120,12 +135,16 @@ router.post('/create', decodeIDToken, async (req, res) => {
 				fileName
 			);
 			console.log('here after', data);
-			if (!data) throw 'Error in creating the new course';
+			if (!data)
+				throw {
+					message: 'Error in creating the new course',
+					code: 500,
+				};
 			return res.status(200).json({ data: data });
 		}
 	} catch (err) {
 		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
-		return res.status(err.code || 500).json({ error: err });
+		return res.status(err.code || 500).json({ error: err?.message || err });
 	}
 });
 router.put('/:id/enroll', decodeIDToken, async (req, res) => {
@@ -139,11 +158,15 @@ router.put('/:id/enroll', decodeIDToken, async (req, res) => {
 		const data = await courses.enrollToCourse(xss(email), xss(courseId));
 		console.log('here after', data);
 		if (!data)
-			throw 'Error while enrolling you into the course, please try again';
+			throw {
+				message:
+					'Error while enrolling you into the course, please try again',
+				code: 500,
+			};
 		return res.status(200).json({ data: data });
 	} catch (err) {
 		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
-		return res.status(err.code || 400).json({ error: err });
+		return res.status(err.code || 400).json({ error: err?.message || err });
 	}
 });
 router.put('/:id/unregister', decodeIDToken, async (req, res) => {
@@ -151,39 +174,50 @@ router.put('/:id/unregister', decodeIDToken, async (req, res) => {
 		let courseId = req.params.id;
 		let email = req.session.user;
 		if (!email) {
-			throw 'User not logged in';
+			throw { message: 'User not logged in', code: 403 };
 		} else {
-			const data = await courses.unregisterCourse(xss(email), xss(courseId));
+			const data = await courses.unregisterCourse(
+				xss(email),
+				xss(courseId)
+			);
 			if (!data)
-				throw 'Error while unregistering the course, please try again';
-			if (!data) throw 'Error in creating the new course';
+				throw {
+					message:
+						'Error while unregistering the course, please try again',
+					code: 500,
+				};
+			if (!data)
+				throw {
+					message: 'Error in creating the new course',
+					code: 500,
+				};
 			return res.status(200).json({ data: data });
 		}
 	} catch (err) {
 		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
-		return res.json({ error: err });
+		return res.status(err?.code || 500).json({ error: err.message || err });
 	}
 });
 router.get('/:id', decodeIDToken, async (req, res) => {
+	// try {
 	try {
-		try {
-			isValidObjectId(req.params.id);
-		} catch (error) {
-			res.status(error?.code || 400).send(error?.message ?? error);
-			return;
+		isValidObjectId(req.params.id);
+	} catch (error) {
+		res.status(error?.code || 400).send(error?.message ?? error);
+		return;
+	}
+	try {
+		const course = await courses.getCourseById(
+			xss(req.params.id.toString())
+		);
+		if (!course) {
+			throw { message: 'Invalid course Id', code: 403 };
 		}
-		try {
-			const course = await courses.getCourseById(
-				xss(req.params.id.toString())
-			);
-			if (!course) {
-				throw 'Invalid course Id';
-			}
-			return res.status(200).json(course);
-		} catch (error) {
-			return res.status(error?.code || 500).send(error?.message ?? error);
-		}
-	} catch (err) {}
+		return res.status(200).json(course);
+	} catch (error) {
+		return res.status(error?.code || 500).send(error?.message ?? error);
+	}
+	// } catch (err) {}
 });
 
 router.delete('/:id', decodeIDToken, async (req, res) => {
@@ -191,16 +225,20 @@ router.delete('/:id', decodeIDToken, async (req, res) => {
 		let courseId = req.params.id;
 		let email = req.session.user;
 		if (!email) {
-			throw 'User not logged in';
+			throw { message: 'User not logged in', error: 403 };
 		} else {
 			const data = await courses.deleteCourse(xss(email), xss(courseId));
 			if (!data)
-				throw 'Error while deleting the course, please try again';
+				throw {
+					message:
+						'Error while deleting the course, please try again',
+					code: 500,
+				};
 			return res.status(200).json({ data: data });
 		}
 	} catch (err) {
 		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
-		return res.status(error.code || 400).json({ error: err });
+		return res.status(err.code || 400).json({ error: err?.message || err });
 	}
 });
 
@@ -214,12 +252,14 @@ router.get('/user/enrolled/:id', decodeIDToken, async (req, res) => {
 		);
 		console.log('course', course);
 		if (!course) {
-			throw { message: 'Invalid course Id', status: 404 };
+			throw { message: 'Invalid course Id', code: 403 };
 		}
 		return res.status(200).json(course);
 	} catch (err) {
 		console.log('err', err);
-		return res.status(err?.status || 500).json(err);
+		return res
+			.status(err?.code || 500)
+			.json({ error: err?.message || err });
 	}
 });
 router.post('/bannerUpload', async (req, res) => {
@@ -231,7 +271,7 @@ router.post('/bannerUpload', async (req, res) => {
 				return res.status(500).json(err);
 			} else if (req.file.size > 1024 * 1024 * 10)
 				return res
-					.status(500)
+					.status(403)
 					.json({ message: 'File size is too large' });
 			var options = {
 				root: path.join(__dirname),
