@@ -5,7 +5,7 @@ import {
   faCircleCheck,
   faClipboardCheck,
   faTrash,
-  faXmarkSquare,
+  faXmarkSquare
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,7 +24,7 @@ type courseDetailType = {
   metaData: { timeStamp: number };
 };
 
-function CourseDetails() {
+function CourseDetails () {
   const [course, setCourse] = useState<courseDetailType>();
   const [courses, setCourses] = useState<courseDetailType[]>();
   const params = useParams();
@@ -39,14 +39,12 @@ function CourseDetails() {
 
   const updateRelatedCourses = () => {
     updatedCourses = courses?.filter(
-      (course1) =>
+      course1 =>
         course1.topicsTagged === course?.topicsTagged &&
         course1._id !== course?._id
     );
     if (updatedCourses?.length === 0) {
-      updatedCourses = courses?.filter(
-        (course1) => course1._id !== course?._id
-      );
+      updatedCourses = courses?.filter(course1 => course1._id !== course?._id);
     }
   };
   updateRelatedCourses();
@@ -77,14 +75,14 @@ function CourseDetails() {
       const url = `http://localhost:4000/courses/${cid}/`;
       fetch(url, {
         method: "GET",
-        headers: header.headers,
+        headers: header.headers
       })
-        .then(async (response) => {
+        .then(async response => {
           const cou = await response.json();
           console.log(cou);
           setCourse(cou);
         })
-        .catch((error) => console.log(error.message));
+        .catch(error => console.log(error.message));
     };
     fetchData();
     return () => {
@@ -103,14 +101,14 @@ function CourseDetails() {
       fetch(url, {
         method: "GET",
         headers: header.headers,
-        credentials: "include",
+        credentials: "include"
       })
-        .then(async (response) => {
+        .then(async response => {
           const cou = await response.json();
           console.log(cou);
           setCourses(cou.courses);
         })
-        .catch((error) => console.log(error.message));
+        .catch(error => console.log(error.message));
     };
     fetchData();
     return () => {
@@ -128,14 +126,14 @@ function CourseDetails() {
       fetch(url, {
         method: "GET",
         headers: header.headers,
-        credentials: "include",
+        credentials: "include"
       })
-        .then(async (response) => {
+        .then(async response => {
           const cou = await response.json();
           console.log(cou);
           setEnrolled(cou.Enrolled);
         })
-        .catch((error) => console.log(error.message));
+        .catch(error => console.log(error.message));
     };
     fetchEnrolled();
     return () => {
@@ -153,14 +151,14 @@ function CourseDetails() {
       fetch(url, {
         method: "GET",
         headers: header.headers,
-        credentials: "include",
+        credentials: "include"
       })
-        .then(async (response) => {
+        .then(async response => {
           const cou = await response.json();
           console.log(cou);
           setAuthored(cou.Authored);
         })
-        .catch((error) => console.log(error.message));
+        .catch(error => console.log(error.message));
     };
     fetchAuthored();
     return () => {
@@ -184,13 +182,13 @@ function CourseDetails() {
     fetch(url, {
       method: "PUT",
       headers: header.headers,
-      credentials: "include",
+      credentials: "include"
     })
-      .then((response) => {
+      .then(response => {
         console.log("Status Changed Successfully");
         setRerender(!rerender);
       })
-      .catch((error) => console.log(error.message));
+      .catch(error => console.log(error.message));
   };
 
   const unregisterCourse = async (
@@ -208,13 +206,13 @@ function CourseDetails() {
     fetch(url, {
       method: "PUT",
       headers: header.headers,
-      credentials: "include",
+      credentials: "include"
     })
-      .then((response) => {
+      .then(response => {
         console.log("Status Changed Successfully");
         setRerender(!rerender);
       })
-      .catch((error) => console.log(error.message));
+      .catch(error => console.log(error.message));
   };
 
   const deleteCourse = async (
@@ -232,11 +230,11 @@ function CourseDetails() {
     // };
     axios
       .delete(url, header)
-      .then((response) => {
+      .then(response => {
         console.log(response);
         navigate(`/`);
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
     // fetch(url, {
@@ -252,41 +250,41 @@ function CourseDetails() {
   };
 
   return (
-    <div className="flex bg-white w-screen rounded-2xl">
-      <div className="flex flex-col w-full h-full rounded-2xl">
+    <div className='flex bg-white w-screen rounded-2xl'>
+      <div className='flex flex-col w-full h-full rounded-2xl'>
         {/* <Header selection='courses' /> */}
-        <div className="flex bg-gray-200 h-full rounded-b-2xl">
-          <div className="flex flex-col basis-3/4 h-full">
-            <div className="flex-col w-full h-full">
-              <div className="flex m-10 p-6 align-middle items-center rounded-2xl h-full bg-blue-600 shadow-2xl">
-                <div className="flex-col">
+        <div className='flex bg-gray-200 h-full rounded-b-2xl'>
+          <div className='flex flex-col basis-3/4 h-full'>
+            <div className='flex-col w-full h-full'>
+              <div className='flex m-10 p-6 align-middle items-center rounded-2xl h-full bg-blue-600 shadow-2xl'>
+                <div className='flex-col'>
                   <br />
-                  <p className="text-4xl text-white font-sans font-bold text-left pl-10">
+                  <p className='text-4xl text-white font-sans font-bold text-left pl-10'>
                     {course?.title}
                   </p>
                   <br />
-                  <p className="text-xl text-white font-sans font-bold text-left pl-10">
+                  <p className='text-xl text-white font-sans font-bold text-left pl-10'>
                     {course?.description}
                   </p>
                   <br />
-                  <p className="text-sm text-white font-sans font-bold pl-10">
+                  <p className='text-sm text-white font-sans font-bold pl-10'>
                     Created by :
-                    <span className="text-sm font-sans font-semibold pl-2">
+                    <span className='text-sm font-sans font-semibold pl-2'>
                       {course?.author}
                     </span>
                   </p>
                   <br />
-                  <p className="text-sm text-white font-sans font-bold pl-10">
+                  <p className='text-sm text-white font-sans font-bold pl-10'>
                     Last Updated on :
-                    <span className="text-sm font-sans font-semibold pl-2">
+                    <span className='text-sm font-sans font-semibold pl-2'>
                       {dateCreated?.toString()}
                     </span>
                   </p>
                   {/* Tags */}
-                  <div className="flex-grow mt-4 ml-5 mr-5">
-                    {course?.topicsTagged?.map((tag) => (
+                  <div className='flex-grow mt-4 break-word ml-5 mr-5'>
+                    {course?.topicsTagged?.map(tag => (
                       <span
-                        className="text-xs font-semibold text-center py-1 px-2 rounded bg-white uppercase m-4 break-all text-blue-600 border"
+                        className='text-xs font-semibold text-center py-1 px-2 rounded bg-white uppercase m-4 break-all text-blue-600 border'
                         key={tag}
                       >
                         {tag}
@@ -296,18 +294,18 @@ function CourseDetails() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col w-full mb-10 mt-10 h-full">
-              <div className="flex rounded-xl align-middle items-center m-10 h-full bg-white shadow-2xl">
-                <div className="flex-col p-10 w-full">
-                  <p className="text-3xl font-sans font-bold text-left pl-10 pb-10">
+            <div className='flex flex-col w-full mb-10 mt-10 h-full'>
+              <div className='flex rounded-xl align-middle items-center m-10 h-full bg-white shadow-2xl'>
+                <div className='flex-col p-10 w-full'>
+                  <p className='text-3xl font-sans font-bold text-left pl-10 pb-10'>
                     What You will Learn
                   </p>
                   <br />
-                  <div className="flex flex-wrap">
+                  <div className='flex flex-wrap'>
                     {course &&
-                      Object.keys(course.courseOutcome)?.map((id) => (
+                      Object.keys(course.courseOutcome)?.map(id => (
                         <div
-                          className="text-lg font-sans text-left pl-10 w-1/2"
+                          className='text-lg font-sans text-left pl-10 w-1/2'
                           key={id}
                         >
                           <FontAwesomeIcon icon={faCircleCheck} size={"1x"} />{" "}
@@ -319,21 +317,21 @@ function CourseDetails() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col w-full mb-10 mt-10 h-full">
-              <p className="text-3xl font-sans font-bold text-left pl-10 pb-10">
-                Related Products
+            <div className='flex flex-col w-full mb-10 mt-10 h-full'>
+              <p className='text-3xl font-sans font-bold text-left pl-10 pb-10'>
+                Related Courses
               </p>
-              <div className="grid w-full h-full md:grid-cols-3 gap-20 pl-20 pr-20 pt-10 pb-10 grid-cols-1">
+              <div className='grid w-full h-full md:grid-cols-3 gap-20 pl-20 pr-20 pt-10 pb-10 grid-cols-1'>
                 {updatedCourses?.map(
                   (course1, i) =>
                     i <= 2 && (
                       <div
-                        className="flex bg-white shadow-2xl cursor-pointer"
+                        className='flex bg-white shadow-2xl cursor-pointer max-w-full'
                         key={course1._id}
                       >
-                        <div className="flex-col">
+                        <div className='flex-col max-w-full'>
                           {/* Img */}
-                          <div className="flex-col">
+                          <div className='flex-col'>
                             <img
                               src={
                                 course1?.fileName
@@ -341,31 +339,31 @@ function CourseDetails() {
                                   : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
                               }
                               alt={course1.title}
-                              className="h-50 w-screen object-fill"
+                              className='h-50 w-screen object-fill'
                             />
                           </div>
                           {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
                           {/* Topic */}
-                          <div className="">
-                            <div className="flex-col min-h-16">
-                              <p className="text-lg font-sans font-bold text-left pl-2">
+                          <div className=''>
+                            <div className='flex-col min-h-16'>
+                              <p className='text-lg font-sans font-bold text-left pl-2'>
                                 {course1?.title}
                               </p>
                             </div>
                             {/* Author */}
-                            <div className="flex-col">
-                              <p className="text-xs font-sans font-semibold pl-2 text-gray-500">
+                            <div className='flex-col'>
+                              <p className='text-xs font-sans font-semibold pl-2 text-gray-500'>
                                 Created by :{" "}
-                                <span className="text-black">
+                                <span className='text-black'>
                                   {course1?.author}
                                 </span>
                               </p>
                             </div>
                             {/* Tags */}
-                            <div className="flex-grow mt-4">
-                              {course1?.topicsTagged?.map((tag) => (
+                            <div className='flex flex-wrap mt-4 break-word'>
+                              {course1?.topicsTagged?.map(tag => (
                                 <span
-                                  className="text-xs font-semibold text-center py-1 px-2 rounded text-white bg-blue-600 uppercase m-4"
+                                  className='text-xs font-semibold text-center py-1 px-2 rounded text-white bg-blue-600 uppercase m-4 break-all border'
                                   key={tag}
                                 >
                                   {tag}
@@ -373,10 +371,10 @@ function CourseDetails() {
                               ))}
                             </div>
                             {/* Details Section */}
-                            <div className="flex-col mt-4">
-                              <div className="flex justify-center">
+                            <div className='flex-col mt-4'>
+                              <div className='flex justify-center'>
                                 <button
-                                  className="bg-blue-600 p-3 w-4/5 mb-4 text-white"
+                                  className='bg-blue-600 p-3 w-4/5 mb-4 text-white'
                                   onClick={() => {
                                     navigate(`/courses/${course1?._id}`);
                                     window.location.reload();
@@ -385,48 +383,44 @@ function CourseDetails() {
                                   Go To Details
                                 </button>
                               </div>
-                              <div className="flex justify-center mb-2">
+                              <div className='flex justify-center mb-2'>
                                 {authored?.includes(course1._id) ? (
                                   <button
-                                    className="bg-red-600 text-white p-3"
-                                    onClick={(e) =>
-                                      deleteCourse(e, course1._id)
-                                    }
+                                    className='bg-red-600 text-white p-3'
+                                    onClick={e => deleteCourse(e, course1._id)}
                                   >
                                     Delete Course &nbsp;
                                     <FontAwesomeIcon
                                       icon={faTrash}
-                                      className="relative"
+                                      className='relative'
                                       color={"white"}
                                       size={"1x"}
                                     />
                                   </button>
                                 ) : enrolled?.includes(course1._id) ? (
                                   <button
-                                    className="text-blue-600 p-3"
-                                    onClick={(e) =>
+                                    className='text-blue-600 p-3'
+                                    onClick={e =>
                                       unregisterCourse(e, course1._id)
                                     }
                                   >
                                     Unregister&nbsp;
                                     <FontAwesomeIcon
                                       icon={faXmarkSquare}
-                                      className="relative"
+                                      className='relative'
                                       color={"#2563EB"}
                                       size={"1x"}
                                     />
                                   </button>
                                 ) : (
                                   <button
-                                    className="text-blue-600 p-3"
-                                    onClick={(e) =>
-                                      enrollCourse(e, course1._id)
-                                    }
+                                    className='text-blue-600 p-3'
+                                    onClick={e => enrollCourse(e, course1._id)}
                                   >
                                     Enroll &nbsp;
                                     <FontAwesomeIcon
                                       icon={faClipboardCheck}
-                                      className="relative"
+                                      className='relative'
                                       color={"#2563EB"}
                                       size={"1x"}
                                     />
@@ -478,12 +472,12 @@ function CourseDetails() {
               </div>
             </div> */}
           </div>
-          <div className="flex flex-col basis-1/5 rounded-br-2xl h-full relative">
-            <div className="flex-col h-10"></div>
-            <div className="flex cursor-pointer h-96 fixed">
-              <div className="flex-col h-full mr-20 mt-10 bg-white shadow-2xl">
+          <div className='flex flex-col basis-1/5 rounded-br-2xl h-full relative'>
+            <div className='flex-col h-10'></div>
+            <div className='flex cursor-pointer h-96 fixed'>
+              <div className='flex-col h-full mr-20 mt-10 bg-white shadow-2xl'>
                 {/* Img */}
-                <div className="flex justify-center">
+                <div className='flex justify-center'>
                   <img
                     src={
                       course?.fileName
@@ -491,22 +485,22 @@ function CourseDetails() {
                         : `/src/Images/HPE-Course-Placeholder-Image-1.jpeg`
                     }
                     alt={course?.title}
-                    className="h-40 w-full object-fill"
+                    className='h-40 w-full object-fill'
                   />
                 </div>
                 {/* <div className="flex w-full border-b-2 border-gray-400"></div> */}
                 {/* Topic */}
-                <div className="flex-col">
-                  <div className="flex-col min-h-16">
-                    <p className="text-xl font-sans font-bold text-center pl-2">
+                <div className='flex-col'>
+                  <div className='flex-col min-h-16'>
+                    <p className='text-xl font-sans font-bold text-center pl-2'>
                       {course?.title}
                     </p>
                   </div>
                   {/* Tags */}
-                  <div className="flex-grow ml-4">
-                    {course?.topicsTagged?.map((tag) => (
+                  <div className='flex-grow ml-4'>
+                    {course?.topicsTagged?.map(tag => (
                       <span
-                        className="text-xs font-semibold text-center py-1 px-2 rounded bg-blue-600 uppercase m-4 break-all text-white"
+                        className='text-xs font-semibold text-center py-1 px-2 rounded bg-blue-600 uppercase m-4 break-all text-white'
                         key={tag}
                       >
                         {tag}
@@ -514,30 +508,30 @@ function CourseDetails() {
                     ))}
                   </div>
                   {/* Details Section */}
-                  <div className="flex-col mt-4 bg-white">
-                    <div className="flex justify-center">
+                  <div className='flex-col mt-4 bg-white'>
+                    <div className='flex justify-center'>
                       {cid != undefined && authored?.includes(cid) ? (
                         <button
-                          className="bg-red-600 p-3 w-4/5 mb-4 text-white"
-                          onClick={(e) => deleteCourse(e, cid)}
+                          className='bg-red-600 p-3 w-4/5 mb-4 text-white'
+                          onClick={e => deleteCourse(e, cid)}
                         >
                           Delete Course &nbsp;
                           <FontAwesomeIcon
                             icon={faTrash}
-                            className="relative"
+                            className='relative'
                             color={"white"}
                             size={"1x"}
                           />
                         </button>
                       ) : cid != undefined && enrolled?.includes(cid) ? (
                         <button
-                          className="bg-blue-600 p-3 w-4/5 mb-4 text-white"
-                          onClick={(e) => unregisterCourse(e, cid)}
+                          className='bg-blue-600 p-3 w-4/5 mb-4 text-white'
+                          onClick={e => unregisterCourse(e, cid)}
                         >
                           Unregister &nbsp;
                           <FontAwesomeIcon
                             icon={faXmarkSquare}
-                            className="relative"
+                            className='relative'
                             color={"white"}
                             size={"1x"}
                           />
@@ -545,13 +539,13 @@ function CourseDetails() {
                       ) : (
                         cid != undefined && (
                           <button
-                            className="bg-blue-600 p-3 w-4/5 mb-4 text-white"
-                            onClick={(e) => enrollCourse(e, cid)}
+                            className='bg-blue-600 p-3 w-4/5 mb-4 text-white'
+                            onClick={e => enrollCourse(e, cid)}
                           >
                             Enroll &nbsp;
                             <FontAwesomeIcon
                               icon={faClipboardCheck}
-                              className="relative"
+                              className='relative'
                               color={"white"}
                               size={"1x"}
                             />
@@ -559,10 +553,10 @@ function CourseDetails() {
                         )
                       )}
                     </div>
-                    <div className="flex justify-center">
+                    <div className='flex justify-center'>
                       {cid != undefined && enrolled?.includes(cid) && (
                         <button
-                          className="text-blue-600 p-3"
+                          className='text-blue-600 p-3'
                           onClick={() =>
                             !course ? null : navigate(`/course/${course._id}`)
                           }
@@ -576,7 +570,7 @@ function CourseDetails() {
               </div>
             </div>
           </div>
-          <div className="basis-1/12 h-full"></div>
+          <div className='basis-1/12 h-full'></div>
         </div>
       </div>
     </div>

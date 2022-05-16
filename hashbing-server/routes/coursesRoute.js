@@ -199,25 +199,25 @@ router.put('/:id/unregister', decodeIDToken, async (req, res) => {
 	}
 });
 router.get('/:id', decodeIDToken, async (req, res) => {
+	// try {
 	try {
-		try {
-			isValidObjectId(req.params.id);
-		} catch (error) {
-			res.status(error?.code || 400).send(error?.message ?? error);
-			return;
+		isValidObjectId(req.params.id);
+	} catch (error) {
+		res.status(error?.code || 400).send(error?.message ?? error);
+		return;
+	}
+	try {
+		const course = await courses.getCourseById(
+			xss(req.params.id.toString())
+		);
+		if (!course) {
+			throw { message: 'Invalid course Id', code: 403 };
 		}
-		try {
-			const course = await courses.getCourseById(
-				xss(req.params.id.toString())
-			);
-			if (!course) {
-				throw { message: 'Invalid course Id', code: 403 };
-			}
-			return res.status(200).json(course);
-		} catch (error) {
-			return res.status(error?.code || 500).send(error?.message ?? error);
-		}
-	} catch (err) {}
+		return res.status(200).json(course);
+	} catch (error) {
+		return res.status(error?.code || 500).send(error?.message ?? error);
+	}
+	// } catch (err) {}
 });
 
 router.delete('/:id', decodeIDToken, async (req, res) => {
@@ -225,7 +225,7 @@ router.delete('/:id', decodeIDToken, async (req, res) => {
 		let courseId = req.params.id;
 		let email = req.session.user;
 		if (!email) {
-			throw 'User not logged in';
+			throw { message: 'User not logged in', error: 403 };
 		} else {
 			const data = await courses.deleteCourse(xss(email), xss(courseId));
 			if (!data)
@@ -238,9 +238,7 @@ router.delete('/:id', decodeIDToken, async (req, res) => {
 		}
 	} catch (err) {
 		console.log('err>>>>>>>>>>>>>>>>>>>>>>', err);
-		return res
-			.status(error.code || 400)
-			.json({ error: err?.message || err });
+		return res.status(err.code || 400).json({ error: err?.message || err });
 	}
 });
 

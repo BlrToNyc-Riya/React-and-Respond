@@ -1,8 +1,9 @@
 import {
   faBars,
   faHamburger,
-  faUserCircle,
+  faUserCircle
 } from "@fortawesome/free-solid-svg-icons";
+import webLogo from "../Images/webLogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
@@ -22,7 +23,7 @@ type userDetail = {
   phoneNumber: string;
   profilePic: string;
 };
-function Header(props: { selection: string }) {
+function Header (props: { selection: string }) {
   const dispatch = useDispatch();
   const userDetail = useSelector((state: RootStateOrAny) => state.users);
   const navigate = useNavigate();
@@ -42,14 +43,14 @@ function Header(props: { selection: string }) {
       fetch(url, {
         method: "GET",
         headers: header.headers,
-        credentials: "include",
+        credentials: "include"
       })
-        .then(async (response) => {
+        .then(async response => {
           const userDetails = await response.json();
           console.log(userDetails);
           setUser(userDetails);
         })
-        .catch((error) => console.log(error.message));
+        .catch(error => console.log(error.message));
     };
     fetchUser();
     return () => {
@@ -66,124 +67,126 @@ function Header(props: { selection: string }) {
       const header = await createToken();
       axios
         .post(url, header)
-        .then((response) => {
+        .then(response => {
           console.log("Logged out Successfully!");
           navigate("/login");
         })
-        .catch((error) => console.log(error.message));
+        .catch(error => console.log(error.message));
     }
   };
   return (
-    <div className="flex w-full shadow-2xl">
-      <div className="flex w-1/2 justify-start">
-        <div className="flex ml-4">
-          <div className="dropdown dropdown-hover">
-            <label tabIndex={0} className="">
-              <FontAwesomeIcon
-                icon={faBars}
-                size={"2x"}
-                color={"black"}
-                className="cursor-pointer relative mt-4"
-              />
-            </label>
+    <div className='flex w-full shadow-2xl'>
+      <div className='flex w-1/2 items-center justify-start'>
+        <div className='flex ml-4'>
+          <div className='dropdown dropdown-hover'>
+            <FontAwesomeIcon
+              icon={faBars}
+              size={"2x"}
+              color={"black"}
+              className='cursor-pointer relative mt-4'
+            />
             <ul
               tabIndex={0}
-              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40 "
+              className='dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40 '
             >
               <li>
                 <Link
-                  className="hover:bg-sky-400 hover:text-black"
-                  to="/courses/new"
+                  className='hover:bg-sky-400 hover:text-black'
+                  to='/courses/new'
                 >
                   Create Course
                 </Link>
               </li>
               <li>
-                <Link className="hover:bg-sky-400 hover:text-black" to="/">
+                <Link className='hover:bg-sky-400 hover:text-black' to='/'>
                   Courses
                 </Link>
               </li>
               <li>
-                <Link className="hover:bg-sky-400 hover:text-black" to="/users">
+                <Link className='hover:bg-sky-400 hover:text-black' to='/users'>
                   {userDetail?.user?.displayName}
                 </Link>
               </li>
               <li>
-                <div className="hover:bg-sky-400" onClick={handleLogout}>
+                <div className='hover:bg-sky-400' onClick={handleLogout}>
                   Logout
                 </div>
               </li>
             </ul>
           </div>
         </div>
+        <div className='flex items-center'>
+          <img src={webLogo} alt='logo' className='h-12 ml-5' />
+          <h1 className='mx-5'>Learn Owl</h1>
+        </div>
       </div>
-      <div className="flex w-1/2 justify-end">
-        <Link to="/">
+      <div className='flex w-1/2 justify-end'>
+        <Link to='/'>
           {pathname === "courses" || pathname === "/" ? (
             <div
-              id="courses"
-              className="text-md font-bold text-blue-600 p-5 cursor-pointer"
+              id='courses'
+              className='text-md font-bold text-blue-600 p-5 cursor-pointer'
             >
               Courses
             </div>
           ) : (
-            <div className="text-md font-bold p-5 cursor-pointer">Courses</div>
+            <div className='text-md font-bold p-5 cursor-pointer'>Courses</div>
           )}
         </Link>
-        <Link to="/enrolled">
+        <Link to='/enrolled'>
           {pathname.includes("enrolled") ? (
             <div
-              id="enrolled"
-              className="text-md font-bold text-blue-600 p-5 cursor-pointer"
+              id='enrolled'
+              className='text-md font-bold text-blue-600 p-5 cursor-pointer'
             >
               Enrolled
             </div>
           ) : (
-            <div className="text-md font-bold p-5 cursor-pointer">Enrolled</div>
+            <div className='text-md font-bold p-5 cursor-pointer'>Enrolled</div>
           )}
         </Link>
-        <Link to="/authored">
+        <Link to='/authored'>
           {pathname.includes("authored") ? (
             <div
-              id="authored"
-              className="text-md font-bold text-blue-600 p-5 cursor-pointer"
+              id='authored'
+              className='text-md font-bold text-blue-600 p-5 cursor-pointer'
             >
               Authored
             </div>
           ) : (
-            <div className="text-md font-bold p-5 cursor-pointer">Authored</div>
+            <div className='text-md font-bold p-5 cursor-pointer'>Authored</div>
           )}
         </Link>
-        <Link to="/courses/new">
+        <Link to='/courses/new'>
           {pathname.includes("/courses/new") ? (
             <div
-              id="authored"
-              className="text-md font-bold text-blue-600 p-5 cursor-pointer"
+              id='authored'
+              className='text-md font-bold text-blue-600 p-5 cursor-pointer'
             >
               Create Course
             </div>
           ) : (
-            <div className="text-md font-bold p-5 cursor-pointer">
+            <div className='text-md font-bold p-5 cursor-pointer'>
               Create Course
             </div>
           )}
         </Link>
-        <Link to="/users">
+        <Link to='/users'>
           {pathname.includes("users") ? (
             <div
-              id="users"
-              className="text-md font-bold text-blue-600 p-5 cursor-pointer"
+              id='users'
+              className='text-md font-bold text-blue-600 p-5 cursor-pointer'
             >
               {userDetail.user.displayName}
             </div>
           ) : (
-            <div className="text-md font-bold p-5 cursor-pointer">
+            <div className='text-md font-bold p-5 cursor-pointer'>
               {userDetail.user?.displayName}
             </div>
           )}
         </Link>
         <div
-          className="text-md font-bold p-5 cursor-pointer"
+          className='text-md font-bold p-5 cursor-pointer'
           onClick={handleLogout}
         >
           Logout

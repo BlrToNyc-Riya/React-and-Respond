@@ -151,11 +151,19 @@ module.exports = {
 	},
 	async unregisterCourse(email, courseId) {
 		if (!email || !courseId)
-			throw "Error with user's email or the course id not fetched..";
+			throw {
+				message:
+					"Error with user's email or the course id not fetched..",
+				code: 400,
+			};
 		courseId = ObjectID(courseId);
 		const courseCollection = await courses();
 		const course = await courseCollection.findOne({ _id: courseId });
-		if (!course) throw 'No course found with this id, unable to unregister';
+		if (!course)
+			throw {
+				message: 'No course found with this id, unable to unregister',
+				code: 404,
+			};
 		const userCollection = await users();
 		const user = await userCollection.findOne({ email });
 		if (!user) {
